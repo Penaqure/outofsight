@@ -7,7 +7,7 @@ export function DeleteProjectButton({ id }: { id: string }) {
 
   async function handleDelete() {
     if (!confirm("Delete this project?")) return;
-    await fetch(`/api/portfolio/${id}`, { method: "DELETE" });
+    await fetch(`/api/works/${id}`, { method: "DELETE" });
     router.refresh();
   }
 

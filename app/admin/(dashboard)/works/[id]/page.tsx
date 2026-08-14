@@ -3,7 +3,7 @@ import { getProjectById } from "@/lib/data/portfolio";
 import { ProjectForm } from "../ProjectForm";
 
 export default async function EditProjectPage(
-  props: PageProps<"/admin/portfolio/[id]">
+  props: PageProps<"/admin/works/[id]">
 ) {
   const { id } = await props.params;
   const project = await getProjectById(id);

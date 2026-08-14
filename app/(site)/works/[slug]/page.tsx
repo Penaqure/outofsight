@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 
 export default async function ProjectPage(
-  props: PageProps<"/portfolio/[slug]">
+  props: PageProps<"/works/[slug]">
 ) {
   const { slug } = await props.params;
   const project = await getProjectBySlug(slug);

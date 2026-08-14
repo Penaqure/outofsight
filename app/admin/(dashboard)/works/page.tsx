@@ -3,14 +3,14 @@ import { getProjects } from "@/lib/data/portfolio";
 import { LinkButton } from "@/components/ui/Button";
 import { DeleteProjectButton } from "./DeleteProjectButton";
 
-export default async function AdminPortfolioPage() {
+export default async function AdminWorksPage() {
   const projects = await getProjects();
 
   return (
     <>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Portfolio</h1>
-        <LinkButton href="/admin/portfolio/new">New Project</LinkButton>
+        <h1 className="text-2xl font-semibold tracking-tight">Works</h1>
+        <LinkButton href="/admin/works/new">New Project</LinkButton>
       </div>
       <div className="mt-6 divide-y divide-black/[.08] dark:divide-white/[.1]">
         {projects.map((project) => (
@@ -23,7 +23,7 @@ export default async function AdminPortfolioPage() {
             </div>
             <div className="flex items-center gap-4">
               <Link
-                href={`/admin/portfolio/${project.id}`}
+                href={`/admin/works/${project.id}`}
                 className="text-sm hover:underline"
               >
                 Edit

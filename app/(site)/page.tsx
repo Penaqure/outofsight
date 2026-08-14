@@ -19,7 +19,7 @@ export default async function HomePage() {
             {siteConfig.tagline}
           </p>
           <div className="mt-8 flex gap-4">
-            <LinkButton href="/portfolio">View Portfolio</LinkButton>
+            <LinkButton href="/works">View Works</LinkButton>
             <LinkButton href="/contact" variant="secondary">
               Get in Touch
             </LinkButton>
@@ -36,7 +36,7 @@ export default async function HomePage() {
             {projects.map((project) => (
               <Link
                 key={project.id}
-                href={`/portfolio/${project.slug}`}
+                href={`/works/${project.slug}`}
                 className="rounded-lg border border-black/[.08] p-5 transition-colors hover:bg-black/[.03] dark:border-white/[.1] dark:hover:bg-white/[.05]"
               >
                 <h3 className="font-medium">{project.title}</h3>

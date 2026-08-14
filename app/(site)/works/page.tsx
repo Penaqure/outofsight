@@ -3,18 +3,18 @@ import { getProjects } from "@/lib/data/portfolio";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 
-export default async function PortfolioPage() {
+export default async function WorksPage() {
   const projects = await getProjects();
 
   return (
     <Section className="pt-24">
       <Container>
-        <h1 className="text-3xl font-semibold tracking-tight">Portfolio</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Works</h1>
         <div className="mt-8 grid gap-6 sm:grid-cols-2">
           {projects.map((project) => (
             <Link
               key={project.id}
-              href={`/portfolio/${project.slug}`}
+              href={`/works/${project.slug}`}
               className="rounded-lg border border-black/[.08] p-5 transition-colors hover:bg-black/[.03] dark:border-white/[.1] dark:hover:bg-white/[.05]"
             >
               <h2 className="font-medium">{project.title}</h2>

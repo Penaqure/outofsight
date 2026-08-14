@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const navItems = [
   { label: "Dashboard", href: "/admin" },
-  { label: "Portfolio", href: "/admin/portfolio" },
+  { label: "Works", href: "/admin/works" },
 ];
 
 export function Sidebar() {

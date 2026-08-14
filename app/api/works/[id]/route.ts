@@ -7,7 +7,7 @@ import {
 
 export async function GET(
   _request: Request,
-  ctx: RouteContext<"/api/portfolio/[id]">
+  ctx: RouteContext<"/api/works/[id]">
 ) {
   const { id } = await ctx.params;
   const project = await getProjectById(id);
@@ -19,7 +19,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  ctx: RouteContext<"/api/portfolio/[id]">
+  ctx: RouteContext<"/api/works/[id]">
 ) {
   const { id } = await ctx.params;
   const body = await request.json();
@@ -32,7 +32,7 @@ export async function PUT(
 
 export async function DELETE(
   _request: Request,
-  ctx: RouteContext<"/api/portfolio/[id]">
+  ctx: RouteContext<"/api/works/[id]">
 ) {
   const { id } = await ctx.params;
   const deleted = await deleteProject(id);

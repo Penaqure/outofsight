@@ -28,7 +28,7 @@ export function ProjectForm({ project }: { project?: Project }) {
     };
 
     const res = await fetch(
-      isEdit ? `/api/portfolio/${project!.id}` : "/api/portfolio",
+      isEdit ? `/api/works/${project!.id}` : "/api/works",
       {
         method: isEdit ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
@@ -41,7 +41,7 @@ export function ProjectForm({ project }: { project?: Project }) {
       return;
     }
 
-    router.push("/admin/portfolio");
+    router.push("/admin/works");
     router.refresh();
   }
 
