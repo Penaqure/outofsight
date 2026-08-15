@@ -25,7 +25,7 @@ export default async function WorksPage() {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-black/[.05] px-2.5 py-0.5 text-xs dark:bg-white/[.1]"
+                    className="rounded-full bg-sage/20 px-2.5 py-0.5 text-xs text-obsidian dark:bg-sage/25 dark:text-bone-white"
                   >
                     {tag}
                   </span>

@@ -1,19 +1,22 @@
-import { getProjects } from "@/lib/data/portfolio";
+import { getHomeContent } from "@/lib/data/content";
+import { currentAdminUser } from "@/lib/config";
+import { getTimeOfDayGreeting } from "@/lib/greeting";
+import { HomeContentForm } from "./HomeContentForm";
 
-export default async function AdminDashboardPage() {
-  const projects = await getProjects();
+export default async function AdminHomePage() {
+  const content = await getHomeContent();
+  const greeting = getTimeOfDayGreeting();
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-lg border border-black/[.08] p-5 dark:border-white/[.1]">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Total Projects
-          </p>
-          <p className="mt-1 text-2xl font-semibold">{projects.length}</p>
-        </div>
+      <h1 className="text-2xl font-semibold tracking-tight">
+        {greeting} {currentAdminUser.name}
+      </h1>
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold tracking-tight">Home</h2>
+        <p className="mt-1 text-sm text-obsidian/60">{content.heroText}</p>
       </div>
+      <HomeContentForm initialContent={content} />
     </>
   );
 }

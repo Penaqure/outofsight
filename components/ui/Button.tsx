@@ -2,10 +2,9 @@ import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 const styles = {
-  primary:
-    "bg-foreground text-background hover:opacity-90",
+  primary: "bg-primary text-bone-white hover:brightness-90",
   secondary:
-    "border border-black/[.12] dark:border-white/[.15] hover:bg-black/[.04] dark:hover:bg-white/[.06]",
+    "border border-obsidian/[.12] dark:border-bone-white/[.15] hover:bg-obsidian/[.04] dark:hover:bg-bone-white/[.06]",
 };
 
 type Variant = keyof typeof styles;
