@@ -2,60 +2,54 @@ import Link from "next/link";
 import { getProjects } from "@/lib/data/portfolio";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // otherwise admin edits wouldn't show up here without a rebuild.
 export const dynamic = "force-dynamic";
 
+// No mockup was given for this listing page — kept it consistent with the
+// Bone White theme used on Contact/About and the edge-to-edge grid pattern
+// from the /works/[slug] detail page.
 export default async function WorksPage() {
   const projects = await getProjects();
 
   return (
-    <>
-    <Header />
-    <main className="flex-1">
-    <Section className="pt-24">
-      <Container>
-        <h1 className="text-3xl font-semibold tracking-tight">Works</h1>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2">
-          {projects.map((project) => (
-            <Link
-              key={project.id}
-              href={`/works/${project.slug}`}
-              className="overflow-hidden rounded-lg border border-black/[.08] transition-colors hover:bg-black/[.03] dark:border-white/[.1] dark:hover:bg-white/[.05]"
-            >
-              {project.thumbnailImage && (
-                <img
-                  src={project.thumbnailImage}
-                  alt=""
-                  className="aspect-video w-full object-cover"
-                />
-              )}
-              <div className="p-5">
-                <h2 className="font-medium">{project.title}</h2>
-                <p className="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  {project.description}
-                </p>
-                <div className="mt-3 flex gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-sage/20 px-2.5 py-0.5 text-xs text-obsidian dark:bg-sage/25 dark:text-bone-white"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </Container>
-    </Section>
-    </main>
-    <Footer />
-    </>
+    <div className="flex min-h-screen flex-col bg-bone-white">
+      <Header />
+
+      <section className="flex h-[30vh] min-h-[220px] w-full items-end pb-10">
+        <h1 className="w-full text-center text-2xl font-semibold uppercase tracking-tight text-obsidian">
+          Works
+        </h1>
+      </section>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+        {projects.map((project) => (
+          <Link
+            key={project.id}
+            href={`/works/${project.slug}`}
+            className="group relative aspect-square overflow-hidden bg-obsidian/[.05]"
+          >
+            {project.thumbnailImage ? (
+              <img
+                src={project.thumbnailImage}
+                alt=""
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <span className="flex h-full items-center justify-center px-4 text-center text-sm text-obsidian/40">
+                {project.title}
+              </span>
+            )}
+            <div className="absolute inset-0 bg-obsidian/0 transition-colors group-hover:bg-obsidian/40" />
+            <p className="absolute bottom-4 left-4 text-sm text-bone-white opacity-0 transition-opacity group-hover:opacity-100">
+              {project.title}
+            </p>
+          </Link>
+        ))}
+      </div>
+
+      <Footer />
+    </div>
   );
 }

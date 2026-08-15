@@ -12,5 +12,5 @@ export const siteConfig = {
 
 // Placeholder until real auth/session data is wired up.
 export const currentAdminUser = {
-  name: "Nihal",
+  name: "Admin",
 };

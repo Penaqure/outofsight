@@ -96,7 +96,7 @@ export function AboutContentForm({
   }
 
   return (
-    <div className="mt-8 max-w-3xl space-y-10">
+    <div className="mt-8 space-y-10">
       <Dropzone
         label="Hero Image"
         accept="image/*"
