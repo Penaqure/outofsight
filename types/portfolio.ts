@@ -2,9 +2,14 @@ export type Project = {
   id: string;
   slug: string;
   title: string;
-  summary: string;
   description: string;
-  coverImage: string;
+  credits: string;
+  thumbnailImage: string | null;
+  thumbnailLabel: string | null;
+  videoName: string | null;
+  videoLabel: string | null;
+  videoPreviewImage: string | null;
+  photos: string[];
   tags: string[];
   createdAt: string;
 };

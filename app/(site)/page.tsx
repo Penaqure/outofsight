@@ -5,6 +5,10 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { LinkButton } from "@/components/ui/Button";
 
+// Reads the mutable in-memory store directly, so force dynamic rendering —
+// see the same note in works/page.tsx.
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const projects = (await getProjects()).slice(0, 3);
 
@@ -37,12 +41,21 @@ export default async function HomePage() {
               <Link
                 key={project.id}
                 href={`/works/${project.slug}`}
-                className="rounded-lg border border-black/[.08] p-5 transition-colors hover:bg-black/[.03] dark:border-white/[.1] dark:hover:bg-white/[.05]"
+                className="overflow-hidden rounded-lg border border-black/[.08] transition-colors hover:bg-black/[.03] dark:border-white/[.1] dark:hover:bg-white/[.05]"
               >
-                <h3 className="font-medium">{project.title}</h3>
-                <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  {project.summary}
-                </p>
+                {project.thumbnailImage && (
+                  <img
+                    src={project.thumbnailImage}
+                    alt=""
+                    className="aspect-video w-full object-cover"
+                  />
+                )}
+                <div className="p-5">
+                  <h3 className="font-medium">{project.title}</h3>
+                  <p className="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
+                    {project.description}
+                  </p>
+                </div>
               </Link>
             ))}
           </div>

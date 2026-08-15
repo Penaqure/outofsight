@@ -7,11 +7,11 @@ import logo from "@/public/logo/outofsight-logo.png";
 export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-secondary p-6">
-      <form className="w-full max-w-xl rounded-md bg-obsidian px-14 py-8">
+      <form className="w-full max-w-3xl rounded-md bg-obsidian px-14 py-8">
         <Image
           src={logo}
           alt="OUTOFSIGHT"
-          className="mx-auto mb-6 h-auto w-44 invert"
+          className="mx-auto mb-6 h-35 w-95 invert"
           priority
         />
         <div className="flex flex-col gap-3">

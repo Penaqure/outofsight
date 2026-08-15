@@ -3,6 +3,10 @@ import { currentAdminUser } from "@/lib/config";
 import { getTimeOfDayGreeting } from "@/lib/greeting";
 import { HomeContentForm } from "./HomeContentForm";
 
+// Reads the mutable in-memory store directly, so force dynamic rendering —
+// see the same note in admin/works/page.tsx.
+export const dynamic = "force-dynamic";
+
 export default async function AdminHomePage() {
   const content = await getHomeContent();
   const greeting = getTimeOfDayGreeting();
