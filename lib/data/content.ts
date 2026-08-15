@@ -1,4 +1,4 @@
-import type { HomeContent } from "@/types/content";
+import type { ContactsContent, HomeContent } from "@/types/content";
 
 // In-memory placeholder store, same pattern as lib/data/portfolio.ts —
 // anchored on globalThis so it stays shared across Turbopack's separate
@@ -31,4 +31,33 @@ export async function updateHomeContent(
 ): Promise<HomeContent> {
   globalThis.__homeContent = { ...store(), ...input };
   return globalThis.__homeContent;
+}
+
+declare global {
+  var __contactsContent: ContactsContent | undefined;
+}
+
+function contactsStore(): ContactsContent {
+  if (!globalThis.__contactsContent) {
+    globalThis.__contactsContent = {
+      bodyText:
+        "From the vastness of its enchanting desert to the vibrancy of its dazzling cities",
+      email: "",
+      countryCode: "",
+      phoneNumber: "",
+      location: "",
+    };
+  }
+  return globalThis.__contactsContent;
+}
+
+export async function getContactsContent(): Promise<ContactsContent> {
+  return contactsStore();
+}
+
+export async function updateContactsContent(
+  input: Partial<ContactsContent>
+): Promise<ContactsContent> {
+  globalThis.__contactsContent = { ...contactsStore(), ...input };
+  return globalThis.__contactsContent;
 }

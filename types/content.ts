@@ -4,3 +4,11 @@ export type HomeContent = {
   backgroundVideoName: string | null;
   logoFileName: string | null;
 };
+
+export type ContactsContent = {
+  bodyText: string;
+  email: string;
+  countryCode: string;
+  phoneNumber: string;
+  location: string;
+};

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import logo from "@/public/logo/outofsight-logo.png";
 
 const navItems = [
@@ -14,6 +14,13 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/admin/login");
+    router.refresh();
+  }
 
   return (
     <aside className="flex w-56 shrink-0 flex-col bg-obsidian p-4">
@@ -44,12 +51,12 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <Link
-        href="/admin/login"
+      <button
+        onClick={handleLogout}
         className="mt-auto rounded-md px-3 py-2 text-center text-sm text-bone-white/40 hover:bg-bone-white/[.06] hover:text-bone-white"
       >
         Log out
-      </Link>
+      </button>
     </aside>
   );
 }

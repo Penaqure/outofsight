@@ -1,13 +1,45 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import logo from "@/public/logo/outofsight-logo.png";
 
-// Placeholder login screen — no auth backend wired up yet.
-// Once an auth strategy is chosen, wire this form up to it and use
-// proxy.ts to gate access to /admin/(dashboard) routes.
 export default function AdminLoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setError(data?.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+      router.push("/admin");
+      router.refresh();
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-secondary p-6">
-      <form className="w-full max-w-3xl rounded-md bg-obsidian px-14 py-8">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-3xl rounded-md bg-obsidian px-14 py-8"
+      >
         <Image
           src={logo}
           alt="OUTOFSIGHT"
@@ -18,21 +50,31 @@ export default function AdminLoginPage() {
           <input
             name="email"
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
+            required
             className="w-full rounded-sm border border-bone-white/[.12] bg-bone-white/[.05] px-5 py-3 text-base text-bone-white placeholder:text-bone-white/40 outline-none focus:border-primary"
           />
           <input
             name="password"
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
+            required
             className="w-full rounded-sm border border-bone-white/[.12] bg-bone-white/[.05] px-5 py-3 text-base text-bone-white placeholder:text-bone-white/40 outline-none focus:border-primary"
           />
         </div>
+        {error && (
+          <p className="mt-3 text-sm text-red-400">{error}</p>
+        )}
         <button
           type="submit"
-          className="mt-5 w-full rounded-sm bg-primary py-3 text-base font-medium text-bone-white transition-all hover:brightness-90"
+          disabled={submitting}
+          className="mt-5 w-full rounded-sm bg-primary py-3 text-base font-medium text-bone-white transition-all hover:brightness-90 disabled:opacity-60"
         >
-          Login
+          {submitting ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
