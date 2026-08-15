@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { getProjects } from "@/lib/data/portfolio";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 
@@ -11,6 +13,9 @@ export default async function WorksPage() {
   const projects = await getProjects();
 
   return (
+    <>
+    <Header />
+    <main className="flex-1">
     <Section className="pt-24">
       <Container>
         <h1 className="text-3xl font-semibold tracking-tight">Works</h1>
@@ -49,5 +54,8 @@ export default async function WorksPage() {
         </div>
       </Container>
     </Section>
+    </main>
+    <Footer />
+    </>
   );
 }

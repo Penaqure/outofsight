@@ -63,7 +63,7 @@ export function ContactsContentForm({
   }
 
   return (
-    <div className="mt-8 max-w-3xl">
+    <div className="mt-8">
       <div className="grid grid-cols-2 gap-8">
         <div>
           <p className="text-sm font-medium text-obsidian/70">Body Text</p>

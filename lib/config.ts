@@ -4,9 +4,9 @@ export const siteConfig = {
   tagline: "A short tagline describing what the company does.",
   nav: [
     { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Works", href: "/works" },
-    { label: "Contact", href: "/contact" },
+    { label: "Work", href: "/works" },
+    { label: "About Us", href: "/about" },
+    { label: "Contacts", href: "/contact" },
   ],
 };
 

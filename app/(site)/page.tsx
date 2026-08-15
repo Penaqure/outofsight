@@ -1,66 +1,51 @@
-import Link from "next/link";
-import { getProjects } from "@/lib/data/portfolio";
+import Image from "next/image";
+import { getHomeContent } from "@/lib/data/content";
 import { siteConfig } from "@/lib/config";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
-import { LinkButton } from "@/components/ui/Button";
+import { HeroHeader } from "@/components/site/HeroHeader";
+import logo from "@/public/logo/outofsight-logo.png";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // see the same note in works/page.tsx.
 export const dynamic = "force-dynamic";
 
+// Home is the hero and nothing else — full viewport, no footer, no scroll.
+// Everything shown (text/logo mode, hero copy, background video) comes
+// from the admin Home editor; see lib/data/content.ts.
 export default async function HomePage() {
-  const projects = (await getProjects()).slice(0, 3);
+  const content = await getHomeContent();
 
   return (
-    <>
-      <Section className="pt-24 sm:pt-32">
-        <Container>
-          <h1 className="max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
-            {siteConfig.name}
-          </h1>
-          <p className="mt-4 max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
-            {siteConfig.tagline}
-          </p>
-          <div className="mt-8 flex gap-4">
-            <LinkButton href="/works">View Works</LinkButton>
-            <LinkButton href="/contact" variant="secondary">
-              Get in Touch
-            </LinkButton>
-          </div>
-        </Container>
-      </Section>
+    <section className="relative flex h-dvh w-full items-center justify-center overflow-hidden bg-obsidian">
+      {content.backgroundVideoUrl ? (
+        <video
+          src={content.backgroundVideoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-b from-obsidian via-obsidian to-black" />
+      )}
+      <div className="absolute inset-0 bg-obsidian/40" />
 
-      <Section className="border-t border-black/[.08] dark:border-white/[.1]">
-        <Container>
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Featured Work
-          </h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-3">
-            {projects.map((project) => (
-              <Link
-                key={project.id}
-                href={`/works/${project.slug}`}
-                className="overflow-hidden rounded-lg border border-black/[.08] transition-colors hover:bg-black/[.03] dark:border-white/[.1] dark:hover:bg-white/[.05]"
-              >
-                {project.thumbnailImage && (
-                  <img
-                    src={project.thumbnailImage}
-                    alt=""
-                    className="aspect-video w-full object-cover"
-                  />
-                )}
-                <div className="p-5">
-                  <h3 className="font-medium">{project.title}</h3>
-                  <p className="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    {project.description}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </Container>
-      </Section>
-    </>
+      <HeroHeader />
+
+      <div className="relative px-6 text-center">
+        {content.displayMode === "logo-only" ? (
+          <Image
+            src={logo}
+            alt={siteConfig.name}
+            className="mx-auto w-72 invert"
+            priority
+          />
+        ) : (
+          <h1 className="max-w-3xl text-2xl font-medium text-bone-white sm:text-3xl md:text-4xl">
+            {content.heroText}
+          </h1>
+        )}
+      </div>
+    </section>
   );
 }

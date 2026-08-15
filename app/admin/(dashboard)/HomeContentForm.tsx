@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import type { HomeContent } from "@/types/content";
+import { readFileAsDataUrl } from "@/lib/files";
 
 export function HomeContentForm({
   initialContent,
@@ -13,13 +14,15 @@ export function HomeContentForm({
   const [videoName, setVideoName] = useState(
     initialContent.backgroundVideoName
   );
+  const [videoUrl, setVideoUrl] = useState(initialContent.backgroundVideoUrl);
   const [isDragging, setIsDragging] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function handleFile(file: File) {
+  async function handleFile(file: File) {
     setVideoName(file.name);
+    setVideoUrl(await readFileAsDataUrl(file));
     setDirty(true);
   }
 
@@ -40,6 +43,7 @@ export function HomeContentForm({
           heroText,
           displayMode,
           backgroundVideoName: videoName,
+          backgroundVideoUrl: videoUrl,
         }),
       });
       setDirty(false);
@@ -49,7 +53,7 @@ export function HomeContentForm({
   }
 
   return (
-    <div className="mt-8 max-w-3xl">
+    <div className="mt-8">
       <p className="text-sm font-medium text-obsidian/70">Background Video</p>
       <div
         onDragOver={(e) => {

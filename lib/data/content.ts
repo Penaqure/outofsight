@@ -12,10 +12,10 @@ declare global {
 function store(): HomeContent {
   if (!globalThis.__homeContent) {
     globalThis.__homeContent = {
-      heroText:
-        "From the vastness of its enchanting desert to the vibrancy of its dazzling cities",
-      displayMode: "logo-only",
+      heroText: "Pineers in brand Storytelling",
+      displayMode: "body-text",
       backgroundVideoName: null,
+      backgroundVideoUrl: null,
       logoFileName: "outofsight_logo_only.png",
     };
   }

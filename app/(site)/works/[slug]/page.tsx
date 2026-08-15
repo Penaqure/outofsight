@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { getProjectBySlug } from "@/lib/data/portfolio";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 
@@ -18,6 +20,9 @@ export default async function ProjectPage(
   }
 
   return (
+    <>
+    <Header />
+    <main className="flex-1">
     <Section className="pt-24">
       <Container>
         {project.thumbnailImage && (
@@ -62,5 +67,8 @@ export default async function ProjectPage(
         )}
       </Container>
     </Section>
+    </main>
+    <Footer />
+    </>
   );
 }

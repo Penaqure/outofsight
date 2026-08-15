@@ -27,7 +27,7 @@ export function Sidebar() {
       <Image
         src={logo}
         alt="OUTOFSIGHT"
-        className="mb-8 h-auto w-32 invert"
+        className="mb-8 h-auto w-55 invert"
         priority
       />
       <nav className="flex flex-col gap-1">
