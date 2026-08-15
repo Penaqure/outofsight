@@ -6,7 +6,7 @@ import { Dropzone } from "@/components/admin/Dropzone";
 import { readFileAsDataUrl } from "@/lib/files";
 
 const fieldClass =
-  "mt-2 w-full rounded-md border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary";
+  "mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary";
 
 export function AboutContentForm({
   initialContent,
@@ -219,13 +219,13 @@ export function AboutContentForm({
           {trustedByLogos.map((logo, index) => (
             <div
               key={index}
-              className="group relative flex h-20 w-28 items-center justify-center overflow-hidden rounded-md border border-obsidian/10 bg-obsidian/[.05]"
+              className="group relative flex h-20 w-28 items-center justify-center overflow-hidden border border-obsidian/10 bg-obsidian/[.05]"
             >
               <img src={logo} alt="" className="max-h-full max-w-full object-contain p-2" />
               <button
                 type="button"
                 onClick={() => removeLogo(index)}
-                className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-obsidian/70 text-xs text-bone-white group-hover:flex"
+                className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center bg-obsidian/70 text-xs text-bone-white group-hover:flex"
               >
                 &times;
               </button>
@@ -234,7 +234,7 @@ export function AboutContentForm({
           <button
             type="button"
             onClick={() => logosInputRef.current?.click()}
-            className="flex h-20 w-28 items-center justify-center rounded-md border border-obsidian/10 bg-obsidian/[.05] text-2xl text-obsidian/40 hover:bg-obsidian/[.08]"
+            className="flex h-20 w-28 items-center justify-center border border-obsidian/10 bg-obsidian/[.05] text-2xl text-obsidian/40 hover:bg-obsidian/[.08]"
           >
             +
           </button>
@@ -283,7 +283,7 @@ export function AboutContentForm({
         <button
           onClick={handleSave}
           disabled={!dirty || saving}
-          className="rounded-md bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
+          className="bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
         >
           {saving ? "Saving..." : "Save"}
         </button>

@@ -63,7 +63,7 @@ export function HomeContentForm({
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`mt-2 flex h-40 cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-obsidian/10 bg-obsidian/[.05] text-center transition-colors ${
+        className={`mt-2 flex h-40 cursor-pointer flex-col items-center justify-center gap-2 border border-obsidian/10 bg-obsidian/[.05] text-center transition-colors ${
           isDragging ? "bg-obsidian/[.09]" : ""
         }`}
       >
@@ -126,7 +126,7 @@ export function HomeContentForm({
             }}
             disabled={displayMode !== "body-text"}
             placeholder="Type Here"
-            className="mt-2 w-full rounded-md border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary disabled:opacity-50"
+            className="mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary disabled:opacity-50"
           />
         </div>
         <div>
@@ -143,7 +143,7 @@ export function HomeContentForm({
               className="accent-primary"
             />
           </label>
-          <div className="mt-2 w-full truncate rounded-md border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian/50">
+          <div className="mt-2 w-full truncate border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian/50">
             {initialContent.logoFileName}
           </div>
         </div>
@@ -153,7 +153,7 @@ export function HomeContentForm({
         <button
           onClick={handleSave}
           disabled={!dirty || saving}
-          className="rounded-md bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
+          className="bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
         >
           {saving ? "Saving..." : "Save"}
         </button>

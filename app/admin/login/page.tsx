@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-secondary p-6">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-3xl rounded-md bg-obsidian px-14 py-8"
+        className="w-full max-w-3xl bg-obsidian px-14 py-8"
       >
         <Image
           src={logo}
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
-            className="w-full rounded-sm border border-bone-white/[.12] bg-bone-white/[.05] px-5 py-3 text-base text-bone-white placeholder:text-bone-white/40 outline-none focus:border-primary"
+            className="w-full border border-bone-white/[.12] bg-bone-white/[.05] px-5 py-3 text-base text-bone-white placeholder:text-bone-white/40 outline-none focus:border-primary"
           />
           <input
             name="password"
@@ -63,16 +63,14 @@ export default function AdminLoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            className="w-full rounded-sm border border-bone-white/[.12] bg-bone-white/[.05] px-5 py-3 text-base text-bone-white placeholder:text-bone-white/40 outline-none focus:border-primary"
+            className="w-full border border-bone-white/[.12] bg-bone-white/[.05] px-5 py-3 text-base text-bone-white placeholder:text-bone-white/40 outline-none focus:border-primary"
           />
         </div>
-        {error && (
-          <p className="mt-3 text-sm text-red-400">{error}</p>
-        )}
+        {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="mt-5 w-full rounded-sm bg-primary py-3 text-base font-medium text-bone-white transition-all hover:brightness-90 disabled:opacity-60"
+          className="mt-5 w-full bg-primary py-3 text-base font-medium text-bone-white transition-all hover:brightness-90 disabled:opacity-60"
         >
           {submitting ? "Logging in..." : "Login"}
         </button>

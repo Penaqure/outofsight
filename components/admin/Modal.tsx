@@ -17,7 +17,7 @@ export function Modal({
       onClick={onClose}
     >
       <div
-        className={`w-full ${width} rounded-md bg-secondary p-8 text-obsidian shadow-xl`}
+        className={`w-full ${width} bg-secondary p-8 text-obsidian shadow-xl`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

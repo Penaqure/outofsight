@@ -51,7 +51,7 @@ export function Dropzone({
           pick(e.dataTransfer.files?.[0]);
         }}
         onClick={() => !preview && inputRef.current?.click()}
-        className={`relative mt-2 flex h-40 overflow-hidden rounded-md border border-obsidian/10 bg-obsidian/[.05] transition-colors ${
+        className={`relative mt-2 flex h-40 overflow-hidden border border-obsidian/10 bg-obsidian/[.05] transition-colors ${
           !preview ? "cursor-pointer" : ""
         } ${isDragging ? "bg-obsidian/[.09]" : ""}`}
       >
@@ -83,7 +83,7 @@ export function Dropzone({
                   e.stopPropagation();
                   onRemove();
                 }}
-                className="shrink-0 rounded border border-bone-white/50 px-3 py-1 text-xs text-bone-white hover:bg-bone-white/10"
+                className="shrink-0 border border-bone-white/50 px-3 py-1 text-xs text-bone-white hover:bg-bone-white/10"
               >
                 Delete
               </button>

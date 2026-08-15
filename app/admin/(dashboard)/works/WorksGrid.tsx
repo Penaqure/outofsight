@@ -37,7 +37,7 @@ export function WorksGrid({ projects }: { projects: Project[] }) {
           <button
             key={project.id}
             onClick={() => setEditing(project)}
-            className="aspect-square overflow-hidden rounded-md border border-obsidian/10 bg-obsidian/[.05] transition-opacity hover:opacity-90"
+            className="aspect-square overflow-hidden border border-obsidian/10 bg-obsidian/[.05] transition-opacity hover:opacity-90"
           >
             {project.thumbnailImage ? (
               <img
@@ -55,7 +55,7 @@ export function WorksGrid({ projects }: { projects: Project[] }) {
         <button
           onClick={() => setEditing("new")}
           aria-label="Add new work"
-          className="flex aspect-square items-center justify-center rounded-md border border-obsidian/10 bg-obsidian/[.05] text-3xl font-light text-obsidian/40 hover:bg-obsidian/[.08]"
+          className="flex aspect-square items-center justify-center border border-obsidian/10 bg-obsidian/[.05] text-3xl font-light text-obsidian/40 hover:bg-obsidian/[.08]"
         >
           +
         </button>

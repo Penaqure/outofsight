@@ -31,7 +31,7 @@ export default async function AboutPage() {
       <Section>
         <Container>
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1fr_1.4fr]">
-            <div className="aspect-square w-full overflow-hidden rounded-lg bg-obsidian/[.05]">
+            <div className="aspect-square w-full overflow-hidden bg-obsidian/[.05]">
               {content.founderPhoto && (
                 <img
                   src={content.founderPhoto}

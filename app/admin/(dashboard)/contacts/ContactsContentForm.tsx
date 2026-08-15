@@ -19,7 +19,7 @@ const countryCodes = [
 ];
 
 const fieldClass =
-  "mt-2 w-full rounded-md border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary";
+  "mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary";
 
 export function ContactsContentForm({
   initialContent,
@@ -132,7 +132,7 @@ export function ContactsContentForm({
         <button
           onClick={handleSave}
           disabled={!dirty || saving}
-          className="rounded-md bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
+          className="bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
         >
           {saving ? "Saving..." : "Save"}
         </button>

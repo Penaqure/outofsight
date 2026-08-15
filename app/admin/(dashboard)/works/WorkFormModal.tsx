@@ -158,13 +158,13 @@ export function WorkFormModal({
             {photos.map((photo, index) => (
               <div
                 key={index}
-                className="group relative h-28 w-28 overflow-hidden rounded-md border border-obsidian/10"
+                className="group relative h-28 w-28 overflow-hidden border border-obsidian/10"
               >
                 <img src={photo} alt="" className="h-full w-full object-cover" />
                 <button
                   type="button"
                   onClick={() => removePhoto(index)}
-                  className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-obsidian/70 text-xs text-bone-white group-hover:flex"
+                  className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center bg-obsidian/70 text-xs text-bone-white group-hover:flex"
                 >
                   &times;
                 </button>
@@ -173,7 +173,7 @@ export function WorkFormModal({
             <button
               type="button"
               onClick={() => photosInputRef.current?.click()}
-              className="flex h-28 w-28 items-center justify-center rounded-md border border-obsidian/10 bg-obsidian/[.05] text-2xl text-obsidian/40 hover:bg-obsidian/[.08]"
+              className="flex h-28 w-28 items-center justify-center border border-obsidian/10 bg-obsidian/[.05] text-2xl text-obsidian/40 hover:bg-obsidian/[.08]"
             >
               +
             </button>
@@ -199,7 +199,7 @@ export function WorkFormModal({
               setDirty(true);
             }}
             placeholder="Enter Title"
-            className="mt-2 w-full rounded-md border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
+            className="mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
           />
         </div>
         <div>
@@ -211,7 +211,7 @@ export function WorkFormModal({
               setDirty(true);
             }}
             placeholder="Enter Description"
-            className="mt-2 w-full rounded-md border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
+            className="mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
           />
         </div>
       </div>
@@ -229,14 +229,14 @@ export function WorkFormModal({
             }}
             placeholder="Enter Credits"
             rows={3}
-            className="mt-2 w-full resize-none rounded-md border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
+            className="mt-2 w-full resize-none border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
           />
         </div>
         <div className="flex items-end justify-end gap-3">
           {isEdit && onDeleteRequest && (
             <button
               onClick={onDeleteRequest}
-              className="rounded-md border border-red-600 px-6 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+              className="border border-red-600 px-6 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
             >
               Delete
             </button>
@@ -244,7 +244,7 @@ export function WorkFormModal({
           <button
             onClick={handleSave}
             disabled={isEdit ? saving : !dirty || saving}
-            className={`rounded-md px-8 py-2.5 text-sm font-medium transition-colors ${
+            className={`px-8 py-2.5 text-sm font-medium transition-colors ${
               isEdit
                 ? "bg-obsidian text-bone-white hover:brightness-125"
                 : "bg-primary text-bone-white hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
