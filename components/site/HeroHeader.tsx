@@ -23,7 +23,7 @@ export function HeroHeader() {
                 className={
                   item.href === "/"
                     ? "border-b border-bone-white text-bone-white"
-                    : "hover:text-bone-white"
+                    : "text-bone-white/80 hover:text-bone-white"
                 }
               >
                 {item.label}

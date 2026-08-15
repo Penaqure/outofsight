@@ -6,7 +6,7 @@ export const siteConfig = {
     { label: "Home", href: "/" },
     { label: "Work", href: "/works" },
     { label: "About Us", href: "/about" },
-    { label: "Contacts", href: "/contact" },
+    { label: "Contact", href: "/contact" },
   ],
 };
 

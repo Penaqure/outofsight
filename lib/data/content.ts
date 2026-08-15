@@ -40,12 +40,11 @@ declare global {
 function contactsStore(): ContactsContent {
   if (!globalThis.__contactsContent) {
     globalThis.__contactsContent = {
-      bodyText:
-        "From the vastness of its enchanting desert to the vibrancy of its dazzling cities",
-      email: "",
-      countryCode: "",
-      phoneNumber: "",
-      location: "",
+      bodyText: "Get in touch.",
+      email: "hello@outofsight.com",
+      countryCode: "+971",
+      phoneNumber: "0000 0000",
+      location: "Dubai, UAE",
     };
   }
   return globalThis.__contactsContent;
