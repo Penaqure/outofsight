@@ -1,5 +1,4 @@
 import { getContactsContent } from "@/lib/data/content";
-import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 
@@ -18,7 +17,6 @@ export default async function ContactPage() {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-bone-white">
-      <Header />
       <main className="flex flex-1 items-center justify-center text-center">
         <Container>
           <h1 className="text-3xl font-medium tracking-tight text-obsidian sm:text-4xl">

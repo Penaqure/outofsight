@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { getHomeContent } from "@/lib/data/content";
 import { siteConfig } from "@/lib/config";
-import { HeroHeader } from "@/components/site/HeroHeader";
 import logo from "@/public/logo/outofsight-logo.png";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
@@ -29,8 +28,6 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-obsidian via-obsidian to-black" />
       )}
       <div className="absolute inset-0 bg-obsidian/40" />
-
-      <HeroHeader />
 
       <div className="relative px-6 text-center">
         {content.displayMode === "logo-only" ? (

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getAboutContent } from "@/lib/data/content";
-import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -16,8 +15,6 @@ export default async function AboutPage() {
 
   return (
     <div className="flex flex-col bg-bone-white">
-      <Header />
-
       <section className="relative h-[60vh] min-h-[420px] w-full overflow-hidden bg-bone-white">
         {content.heroImage && (
           <img

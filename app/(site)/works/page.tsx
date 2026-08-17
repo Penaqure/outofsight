@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getProjects } from "@/lib/data/portfolio";
-import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
@@ -15,8 +14,6 @@ export default async function WorksPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-bone-white">
-      <Header />
-
       <section className="flex h-[30vh] min-h-[220px] w-full items-end pb-10">
         <h1 className="w-full text-center text-2xl font-semibold uppercase tracking-tight text-obsidian">
           Works

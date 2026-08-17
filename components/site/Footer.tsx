@@ -23,22 +23,21 @@ export async function Footer() {
   const whatsappNumber = phone?.replace(/[^\d]/g, "");
 
   return (
-    <footer className="bg-obsidian px-6 py-12 text-bone-white">
+    <footer className="bg-obsidian px-6 py-[96px] text-bone-white">
       <Container>
-        <div className="flex flex-wrap items-start justify-between gap-12">
+        <div className="flex flex-wrap items-start justify-between gap-[96px]">
           <Image
             src={logo}
             alt={siteConfig.name}
-            className="h-6 w-auto invert"
+            className="h-24 w-auto invert"
           />
 
-          <div className="flex flex-wrap items-start gap-12">
-          <div className="flex flex-wrap gap-16 text-sm">
-            <div>
-              <p className="mb-3 text-xs uppercase tracking-wider text-bone-white/40">
+          <div className="flex flex-wrap items-start gap-[96px] text-sm">
+            <div className="flex items-start">
+              <p className="min-w-[100px] text-left text-[11px]  tracking-[0.2em] text-bone-white/40">
                 Navigation
               </p>
-              <ul className="space-y-2">
+              <ul className="space-y-2 text-left">
                 {siteConfig.nav.map((item) => (
                   <li key={item.href}>
                     <Link
@@ -52,11 +51,11 @@ export async function Footer() {
               </ul>
             </div>
 
-            <div>
-              <p className="mb-3 text-xs uppercase tracking-wider text-bone-white/40">
+            <div className="flex items-start">
+              <p className="min-w-[100px] text-left text-[11px]  tracking-[0.2em] text-bone-white/40">
                 Media
               </p>
-              <ul className="space-y-2">
+              <ul className="space-y-2 text-left">
                 {mediaLinks.map((item) => (
                   <li key={item.label}>
                     <a
@@ -71,19 +70,19 @@ export async function Footer() {
             </div>
 
             {contact.location && (
-              <div>
-                <p className="mb-3 text-xs uppercase tracking-wider text-bone-white/40">
+              <div className="flex items-start">
+                <p className="min-w-[100px] text-left text-[11px]  tracking-[0.2em] text-bone-white/40">
                   Address
                 </p>
-                <p className="text-bone-white/80">{contact.location}</p>
+                <p className="text-left text-bone-white/80">{contact.location}</p>
               </div>
             )}
 
-            <div>
-              <p className="mb-3 text-xs uppercase tracking-wider text-bone-white/40">
+            <div className="flex items-start">
+              <p className="min-w-[100px] text-left text-[11px]  tracking-[0.2em] text-bone-white/40">
                 Contacts
               </p>
-              <ul className="space-y-2">
+              <ul className="space-y-2 text-left">
                 {phone && (
                   <li>
                     <a
@@ -116,17 +115,29 @@ export async function Footer() {
                 )}
               </ul>
             </div>
+             <a
+              href="#top"
+              aria-label="Back to top"
+              className="inline-flex items-center justify-center text-bone-white/60 transition-colors hover:text-bone-white"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-6 w-6"
+              >
+                <path d="M12 18V6" />
+                <path d="m6 12 6-6 6 6" />
+              </svg>
+            </a>
           </div>
 
-          <a
-            href="#top"
-            aria-label="Back to top"
-            className="text-bone-white/60 hover:text-bone-white"
-          >
-            ↑
-          </a>
+           
           </div>
-        </div>
       </Container>
     </footer>
   );

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { getProjectBySlug } from "@/lib/data/portfolio";
-import { HeroHeader } from "@/components/site/HeroHeader";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 
@@ -31,7 +30,6 @@ export default async function ProjectPage(
           />
         )}
         <div className="absolute inset-0 bg-obsidian/40" />
-        <HeroHeader />
       </section>
 
       <section className="bg-obsidian py-16">
