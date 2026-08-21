@@ -18,7 +18,10 @@ export default async function WorksPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-bone-white">
-      <section className="relative h-[50vh] min-h-[400px] w-full overflow-hidden bg-obsidian">
+      <section
+        data-header-invert
+        className="relative h-[50vh] min-h-[400px] w-full overflow-hidden bg-obsidian"
+      >
         {content.heroImage && (
           <img
             src={content.heroImage}

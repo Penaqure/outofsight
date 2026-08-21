@@ -14,7 +14,10 @@ export default async function HomePage() {
   const content = await getHomeContent();
 
   return (
-    <section className="relative flex h-dvh w-full items-center justify-center overflow-hidden bg-obsidian">
+    <section
+      data-header-invert
+      className="relative flex h-dvh w-full items-center justify-center overflow-hidden bg-obsidian"
+    >
       {content.backgroundVideoUrl ? (
         <video
           src={content.backgroundVideoUrl}

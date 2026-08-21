@@ -16,7 +16,10 @@ export default async function AboutPage() {
 
   return (
     <div className="flex flex-col bg-bone-white">
-      <section className="relative flex h-[60vh] min-h-[420px] w-full items-center justify-center overflow-hidden bg-bone-white">
+      <section
+        {...(content.heroImage ? { "data-header-invert": true } : {})}
+        className="relative flex h-[60vh] min-h-[420px] w-full items-center justify-center overflow-hidden bg-bone-white"
+      >
         {content.heroImage && (
           <>
             <img
@@ -173,7 +176,10 @@ export default async function AboutPage() {
         </Section>
       )}
 
-      <section className="relative flex h-[45vh] min-h-[320px] w-full items-center justify-center overflow-hidden bg-obsidian">
+      <section
+        data-header-invert
+        className="relative flex h-[45vh] min-h-[320px] w-full items-center justify-center overflow-hidden bg-obsidian"
+      >
         {content.ctaBackgroundImage && (
           <>
             <img
