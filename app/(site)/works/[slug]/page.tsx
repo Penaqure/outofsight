@@ -20,6 +20,9 @@ export default async function ProjectPage(
   }
 
   const heroImage = project.videoPreviewImage ?? project.thumbnailImage;
+  const heroImagePosition = project.videoPreviewImage
+    ? project.videoPreviewImagePosition
+    : project.thumbnailImagePosition;
   const filmstrip = project.photos.slice(0, 4);
   const [allProjects, worksContent] = await Promise.all([
     getProjects(),
@@ -58,6 +61,7 @@ export default async function ProjectPage(
                 <img
                   src={heroImage}
                   alt=""
+                  style={{ objectPosition: heroImagePosition }}
                   className="h-full w-full object-cover"
                 />
               )}
@@ -104,6 +108,7 @@ export default async function ProjectPage(
                   <img
                     src={p.thumbnailImage}
                     alt=""
+                    style={{ objectPosition: p.thumbnailImagePosition }}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (

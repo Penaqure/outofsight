@@ -23,6 +23,7 @@ export default async function WorksPage() {
           <img
             src={content.heroImage}
             alt=""
+            style={{ objectPosition: content.heroImagePosition }}
             className="absolute inset-0 h-full w-full object-cover"
           />
         )}
@@ -52,6 +53,7 @@ export default async function WorksPage() {
                 <img
                   src={project.thumbnailImage}
                   alt=""
+                  style={{ objectPosition: project.thumbnailImagePosition }}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (

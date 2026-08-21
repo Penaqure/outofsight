@@ -22,6 +22,7 @@ export default async function AboutPage() {
             <img
               src={content.heroImage}
               alt=""
+              style={{ objectPosition: content.heroImagePosition }}
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-obsidian/30" />
@@ -35,7 +36,7 @@ export default async function AboutPage() {
       {content.introText && (
         <Section className="pb-0">
           <Container>
-            <p className="mx-auto max-w-4xl text-center text-base leading-[1.3] text-obsidian/80">
+            <p className="text-center text-base leading-[1.3] text-obsidian/80">
               {content.introText}
             </p>
           </Container>
@@ -43,78 +44,95 @@ export default async function AboutPage() {
       )}
 
       {(content.storyText || content.storyImage) && (
+        // Image bleeds to the right screen edge here (matches Figma) — only
+        // the text column keeps the standard left padding, so this section
+        // is NOT wrapped in <Container>, unlike the rest of the page.
         <Section>
-          <Container>
-            <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1fr_2fr] sm:items-center">
-              <p className="text-base leading-[1.3] text-obsidian/80">
-                {content.storyText}
-              </p>
-              <div className="aspect-[1376/633] w-full overflow-hidden bg-obsidian/[.05]">
-                {content.storyImage && (
-                  <img
-                    src={content.storyImage}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                )}
-              </div>
-            </div>
-          </Container>
-        </Section>
-      )}
-
-      <Section>
-        <Container>
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1fr_1.4fr]">
-            <div className="aspect-square w-full overflow-hidden bg-obsidian/[.05]">
-              {content.founderPhoto && (
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1fr_2fr] sm:items-start">
+            <p className="px-6 text-base leading-[1.3] text-obsidian/80 sm:pr-0 sm:pl-10 lg:pl-16">
+              {content.storyText}
+            </p>
+            <div className="aspect-[1376/633] w-full overflow-hidden bg-obsidian/[.05]">
+              {content.storyImage && (
                 <img
-                  src={content.founderPhoto}
-                  alt={content.founderName}
-                  className="h-full w-full object-cover grayscale"
+                  src={content.storyImage}
+                  alt=""
+                  style={{ objectPosition: content.storyImagePosition }}
+                  className="h-full w-full object-cover"
                 />
               )}
             </div>
-            <div className="flex flex-col justify-between gap-10 sm:text-right">
-              <div>
-                <p className="font-heading text-2xl tracking-tight">
-                  {content.founderName}
-                </p>
-                <p className="text-base uppercase tracking-wider text-obsidian/50">
-                  {content.founderTitle}
-                </p>
-              </div>
-              <div>
-                <p className="ml-auto max-w-lg text-base leading-[1.3] text-obsidian/70">
-                  {content.bio}
-                </p>
-                {(content.linkedinUrl || content.instagramUrl) && (
-                  <div className="mt-4 flex gap-3 sm:justify-end">
-                    {content.linkedinUrl && (
-                      <a
-                        href={content.linkedinUrl}
-                        className="text-xs text-obsidian/60 hover:text-obsidian"
-                      >
-                        Linkedin
-                      </a>
+          </div>
+        </Section>
+      )}
+
+      {/* Photo bleeds to the left screen edge here (matches Figma) — only
+          the text column keeps the standard right padding, so this section
+          is NOT wrapped in <Container>, unlike the rest of the page. */}
+      <Section>
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1fr_1.4fr]">
+          <div className="aspect-square w-full overflow-hidden bg-obsidian/[.05]">
+            {content.founderPhoto && (
+              <img
+                src={content.founderPhoto}
+                alt={content.founderName}
+                style={{ objectPosition: content.founderPhotoPosition }}
+                className="h-full w-full object-cover grayscale"
+              />
+            )}
+          </div>
+          <div className="flex flex-col justify-between gap-10 px-6 sm:pr-10 sm:pl-0 sm:text-right lg:pr-16">
+            <div>
+              <p className="font-heading text-2xl leading-tight font-semibold tracking-tight text-obsidian">
+                {content.founderName.includes(" ") ? (
+                  <>
+                    {content.founderName.slice(
+                      0,
+                      content.founderName.indexOf(" ")
                     )}
-                    {content.linkedinUrl && content.instagramUrl && (
-                      <span className="text-xs text-obsidian/30">|</span>
+                    <br />
+                    {content.founderName.slice(
+                      content.founderName.indexOf(" ") + 1
                     )}
-                    {content.instagramUrl && (
-                      <a
-                        href={content.instagramUrl}
-                        className="text-xs text-obsidian/60 hover:text-obsidian"
-                      >
-                        Instagram
-                      </a>
-                    )}
-                  </div>
+                  </>
+                ) : (
+                  content.founderName
                 )}
-              </div>
+              </p>
+              <p className="text-base uppercase tracking-wider text-obsidian/50">
+                {content.founderTitle}
+              </p>
+            </div>
+            <div>
+              <p className="ml-auto max-w-lg text-base leading-[1.3] text-obsidian/70">
+                {content.bio}
+              </p>
+              {(content.linkedinUrl || content.instagramUrl) && (
+                <div className="mt-4 flex gap-3 sm:justify-end">
+                  {content.linkedinUrl && (
+                    <a
+                      href={content.linkedinUrl}
+                      className="text-xs text-obsidian/60 hover:text-obsidian"
+                    >
+                      Linkedin
+                    </a>
+                  )}
+                  {content.linkedinUrl && content.instagramUrl && (
+                    <span className="text-xs text-obsidian/30">|</span>
+                  )}
+                  {content.instagramUrl && (
+                    <a
+                      href={content.instagramUrl}
+                      className="text-xs text-obsidian/60 hover:text-obsidian"
+                    >
+                      Instagram
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-        </Container>
+        </div>
       </Section>
 
       <Section className="pt-0">
@@ -122,7 +140,7 @@ export default async function AboutPage() {
           <div className="grid gap-10 sm:grid-cols-3">
             {content.processCards.map((card) => (
               <div key={card.title}>
-                <p className="font-heading text-2xl tracking-tight">{card.title}</p>
+                <p className="font-heading text-2xl font-semibold tracking-tight text-obsidian">{card.title}</p>
                 <p className="mt-4 text-base leading-[1.3] text-obsidian/60">
                   {card.description}
                 </p>
@@ -133,10 +151,15 @@ export default async function AboutPage() {
       </Section>
 
       {content.trustedByLogos.length > 0 && (
+        // Figma gives this standalone block its own 96px box padding
+        // (not the 64px reading-column padding the rest of the page uses),
+        // so it gets a dedicated wrapper instead of <Container>.
         <Section className="pt-0">
-          <Container>
-            <p className="text-center text-sm text-obsidian/50">Trusted By</p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+          <div className="mx-auto flex max-w-5xl flex-col items-center gap-9 px-6 sm:px-10 lg:px-24">
+            <p className="font-heading text-center text-2xl font-semibold tracking-tight text-obsidian">
+              Trusted By
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
               {content.trustedByLogos.map((logo, index) => (
                 <img
                   key={index}
@@ -146,7 +169,7 @@ export default async function AboutPage() {
                 />
               ))}
             </div>
-          </Container>
+          </div>
         </Section>
       )}
 
@@ -156,6 +179,7 @@ export default async function AboutPage() {
             <img
               src={content.ctaBackgroundImage}
               alt=""
+              style={{ objectPosition: content.ctaBackgroundImagePosition }}
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-obsidian/50" />

@@ -2,7 +2,11 @@
 
 import { useRef, useState } from "react";
 import type { AboutContent, ProcessCard } from "@/types/content";
-import { Dropzone } from "@/components/admin/Dropzone";
+import {
+  Dropzone,
+  POOL_IMAGE_MIME,
+  DEFAULT_FOCAL_POINT,
+} from "@/components/admin/Dropzone";
 import { readFileAsDataUrl } from "@/lib/files";
 
 const fieldClass =
@@ -14,14 +18,23 @@ export function AboutContentForm({
   initialContent: AboutContent;
 }) {
   const [heroImage, setHeroImage] = useState(initialContent.heroImage);
+  const [heroImagePosition, setHeroImagePosition] = useState(
+    initialContent.heroImagePosition ?? DEFAULT_FOCAL_POINT
+  );
   const [heroHeadline, setHeroHeadline] = useState(
     initialContent.heroHeadline
   );
   const [introText, setIntroText] = useState(initialContent.introText);
   const [storyImage, setStoryImage] = useState(initialContent.storyImage);
+  const [storyImagePosition, setStoryImagePosition] = useState(
+    initialContent.storyImagePosition ?? DEFAULT_FOCAL_POINT
+  );
   const [storyText, setStoryText] = useState(initialContent.storyText);
   const [founderPhoto, setFounderPhoto] = useState(
     initialContent.founderPhoto
+  );
+  const [founderPhotoPosition, setFounderPhotoPosition] = useState(
+    initialContent.founderPhotoPosition ?? DEFAULT_FOCAL_POINT
   );
   const [founderName, setFounderName] = useState(initialContent.founderName);
   const [founderTitle, setFounderTitle] = useState(
@@ -42,16 +55,59 @@ export function AboutContentForm({
   const [ctaBackgroundImage, setCtaBackgroundImage] = useState(
     initialContent.ctaBackgroundImage
   );
+  const [ctaBackgroundImagePosition, setCtaBackgroundImagePosition] =
+    useState(initialContent.ctaBackgroundImagePosition ?? DEFAULT_FOCAL_POINT);
 
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const logosInputRef = useRef<HTMLInputElement>(null);
+
+  // Shared "Image Library" — upload once here, then drag a thumbnail onto
+  // whichever section Dropzone it belongs to (or use the "Assign to"
+  // picker). Keeps the admin from having to know in advance which of the
+  // several image slots on this page a given upload is meant for.
+  const [imagePool, setImagePool] = useState<string[]>([]);
+  const poolInputRef = useRef<HTMLInputElement>(null);
+  const [isPoolDragging, setIsPoolDragging] = useState(false);
 
   function update<T>(setter: (value: T) => void) {
     return (value: T) => {
       setter(value);
       setDirty(true);
     };
+  }
+
+  async function handlePoolSelect(fileList: FileList | null) {
+    if (!fileList || fileList.length === 0) return;
+    const urls = await Promise.all(
+      Array.from(fileList).map((file) => readFileAsDataUrl(file))
+    );
+    setImagePool((prev) => [...prev, ...urls]);
+  }
+
+  function removeFromPool(url: string) {
+    setImagePool((prev) => prev.filter((u) => u !== url));
+  }
+
+  const assignTargets: {
+    label: string;
+    setter: (value: string | null) => void;
+  }[] = [
+    { label: "Hero Image", setter: setHeroImage },
+    { label: "Story Image", setter: setStoryImage },
+    { label: "Founder Photo", setter: setFounderPhoto },
+    { label: "CTA Background Image", setter: setCtaBackgroundImage },
+  ];
+
+  function assignPoolImage(url: string, targetLabel: string) {
+    if (targetLabel === "Trusted By Logos") {
+      setTrustedByLogos((prev) => [...prev, url]);
+    } else {
+      const target = assignTargets.find((t) => t.label === targetLabel);
+      target?.setter(url);
+    }
+    setDirty(true);
+    removeFromPool(url);
   }
 
   function updateCard(index: number, patch: Partial<ProcessCard>) {
@@ -83,11 +139,14 @@ export function AboutContentForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           heroImage,
+          heroImagePosition,
           heroHeadline,
           introText,
           storyImage,
+          storyImagePosition,
           storyText,
           founderPhoto,
+          founderPhotoPosition,
           founderName,
           founderTitle,
           bio,
@@ -96,6 +155,7 @@ export function AboutContentForm({
           processCards,
           trustedByLogos,
           ctaText,
+          ctaBackgroundImagePosition,
           ctaBackgroundImage,
         }),
       });
@@ -108,6 +168,93 @@ export function AboutContentForm({
   return (
     <div className="mt-8 space-y-10">
       <div>
+        <p className="text-sm font-medium text-obsidian/70">Image Library</p>
+        <p className="mt-1 text-xs text-obsidian/40">
+          Upload images here, then drag a thumbnail onto the section below it
+          belongs to (or pick a section from its dropdown).
+        </p>
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsPoolDragging(true);
+          }}
+          onDragLeave={() => setIsPoolDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setIsPoolDragging(false);
+            void handlePoolSelect(e.dataTransfer.files);
+          }}
+          onClick={() => poolInputRef.current?.click()}
+          className={`mt-2 flex min-h-24 cursor-pointer flex-wrap items-start gap-3 border border-dashed border-obsidian/15 bg-obsidian/[.03] p-3 transition-colors ${
+            isPoolDragging ? "bg-primary/10 ring-2 ring-primary" : ""
+          }`}
+        >
+          <input
+            ref={poolInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              void handlePoolSelect(e.target.files);
+              e.target.value = "";
+            }}
+          />
+          {imagePool.length === 0 && (
+            <p className="w-full py-4 text-center text-sm text-obsidian/40">
+              Drag and Drop or{" "}
+              <span className="text-primary underline">Click to Browse</span>
+            </p>
+          )}
+          {imagePool.map((url, index) => (
+            <div
+              key={index}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData(POOL_IMAGE_MIME, url);
+                e.dataTransfer.effectAllowed = "move";
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="group relative flex w-32 shrink-0 cursor-grab flex-col border border-obsidian/10 bg-white active:cursor-grabbing"
+            >
+              <div className="relative h-20 w-full overflow-hidden bg-obsidian/[.05]">
+                <img
+                  src={url}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeFromPool(url)}
+                  className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center bg-obsidian/70 text-xs text-bone-white group-hover:flex"
+                >
+                  &times;
+                </button>
+              </div>
+              <select
+                defaultValue=""
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) => {
+                  if (e.target.value) assignPoolImage(url, e.target.value);
+                }}
+                className="w-full border-t border-obsidian/10 bg-white px-1 py-1 text-[10px] text-obsidian/70 outline-none"
+              >
+                <option value="" disabled>
+                  Assign to…
+                </option>
+                {assignTargets.map((t) => (
+                  <option key={t.label} value={t.label}>
+                    {t.label}
+                  </option>
+                ))}
+                <option value="Trusted By Logos">Trusted By Logos</option>
+              </select>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
         <Dropzone
           label="Hero Image"
           accept="image/*"
@@ -117,6 +264,9 @@ export function AboutContentForm({
             update(setHeroImage)(await readFileAsDataUrl(file));
           }}
           onRemove={() => update(setHeroImage)(null)}
+          onDropUrl={(url) => assignPoolImage(url, "Hero Image")}
+          focalPoint={heroImagePosition}
+          onFocalPointChange={update(setHeroImagePosition)}
         />
         <div className="mt-4">
           <p className="text-sm font-medium text-obsidian/70">
@@ -168,6 +318,9 @@ export function AboutContentForm({
               update(setStoryImage)(await readFileAsDataUrl(file));
             }}
             onRemove={() => update(setStoryImage)(null)}
+            onDropUrl={(url) => assignPoolImage(url, "Story Image")}
+            focalPoint={storyImagePosition}
+            onFocalPointChange={update(setStoryImagePosition)}
           />
         </div>
       </div>
@@ -188,6 +341,9 @@ export function AboutContentForm({
               update(setFounderPhoto)(await readFileAsDataUrl(file));
             }}
             onRemove={() => update(setFounderPhoto)(null)}
+            onDropUrl={(url) => assignPoolImage(url, "Founder Photo")}
+            focalPoint={founderPhotoPosition}
+            onFocalPointChange={update(setFounderPhotoPosition)}
           />
           <div className="flex flex-col gap-4">
             <div>
@@ -298,6 +454,12 @@ export function AboutContentForm({
           <button
             type="button"
             onClick={() => logosInputRef.current?.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const poolUrl = e.dataTransfer.getData(POOL_IMAGE_MIME);
+              if (poolUrl) assignPoolImage(poolUrl, "Trusted By Logos");
+            }}
             className="flex h-20 w-28 items-center justify-center border border-obsidian/10 bg-obsidian/[.05] text-2xl text-obsidian/40 hover:bg-obsidian/[.08]"
           >
             +
@@ -339,6 +501,9 @@ export function AboutContentForm({
               update(setCtaBackgroundImage)(await readFileAsDataUrl(file));
             }}
             onRemove={() => update(setCtaBackgroundImage)(null)}
+            onDropUrl={(url) => assignPoolImage(url, "CTA Background Image")}
+            focalPoint={ctaBackgroundImagePosition}
+            onFocalPointChange={update(setCtaBackgroundImagePosition)}
           />
         </div>
       </div>

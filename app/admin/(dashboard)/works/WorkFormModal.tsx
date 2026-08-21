@@ -3,7 +3,11 @@
 import { useRef, useState } from "react";
 import type { Project } from "@/types/portfolio";
 import { Modal } from "@/components/admin/Modal";
-import { Dropzone, formatFileSize } from "@/components/admin/Dropzone";
+import {
+  Dropzone,
+  formatFileSize,
+  DEFAULT_FOCAL_POINT,
+} from "@/components/admin/Dropzone";
 import { readFileAsDataUrl, captureVideoFrame } from "@/lib/files";
 
 export function WorkFormModal({
@@ -26,6 +30,9 @@ export function WorkFormModal({
   const [thumbnailImage, setThumbnailImage] = useState(
     project?.thumbnailImage ?? null
   );
+  const [thumbnailImagePosition, setThumbnailImagePosition] = useState(
+    project?.thumbnailImagePosition ?? DEFAULT_FOCAL_POINT
+  );
   const [thumbnailLabel, setThumbnailLabel] = useState(
     project?.thumbnailLabel ?? null
   );
@@ -34,6 +41,9 @@ export function WorkFormModal({
   const [videoLabel, setVideoLabel] = useState(project?.videoLabel ?? null);
   const [videoPreviewImage, setVideoPreviewImage] = useState(
     project?.videoPreviewImage ?? null
+  );
+  const [videoPreviewImagePosition, setVideoPreviewImagePosition] = useState(
+    project?.videoPreviewImagePosition ?? DEFAULT_FOCAL_POINT
   );
 
   const [photos, setPhotos] = useState<string[]>(project?.photos ?? []);
@@ -78,10 +88,12 @@ export function WorkFormModal({
         description,
         credits,
         thumbnailImage,
+        thumbnailImagePosition,
         thumbnailLabel,
         videoName,
         videoLabel,
         videoPreviewImage,
+        videoPreviewImagePosition,
         photos,
         tags: project?.tags ?? [],
       };
@@ -131,6 +143,11 @@ export function WorkFormModal({
             setThumbnailLabel(null);
             setDirty(true);
           }}
+          focalPoint={thumbnailImagePosition}
+          onFocalPointChange={(position) => {
+            setThumbnailImagePosition(position);
+            setDirty(true);
+          }}
         />
         <Dropzone
           label="Upload Video"
@@ -146,6 +163,11 @@ export function WorkFormModal({
             setVideoName(null);
             setVideoLabel(null);
             setVideoPreviewImage(null);
+            setDirty(true);
+          }}
+          focalPoint={videoPreviewImagePosition}
+          onFocalPointChange={(position) => {
+            setVideoPreviewImagePosition(position);
             setDirty(true);
           }}
         />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { WorksContent } from "@/types/content";
-import { Dropzone } from "@/components/admin/Dropzone";
+import { Dropzone, DEFAULT_FOCAL_POINT } from "@/components/admin/Dropzone";
 import { readFileAsDataUrl } from "@/lib/files";
 
 const fieldClass =
@@ -14,6 +14,9 @@ export function WorksHeroForm({
   initialContent: WorksContent;
 }) {
   const [heroImage, setHeroImage] = useState(initialContent.heroImage);
+  const [heroImagePosition, setHeroImagePosition] = useState(
+    initialContent.heroImagePosition ?? DEFAULT_FOCAL_POINT
+  );
   const [heroHeading, setHeroHeading] = useState(initialContent.heroHeading);
   const [heroDescription, setHeroDescription] = useState(
     initialContent.heroDescription
@@ -35,7 +38,12 @@ export function WorksHeroForm({
       await fetch("/api/content/works", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ heroImage, heroHeading, heroDescription }),
+        body: JSON.stringify({
+          heroImage,
+          heroImagePosition,
+          heroHeading,
+          heroDescription,
+        }),
       });
       setDirty(false);
     } finally {
@@ -55,6 +63,8 @@ export function WorksHeroForm({
           update(setHeroImage)(await readFileAsDataUrl(file));
         }}
         onRemove={() => update(setHeroImage)(null)}
+        focalPoint={heroImagePosition}
+        onFocalPointChange={update(setHeroImagePosition)}
       />
       <div>
         <p className="text-sm font-medium text-obsidian/70">Heading</p>

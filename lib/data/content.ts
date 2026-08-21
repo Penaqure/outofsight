@@ -74,13 +74,16 @@ function aboutStore(): AboutContent {
   if (!globalThis.__aboutContent) {
     globalThis.__aboutContent = {
       heroImage: null,
+      heroImagePosition: "50% 50%",
       heroHeadline: "Pineers in brand Storytelling",
       introText:
         "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
       storyImage: null,
+      storyImagePosition: "50% 50%",
       storyText:
         "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
       founderPhoto: null,
+      founderPhotoPosition: "50% 50%",
       founderName: "Nihal Muhammed",
       founderTitle: "Founder & Creative Director",
       bio: "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
@@ -110,6 +113,7 @@ function aboutStore(): AboutContent {
       trustedByLogos: [],
       ctaText: "Have a project in mind?",
       ctaBackgroundImage: null,
+      ctaBackgroundImagePosition: "50% 50%",
     };
   }
   return globalThis.__aboutContent;
@@ -136,6 +140,7 @@ function worksStore(): WorksContent {
       // Seeded from the Figma mock's hero photo — swap via the admin Works
       // editor once a real hero image is available.
       heroImage: "/images/works-hero.jpg",
+      heroImagePosition: "50% 50%",
       heroHeading: "For Moments That Stay",
       heroDescription:
         "From the vastness of its enchanting desert to the vibrancy of its dazzling cities, discover cultural treasures that tell stories of the past, and surprise yourself on a journey filled with excitement and wonder.",
