@@ -29,7 +29,7 @@ export default async function HomePage() {
       )}
       <div className="absolute inset-0 bg-obsidian/40" />
 
-      <div className="relative px-6 text-center">
+      <div className="relative px-6 text-center sm:px-10 lg:px-16">
         {content.displayMode === "logo-only" ? (
           <Image
             src={logo}
@@ -38,7 +38,7 @@ export default async function HomePage() {
             priority
           />
         ) : (
-          <h1 className="max-w-3xl text-2xl font-medium text-bone-white sm:text-3xl md:text-4xl">
+          <h1 className="max-w-4xl text-3xl font-normal tracking-tight text-bone-white sm:text-4xl md:text-5xl lg:text-[48px]">
             {content.heroText}
           </h1>
         )}

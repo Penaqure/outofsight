@@ -1,4 +1,9 @@
-import type { AboutContent, ContactsContent, HomeContent } from "@/types/content";
+import type {
+  AboutContent,
+  ContactsContent,
+  HomeContent,
+  WorksContent,
+} from "@/types/content";
 
 // In-memory placeholder store, same pattern as lib/data/portfolio.ts —
 // anchored on globalThis so it stays shared across Turbopack's separate
@@ -69,6 +74,12 @@ function aboutStore(): AboutContent {
   if (!globalThis.__aboutContent) {
     globalThis.__aboutContent = {
       heroImage: null,
+      heroHeadline: "Pineers in brand Storytelling",
+      introText:
+        "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
+      storyImage: null,
+      storyText:
+        "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
       founderPhoto: null,
       founderName: "Nihal Muhammed",
       founderTitle: "Founder & Creative Director",
@@ -113,4 +124,33 @@ export async function updateAboutContent(
 ): Promise<AboutContent> {
   globalThis.__aboutContent = { ...aboutStore(), ...input };
   return globalThis.__aboutContent;
+}
+
+declare global {
+  var __worksContent: WorksContent | undefined;
+}
+
+function worksStore(): WorksContent {
+  if (!globalThis.__worksContent) {
+    globalThis.__worksContent = {
+      // Seeded from the Figma mock's hero photo — swap via the admin Works
+      // editor once a real hero image is available.
+      heroImage: "/images/works-hero.jpg",
+      heroHeading: "For Moments That Stay",
+      heroDescription:
+        "From the vastness of its enchanting desert to the vibrancy of its dazzling cities, discover cultural treasures that tell stories of the past, and surprise yourself on a journey filled with excitement and wonder.",
+    };
+  }
+  return globalThis.__worksContent;
+}
+
+export async function getWorksContent(): Promise<WorksContent> {
+  return worksStore();
+}
+
+export async function updateWorksContent(
+  input: Partial<WorksContent>
+): Promise<WorksContent> {
+  globalThis.__worksContent = { ...worksStore(), ...input };
+  return globalThis.__worksContent;
 }

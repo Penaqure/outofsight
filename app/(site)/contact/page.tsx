@@ -19,10 +19,10 @@ export default async function ContactPage() {
     <div className="flex h-dvh flex-col overflow-hidden bg-bone-white">
       <main className="flex flex-1 items-center justify-center text-center">
         <Container>
-          <h1 className="text-3xl font-medium tracking-tight text-obsidian sm:text-4xl">
+          <h1 className="text-4xl tracking-tight text-obsidian sm:text-5xl lg:text-[48px]">
             {contact.bodyText}
           </h1>
-          <div className="mt-6 space-y-1 text-sm text-obsidian/70">
+          <div className="mt-6 space-y-2 text-base text-obsidian/70">
             {contact.email && <p>{contact.email}</p>}
             {phone && <p>{phone}</p>}
             {contact.location && <p>{contact.location}</p>}

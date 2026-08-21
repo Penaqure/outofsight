@@ -12,9 +12,10 @@ import logo from "@/public/logo/outofsight-logo.png";
 // but position:fixed elements get isolated into their own compositing layer
 // in real browsers, so the blend against page content underneath doesn't
 // reliably apply. Explicitly tracking which routes are dark is what actually
-// works everywhere.
-const darkPages = (pathname: string) =>
-  pathname === "/" || (pathname.startsWith("/works/") && pathname !== "/works/");
+// works everywhere. A route is "dark" when a full-bleed dark hero sits
+// directly under the header (Home, Works listing) — everything else,
+// including the Works detail page, starts on the plain Bone White body.
+const darkPages = (pathname: string) => pathname === "/" || pathname === "/works";
 
 export function Header() {
   const pathname = usePathname();

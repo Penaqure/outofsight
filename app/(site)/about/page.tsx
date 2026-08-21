@@ -8,22 +8,60 @@ import { Section } from "@/components/ui/Section";
 // see the same note in works/page.tsx.
 export const dynamic = "force-dynamic";
 
-// Every section here (hero image, founder profile, process cards, trusted-by
-// logos, CTA) comes from the admin About editor — see lib/data/content.ts.
+// Every section here (hero image, intro, story, founder profile, process
+// cards, trusted-by logos, CTA) comes from the admin About editor — see
+// lib/data/content.ts.
 export default async function AboutPage() {
   const content = await getAboutContent();
 
   return (
     <div className="flex flex-col bg-bone-white">
-      <section className="relative h-[60vh] min-h-[420px] w-full overflow-hidden bg-bone-white">
+      <section className="relative flex h-[60vh] min-h-[420px] w-full items-center justify-center overflow-hidden bg-bone-white">
         {content.heroImage && (
-          <img
-            src={content.heroImage}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          <>
+            <img
+              src={content.heroImage}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-obsidian/30" />
+            <h1 className="relative max-w-4xl px-6 text-center text-3xl tracking-tight text-bone-white sm:px-10 sm:text-4xl md:text-5xl lg:px-16 lg:text-[48px]">
+              {content.heroHeadline}
+            </h1>
+          </>
         )}
       </section>
+
+      {content.introText && (
+        <Section className="pb-0">
+          <Container>
+            <p className="mx-auto max-w-4xl text-center text-base leading-[1.3] text-obsidian/80">
+              {content.introText}
+            </p>
+          </Container>
+        </Section>
+      )}
+
+      {(content.storyText || content.storyImage) && (
+        <Section>
+          <Container>
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1fr_2fr] sm:items-center">
+              <p className="text-base leading-[1.3] text-obsidian/80">
+                {content.storyText}
+              </p>
+              <div className="aspect-[1376/633] w-full overflow-hidden bg-obsidian/[.05]">
+                {content.storyImage && (
+                  <img
+                    src={content.storyImage}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                )}
+              </div>
+            </div>
+          </Container>
+        </Section>
+      )}
 
       <Section>
         <Container>
@@ -39,15 +77,15 @@ export default async function AboutPage() {
             </div>
             <div className="flex flex-col justify-between gap-10 sm:text-right">
               <div>
-                <p className="text-lg font-semibold tracking-tight">
+                <p className="font-heading text-2xl tracking-tight">
                   {content.founderName}
                 </p>
-                <p className="text-xs uppercase tracking-wider text-obsidian/50">
+                <p className="text-base uppercase tracking-wider text-obsidian/50">
                   {content.founderTitle}
                 </p>
               </div>
               <div>
-                <p className="ml-auto max-w-lg text-sm text-obsidian/70">
+                <p className="ml-auto max-w-lg text-base leading-[1.3] text-obsidian/70">
                   {content.bio}
                 </p>
                 {(content.linkedinUrl || content.instagramUrl) && (
@@ -84,8 +122,8 @@ export default async function AboutPage() {
           <div className="grid gap-10 sm:grid-cols-3">
             {content.processCards.map((card) => (
               <div key={card.title}>
-                <p className="font-medium">{card.title}</p>
-                <p className="mt-2 text-sm text-obsidian/60">
+                <p className="font-heading text-2xl tracking-tight">{card.title}</p>
+                <p className="mt-4 text-base leading-[1.3] text-obsidian/60">
                   {card.description}
                 </p>
               </div>
@@ -112,7 +150,7 @@ export default async function AboutPage() {
         </Section>
       )}
 
-      <section className="relative flex h-[45vh] min-h-[320px] w-full items-center justify-center overflow-hidden bg-bone-white">
+      <section className="relative flex h-[45vh] min-h-[320px] w-full items-center justify-center overflow-hidden bg-obsidian">
         {content.ctaBackgroundImage && (
           <>
             <img
@@ -120,12 +158,12 @@ export default async function AboutPage() {
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-bone-white/70" />
+            <div className="absolute inset-0 bg-obsidian/50" />
           </>
         )}
         <Link
           href="/contact"
-          className="relative text-xl font-medium text-obsidian hover:underline sm:text-2xl"
+          className="relative px-6 text-center text-2xl tracking-tight text-bone-white hover:underline sm:px-10 lg:px-16"
         >
           {content.ctaText}
         </Link>

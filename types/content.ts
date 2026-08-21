@@ -21,6 +21,10 @@ export type ProcessCard = {
 
 export type AboutContent = {
   heroImage: string | null;
+  heroHeadline: string;
+  introText: string;
+  storyImage: string | null;
+  storyText: string;
   founderPhoto: string | null;
   founderName: string;
   founderTitle: string;
@@ -31,4 +35,10 @@ export type AboutContent = {
   trustedByLogos: string[];
   ctaText: string;
   ctaBackgroundImage: string | null;
+};
+
+export type WorksContent = {
+  heroImage: string | null;
+  heroHeading: string;
+  heroDescription: string;
 };

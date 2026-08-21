@@ -14,6 +14,12 @@ export function AboutContentForm({
   initialContent: AboutContent;
 }) {
   const [heroImage, setHeroImage] = useState(initialContent.heroImage);
+  const [heroHeadline, setHeroHeadline] = useState(
+    initialContent.heroHeadline
+  );
+  const [introText, setIntroText] = useState(initialContent.introText);
+  const [storyImage, setStoryImage] = useState(initialContent.storyImage);
+  const [storyText, setStoryText] = useState(initialContent.storyText);
   const [founderPhoto, setFounderPhoto] = useState(
     initialContent.founderPhoto
   );
@@ -77,6 +83,10 @@ export function AboutContentForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           heroImage,
+          heroHeadline,
+          introText,
+          storyImage,
+          storyText,
           founderPhoto,
           founderName,
           founderTitle,
@@ -97,16 +107,70 @@ export function AboutContentForm({
 
   return (
     <div className="mt-8 space-y-10">
-      <Dropzone
-        label="Hero Image"
-        accept="image/*"
-        helperText="JPG or PNG, upto 10MB"
-        preview={heroImage ? { label: "Hero image", url: heroImage } : null}
-        onSelect={async (file) => {
-          update(setHeroImage)(await readFileAsDataUrl(file));
-        }}
-        onRemove={() => update(setHeroImage)(null)}
-      />
+      <div>
+        <Dropzone
+          label="Hero Image"
+          accept="image/*"
+          helperText="JPG or PNG, upto 10MB"
+          preview={heroImage ? { label: "Hero image", url: heroImage } : null}
+          onSelect={async (file) => {
+            update(setHeroImage)(await readFileAsDataUrl(file));
+          }}
+          onRemove={() => update(setHeroImage)(null)}
+        />
+        <div className="mt-4">
+          <p className="text-sm font-medium text-obsidian/70">
+            Hero Headline
+          </p>
+          <input
+            value={heroHeadline}
+            onChange={(e) => update(setHeroHeadline)(e.target.value)}
+            placeholder="Enter Hero Headline"
+            className={fieldClass}
+          />
+        </div>
+      </div>
+
+      <div>
+        <p className="text-sm font-medium text-obsidian/70">Intro Text</p>
+        <textarea
+          value={introText}
+          onChange={(e) => update(setIntroText)(e.target.value)}
+          placeholder="Type Here"
+          rows={4}
+          className={`${fieldClass} resize-none`}
+        />
+      </div>
+
+      <div>
+        <p className="text-sm font-medium text-obsidian/70">Story</p>
+        <div className="mt-2 grid grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <p className="text-sm font-medium text-obsidian/70">
+              Story Text
+            </p>
+            <textarea
+              value={storyText}
+              onChange={(e) => update(setStoryText)(e.target.value)}
+              placeholder="Type Here"
+              rows={8}
+              className={`${fieldClass} resize-none`}
+            />
+          </div>
+          <Dropzone
+            label="Story Image"
+            accept="image/*"
+            helperText="JPG or PNG, upto 10MB"
+            preview={
+              storyImage ? { label: "Story image", url: storyImage } : null
+            }
+            onSelect={async (file) => {
+              update(setStoryImage)(await readFileAsDataUrl(file));
+            }}
+            onRemove={() => update(setStoryImage)(null)}
+          />
+        </div>
+      </div>
 
       <div>
         <p className="text-sm font-medium text-obsidian/70">
