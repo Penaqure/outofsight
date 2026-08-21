@@ -10,7 +10,7 @@ export default async function AdminAboutPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">About Us</h1>
+      <h1 className="text-2xl tracking-tight text-obsidian">About Us</h1>
       <AboutContentForm initialContent={content} />
     </>
   );

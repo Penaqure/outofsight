@@ -10,8 +10,8 @@ export default async function AdminContactsPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">Contacts</h1>
-      <p className="mt-1 text-sm text-obsidian/60">{content.bodyText}</p>
+      <h1 className="text-2xl tracking-tight text-obsidian">Contacts</h1>
+      <p className="mt-1 text-base text-obsidian">{content.bodyText}</p>
       <ContactsContentForm initialContent={content} />
     </>
   );

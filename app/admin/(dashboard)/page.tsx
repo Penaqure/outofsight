@@ -13,12 +13,12 @@ export default async function AdminHomePage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">
+      <h1 className="text-2xl tracking-tight text-obsidian">
         {greeting} {currentAdminUser.name}
       </h1>
       <div className="mt-8">
-        <h2 className="text-lg font-semibold tracking-tight">Home</h2>
-        <p className="mt-1 text-sm text-obsidian/60">{content.heroText}</p>
+        <h2 className="text-2xl tracking-tight text-obsidian">Home</h2>
+        <p className="mt-1 text-base text-obsidian">{content.heroText}</p>
       </div>
       <HomeContentForm initialContent={content} />
     </>

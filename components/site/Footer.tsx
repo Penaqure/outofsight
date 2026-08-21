@@ -23,7 +23,7 @@ export async function Footer() {
   const whatsappNumber = phone?.replace(/[^\d]/g, "");
 
   return (
-    <footer className="bg-obsidian py-[96px] text-bone-white">
+    <footer className="bg-obsidian py-16 text-bone-white">
       <Container>
         <div className="flex flex-wrap items-start justify-between gap-[96px]">
           <Image

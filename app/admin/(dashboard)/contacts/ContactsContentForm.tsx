@@ -19,7 +19,7 @@ const countryCodes = [
 ];
 
 const fieldClass =
-  "mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary";
+  "mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary";
 
 export function ContactsContentForm({
   initialContent,
@@ -66,7 +66,7 @@ export function ContactsContentForm({
     <div className="mt-8">
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <p className="text-sm font-medium text-obsidian/70">Body Text</p>
+          <p className="text-base text-obsidian">Body Text</p>
           <input
             value={bodyText}
             onChange={(e) => update(setBodyText)(e.target.value)}
@@ -75,7 +75,7 @@ export function ContactsContentForm({
           />
         </div>
         <div>
-          <p className="text-sm font-medium text-obsidian/70">Email</p>
+          <p className="text-base text-obsidian">Email</p>
           <input
             type="email"
             value={email}
@@ -88,7 +88,7 @@ export function ContactsContentForm({
 
       <div className="mt-8 grid grid-cols-2 gap-8">
         <div>
-          <p className="text-sm font-medium text-obsidian/70">Country Code</p>
+          <p className="text-base text-obsidian">Country Code</p>
           <select
             value={countryCode}
             onChange={(e) => update(setCountryCode)(e.target.value)}
@@ -105,7 +105,7 @@ export function ContactsContentForm({
           </select>
         </div>
         <div>
-          <p className="text-sm font-medium text-obsidian/70">Phone Number</p>
+          <p className="text-base text-obsidian">Phone Number</p>
           <input
             type="tel"
             value={phoneNumber}
@@ -118,7 +118,7 @@ export function ContactsContentForm({
 
       <div className="mt-8 grid grid-cols-2 gap-8">
         <div>
-          <p className="text-sm font-medium text-obsidian/70">Location</p>
+          <p className="text-base text-obsidian">Location</p>
           <input
             value={location}
             onChange={(e) => update(setLocation)(e.target.value)}

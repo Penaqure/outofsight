@@ -54,7 +54,7 @@ export function HomeContentForm({
 
   return (
     <div className="mt-8">
-      <p className="text-sm font-medium text-obsidian/70">Background Video</p>
+      <p className="text-base text-obsidian">Background Video</p>
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -63,8 +63,8 @@ export function HomeContentForm({
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`mt-2 flex h-40 cursor-pointer flex-col items-center justify-center gap-2 border border-obsidian/10 bg-obsidian/[.05] text-center transition-colors ${
-          isDragging ? "bg-obsidian/[.09]" : ""
+        className={`mt-2 flex h-40 cursor-pointer flex-col items-center justify-center gap-2 bg-obsidian/10 text-center transition-colors ${
+          isDragging ? "bg-obsidian/[.15]" : ""
         }`}
       >
         <input
@@ -95,7 +95,9 @@ export function HomeContentForm({
             </svg>
             <p className="text-sm text-obsidian/70">
               Drag and Drop or{" "}
-              <span className="text-primary underline">Click to Browse</span>
+              <span className="font-bold text-primary underline">
+                Click to Browse
+              </span>
             </p>
             <p className="text-xs text-obsidian/40">MP4 formats only, upto 1GB</p>
           </>
@@ -104,7 +106,7 @@ export function HomeContentForm({
 
       <div className="mt-8 grid grid-cols-2 gap-8">
         <div>
-          <label className="flex items-center justify-between text-sm font-medium text-obsidian/70">
+          <label className="flex items-center justify-between text-base text-obsidian">
             <span>Body Text</span>
             <input
               type="radio"
@@ -126,11 +128,11 @@ export function HomeContentForm({
             }}
             disabled={displayMode !== "body-text"}
             placeholder="Type Here"
-            className="mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary disabled:opacity-50"
+            className="mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
           />
         </div>
         <div>
-          <label className="flex items-center justify-between text-sm font-medium text-obsidian/70">
+          <label className="flex items-center justify-between text-base text-obsidian">
             <span>Logo Only</span>
             <input
               type="radio"
@@ -143,7 +145,7 @@ export function HomeContentForm({
               className="accent-primary"
             />
           </label>
-          <div className="mt-2 w-full truncate border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian/50">
+          <div className="mt-2 w-full truncate bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian/50">
             {initialContent.logoFileName}
           </div>
         </div>

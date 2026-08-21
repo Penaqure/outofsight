@@ -10,7 +10,7 @@ import {
 import { readFileAsDataUrl } from "@/lib/files";
 
 const fieldClass =
-  "mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary";
+  "mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary";
 
 export function AboutContentForm({
   initialContent,
@@ -168,7 +168,7 @@ export function AboutContentForm({
   return (
     <div className="mt-8 space-y-10">
       <div>
-        <p className="text-sm font-medium text-obsidian/70">Image Library</p>
+        <p className="text-2xl text-obsidian">Image Library</p>
         <p className="mt-1 text-xs text-obsidian/40">
           Upload images here, then drag a thumbnail onto the section below it
           belongs to (or pick a section from its dropdown).
@@ -254,24 +254,27 @@ export function AboutContentForm({
         </div>
       </div>
 
-      <div>
-        <Dropzone
-          label="Hero Image"
-          accept="image/*"
-          helperText="JPG or PNG, upto 10MB"
-          preview={heroImage ? { label: "Hero image", url: heroImage } : null}
-          onSelect={async (file) => {
-            update(setHeroImage)(await readFileAsDataUrl(file));
-          }}
-          onRemove={() => update(setHeroImage)(null)}
-          onDropUrl={(url) => assignPoolImage(url, "Hero Image")}
-          focalPoint={heroImagePosition}
-          onFocalPointChange={update(setHeroImagePosition)}
-        />
+      <div className="border-t border-obsidian/10 pt-10">
+        <p className="text-2xl text-obsidian">Hero Section</p>
+        <div className="mt-6">
+          <Dropzone
+            label="Hero Image"
+            accept="image/*"
+            helperText="JPG or PNG, upto 10MB"
+            preview={
+              heroImage ? { label: "Hero image", url: heroImage } : null
+            }
+            onSelect={async (file) => {
+              update(setHeroImage)(await readFileAsDataUrl(file));
+            }}
+            onRemove={() => update(setHeroImage)(null)}
+            onDropUrl={(url) => assignPoolImage(url, "Hero Image")}
+            focalPoint={heroImagePosition}
+            onFocalPointChange={update(setHeroImagePosition)}
+          />
+        </div>
         <div className="mt-4">
-          <p className="text-sm font-medium text-obsidian/70">
-            Hero Headline
-          </p>
+          <p className="text-base text-obsidian">Hero Headline</p>
           <input
             value={heroHeadline}
             onChange={(e) => update(setHeroHeadline)(e.target.value)}
@@ -282,7 +285,7 @@ export function AboutContentForm({
       </div>
 
       <div>
-        <p className="text-sm font-medium text-obsidian/70">Intro Text</p>
+        <p className="text-base text-obsidian">Intro Text</p>
         <textarea
           value={introText}
           onChange={(e) => update(setIntroText)(e.target.value)}
@@ -292,13 +295,11 @@ export function AboutContentForm({
         />
       </div>
 
-      <div>
-        <p className="text-sm font-medium text-obsidian/70">Story</p>
-        <div className="mt-2 grid grid-cols-2 gap-6">
+      <div className="border-t border-obsidian/10 pt-10">
+        <p className="text-2xl text-obsidian">Story Section</p>
+        <div className="mt-6 grid grid-cols-2 gap-6">
           <div className="flex flex-col">
-            <p className="text-sm font-medium text-obsidian/70">
-              Story Text
-            </p>
+            <p className="text-base text-obsidian">Story Text</p>
             <textarea
               value={storyText}
               onChange={(e) => update(setStoryText)(e.target.value)}
@@ -325,11 +326,9 @@ export function AboutContentForm({
         </div>
       </div>
 
-      <div>
-        <p className="text-sm font-medium text-obsidian/70">
-          Founder Profile
-        </p>
-        <div className="mt-2 grid grid-cols-2 gap-6">
+      <div className="border-t border-obsidian/10 pt-10">
+        <p className="text-2xl text-obsidian">Founder Profile</p>
+        <div className="mt-6 grid grid-cols-2 gap-6">
           <Dropzone
             label="Founder Photo"
             accept="image/*"
@@ -347,7 +346,7 @@ export function AboutContentForm({
           />
           <div className="flex flex-col gap-4">
             <div>
-              <p className="text-sm font-medium text-obsidian/70">Name</p>
+              <p className="text-base text-obsidian">Name</p>
               <input
                 value={founderName}
                 onChange={(e) => update(setFounderName)(e.target.value)}
@@ -356,7 +355,7 @@ export function AboutContentForm({
               />
             </div>
             <div>
-              <p className="text-sm font-medium text-obsidian/70">Title</p>
+              <p className="text-base text-obsidian">Title</p>
               <input
                 value={founderTitle}
                 onChange={(e) => update(setFounderTitle)(e.target.value)}
@@ -368,7 +367,7 @@ export function AboutContentForm({
         </div>
 
         <div className="mt-6">
-          <p className="text-sm font-medium text-obsidian/70">Bio</p>
+          <p className="text-base text-obsidian">Bio</p>
           <textarea
             value={bio}
             onChange={(e) => update(setBio)(e.target.value)}
@@ -380,9 +379,7 @@ export function AboutContentForm({
 
         <div className="mt-6 grid grid-cols-2 gap-6">
           <div>
-            <p className="text-sm font-medium text-obsidian/70">
-              LinkedIn URL
-            </p>
+            <p className="text-base text-obsidian">LinkedIn URL</p>
             <input
               value={linkedinUrl}
               onChange={(e) => update(setLinkedinUrl)(e.target.value)}
@@ -391,9 +388,7 @@ export function AboutContentForm({
             />
           </div>
           <div>
-            <p className="text-sm font-medium text-obsidian/70">
-              Instagram URL
-            </p>
+            <p className="text-base text-obsidian">Instagram URL</p>
             <input
               value={instagramUrl}
               onChange={(e) => update(setInstagramUrl)(e.target.value)}
@@ -404,9 +399,9 @@ export function AboutContentForm({
         </div>
       </div>
 
-      <div>
-        <p className="text-sm font-medium text-obsidian/70">Process Cards</p>
-        <div className="mt-2 grid grid-cols-3 gap-6">
+      <div className="border-t border-obsidian/10 pt-10">
+        <p className="text-2xl text-obsidian">Points Section</p>
+        <div className="mt-6 grid grid-cols-3 gap-6">
           {processCards.map((card, index) => (
             <div key={index}>
               <input
@@ -431,15 +426,13 @@ export function AboutContentForm({
         </div>
       </div>
 
-      <div>
-        <p className="text-sm font-medium text-obsidian/70">
-          Trusted By Logos
-        </p>
-        <div className="mt-2 flex flex-wrap gap-3">
+      <div className="border-t border-obsidian/10 pt-10">
+        <p className="text-2xl text-obsidian">Trusted Brands</p>
+        <div className="mt-6 flex flex-wrap gap-3">
           {trustedByLogos.map((logo, index) => (
             <div
               key={index}
-              className="group relative flex h-20 w-28 items-center justify-center overflow-hidden border border-obsidian/10 bg-obsidian/[.05]"
+              className="group relative flex size-[126px] items-center justify-center overflow-hidden bg-obsidian/10"
             >
               <img src={logo} alt="" className="max-h-full max-w-full object-contain p-2" />
               <button
@@ -460,7 +453,7 @@ export function AboutContentForm({
               const poolUrl = e.dataTransfer.getData(POOL_IMAGE_MIME);
               if (poolUrl) assignPoolImage(poolUrl, "Trusted By Logos");
             }}
-            className="flex h-20 w-28 items-center justify-center border border-obsidian/10 bg-obsidian/[.05] text-2xl text-obsidian/40 hover:bg-obsidian/[.08]"
+            className="flex size-[126px] items-center justify-center bg-obsidian/10 text-2xl text-obsidian/40 hover:bg-obsidian/[.15]"
           >
             +
           </button>
@@ -475,11 +468,9 @@ export function AboutContentForm({
         </div>
       </div>
 
-      <div>
-        <p className="text-sm font-medium text-obsidian/70">
-          Call to Action
-        </p>
-        <div className="mt-2 grid grid-cols-2 gap-6">
+      <div className="border-t border-obsidian/10 pt-10">
+        <p className="text-2xl text-obsidian">Call to Action</p>
+        <div className="mt-6 grid grid-cols-2 gap-6">
           <input
             value={ctaText}
             onChange={(e) => update(setCtaText)(e.target.value)}

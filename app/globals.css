@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand palette */
-  --steel-blue: #4682b4;
-  --bone-white: #ede7dd;
-  --obsidian: #14161c;
+  /* Brand palette — matched to the Figma design tokens (OS Primary,
+     OS Light, OS Dark). Names are kept for backwards compatibility even
+     though the hex values no longer literally match "steel blue". */
+  --steel-blue: #306384;
+  --bone-white: #efece8;
+  --obsidian: #232323;
   --sage: #9caf88;
 
   --background: var(--bone-white);

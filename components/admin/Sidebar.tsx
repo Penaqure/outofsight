@@ -23,7 +23,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="flex w-56 shrink-0 flex-col bg-obsidian p-4">
+    <aside className="flex w-[300px] shrink-0 flex-col bg-obsidian p-4">
       <Image
         src={logo}
         alt="OUTOFSIGHT"
@@ -40,9 +40,9 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`px-3 py-2 text-center text-sm transition-colors ${
+              className={`px-3 py-2 text-center text-xs tracking-tight transition-colors ${
                 isActive
-                  ? "bg-primary text-bone-white"
+                  ? "bg-primary/50 font-semibold text-bone-white"
                   : "text-bone-white/60 hover:bg-bone-white/[.06] hover:text-bone-white"
               }`}
             >
@@ -53,7 +53,7 @@ export function Sidebar() {
       </nav>
       <button
         onClick={handleLogout}
-        className="mt-auto px-3 py-2 text-center text-sm text-bone-white/40 hover:bg-bone-white/[.06] hover:text-bone-white"
+        className="mt-auto px-3 py-2 text-center text-xs tracking-tight text-bone-white/40 hover:bg-bone-white/[.06] hover:text-bone-white"
       >
         Log out
       </button>

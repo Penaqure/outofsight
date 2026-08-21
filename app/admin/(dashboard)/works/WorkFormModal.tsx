@@ -175,7 +175,7 @@ export function WorkFormModal({
 
       {!isEdit && (
         <div className="mt-6">
-          <p className="text-sm font-medium text-obsidian/70">Upload Photos</p>
+          <p className="text-base text-obsidian">Upload Photos</p>
           <div className="mt-2 flex flex-wrap gap-3">
             {photos.map((photo, index) => (
               <div
@@ -213,7 +213,7 @@ export function WorkFormModal({
 
       <div className="mt-6 grid grid-cols-2 gap-6">
         <div>
-          <p className="text-sm font-medium text-obsidian/70">Title Text</p>
+          <p className="text-base text-obsidian">Title Text</p>
           <input
             value={title}
             onChange={(e) => {
@@ -221,11 +221,11 @@ export function WorkFormModal({
               setDirty(true);
             }}
             placeholder="Enter Title"
-            className="mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
+            className="mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
         <div>
-          <p className="text-sm font-medium text-obsidian/70">Description</p>
+          <p className="text-base text-obsidian">Description</p>
           <input
             value={description}
             onChange={(e) => {
@@ -233,14 +233,14 @@ export function WorkFormModal({
               setDirty(true);
             }}
             placeholder="Enter Description"
-            className="mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
+            className="mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-6">
         <div>
-          <p className="text-sm font-medium text-obsidian/70">
+          <p className="text-base text-obsidian">
             Credits <span className="font-normal text-obsidian/40">(optional)</span>
           </p>
           <textarea
@@ -251,7 +251,7 @@ export function WorkFormModal({
             }}
             placeholder="Enter Credits"
             rows={3}
-            className="mt-2 w-full resize-none border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary"
+            className="mt-2 w-full resize-none bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
         <div className="flex items-end justify-end gap-3">

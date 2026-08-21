@@ -6,7 +6,7 @@ import { Dropzone, DEFAULT_FOCAL_POINT } from "@/components/admin/Dropzone";
 import { readFileAsDataUrl } from "@/lib/files";
 
 const fieldClass =
-  "mt-2 w-full border border-obsidian/10 bg-obsidian/[.05] px-4 py-2.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:border-primary";
+  "mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary";
 
 export function WorksHeroForm({
   initialContent,
@@ -53,7 +53,7 @@ export function WorksHeroForm({
 
   return (
     <div className="mb-10 space-y-6 border-b border-obsidian/10 pb-10">
-      <p className="text-sm font-medium text-obsidian/70">Hero Section</p>
+      <p className="text-2xl text-obsidian">Hero Section</p>
       <Dropzone
         label="Hero Image"
         accept="image/*"
@@ -67,7 +67,7 @@ export function WorksHeroForm({
         onFocalPointChange={update(setHeroImagePosition)}
       />
       <div>
-        <p className="text-sm font-medium text-obsidian/70">Heading</p>
+        <p className="text-base text-obsidian">Heading</p>
         <input
           value={heroHeading}
           onChange={(e) => update(setHeroHeading)(e.target.value)}
@@ -76,7 +76,7 @@ export function WorksHeroForm({
         />
       </div>
       <div>
-        <p className="text-sm font-medium text-obsidian/70">Description</p>
+        <p className="text-base text-obsidian">Description</p>
         <textarea
           value={heroDescription}
           onChange={(e) => update(setHeroDescription)(e.target.value)}

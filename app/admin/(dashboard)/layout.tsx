@@ -9,7 +9,9 @@ export default function AdminDashboardLayout({
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 bg-secondary p-8 text-obsidian">{children}</main>
+      <main className="flex-1 bg-secondary p-[45px] text-obsidian">
+        {children}
+      </main>
     </div>
   );
 }

@@ -89,7 +89,7 @@ export function Dropzone({
 
   return (
     <div>
-      <p className="text-sm font-medium text-obsidian/70">{label}</p>
+      <p className="text-base text-obsidian">{label}</p>
       {onFocalPointChange && preview?.url && (
         <p className="mt-0.5 text-xs text-obsidian/40">
           Click or drag on the image to set the focal point.
@@ -194,7 +194,9 @@ export function Dropzone({
             </svg>
             <p className="text-sm text-obsidian/70">
               Drag and Drop or{" "}
-              <span className="text-primary underline">Click to Browse</span>
+              <span className="font-bold text-primary underline">
+                Click to Browse
+              </span>
             </p>
             <p className="text-xs text-obsidian/40">{helperText}</p>
           </div>

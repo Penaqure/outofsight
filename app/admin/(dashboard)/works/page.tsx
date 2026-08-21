@@ -16,7 +16,7 @@ export default async function AdminWorksPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">Works</h1>
+      <h1 className="text-2xl tracking-tight text-obsidian">Works</h1>
       <div className="mt-8">
         <WorksHeroForm initialContent={worksContent} />
       </div>
