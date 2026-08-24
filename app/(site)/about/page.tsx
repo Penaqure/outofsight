@@ -49,10 +49,12 @@ export default async function AboutPage() {
       {(content.storyText || content.storyImage) && (
         // Image bleeds to the right screen edge here (matches Figma) — only
         // the text column keeps the standard left padding, so this section
-        // is NOT wrapped in <Container>, unlike the rest of the page.
-        <Section>
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1fr_2fr] sm:items-start">
-            <p className="px-6 text-base leading-[1.3] text-obsidian/80 sm:pr-0 sm:pl-10 lg:pl-16">
+        // is NOT wrapped in <Container>, unlike the rest of the page. No
+        // bottom padding: its bottom-right corner touches the founder
+        // image directly below (same column split, so their edges align).
+        <Section className="pb-0 sm:pb-0">
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] sm:items-start">
+            <p className="px-6 text-base mr-9 leading-[1.3] text-obsidian/80 sm:pr-0 sm:pl-10 lg:pl-16">
               {content.storyText}
             </p>
             <div className="aspect-[1376/633] w-full overflow-hidden bg-obsidian/[.05]">
@@ -69,11 +71,14 @@ export default async function AboutPage() {
         </Section>
       )}
 
-      {/* Photo bleeds to the left screen edge here (matches Figma) — only
-          the text column keeps the standard right padding, so this section
-          is NOT wrapped in <Container>, unlike the rest of the page. */}
-      <Section>
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1fr_1.4fr]">
+      {/* Photo bleeds to the left screen edge here (matches Figma), using
+          the same column split as the story section above (so the story
+          image's left edge lines up with this photo's right edge, with no
+          gap between the two sections). Only the text column keeps the
+          standard right padding, so this section is NOT wrapped in
+          <Container>, unlike the rest of the page. */}
+      <Section className="pt-0 sm:pt-0">
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr]">
           <div className="aspect-square w-full overflow-hidden bg-obsidian/[.05]">
             {content.founderPhoto && (
               <img
@@ -84,7 +89,7 @@ export default async function AboutPage() {
               />
             )}
           </div>
-          <div className="flex flex-col justify-between gap-10 px-6 sm:pr-10 sm:pl-0 sm:text-right lg:pr-16">
+          <div className="flex flex-col justify-between gap-10 px-6 pt-16 sm:pr-10 sm:pl-0 sm:text-right lg:pr-16">
             <div>
               <p className="font-heading text-2xl leading-tight font-semibold tracking-tight text-obsidian">
                 {content.founderName.includes(" ") ? (
@@ -107,7 +112,7 @@ export default async function AboutPage() {
               </p>
             </div>
             <div>
-              <p className="ml-auto max-w-lg text-base leading-[1.3] text-obsidian/70">
+              <p className="ml-auto max-w-4xl text-base leading-[1.3] text-obsidian/70">
                 {content.bio}
               </p>
               {(content.linkedinUrl || content.instagramUrl) && (
