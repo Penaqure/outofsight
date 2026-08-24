@@ -64,7 +64,7 @@ export function ContactsContentForm({
 
   return (
     <div className="mt-8">
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div>
           <p className="text-base text-obsidian">Body Text</p>
           <input
@@ -86,7 +86,7 @@ export function ContactsContentForm({
         </div>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-8">
+      <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div>
           <p className="text-base text-obsidian">Country Code</p>
           <select
@@ -116,7 +116,7 @@ export function ContactsContentForm({
         </div>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-8">
+      <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div>
           <p className="text-base text-obsidian">Location</p>
           <input

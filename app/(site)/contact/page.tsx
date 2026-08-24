@@ -6,8 +6,12 @@ import { Container } from "@/components/ui/Container";
 // see the same note in works/page.tsx.
 export const dynamic = "force-dynamic";
 
-// Same full-viewport, no-scroll treatment as Home, plus the Footer and a
-// Bone White background specific to this page — see app/(site)/page.tsx.
+// The hero fills exactly one viewport (h-dvh), same treatment as Home —
+// but unlike Home, this page also has a Footer, so the outer wrapper is
+// NOT h-dvh/overflow-hidden: that combination squeezed the Footer into
+// (or clipped it out of) the same single viewport and blocked scrolling
+// entirely. Here the page scrolls normally and the Footer only comes into
+// view once the hero viewport has been scrolled past.
 export default async function ContactPage() {
   const contact = await getContactsContent();
   const phone =
@@ -16,8 +20,8 @@ export default async function ContactPage() {
       : null;
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-bone-white">
-      <main className="flex flex-1 items-center justify-center text-center">
+    <div className="flex flex-col bg-bone-white">
+      <main className="flex h-dvh flex-col items-center justify-center text-center">
         <Container>
           <h1 className="text-4xl tracking-tight text-obsidian sm:text-5xl lg:text-[48px]">
             {contact.bodyText}

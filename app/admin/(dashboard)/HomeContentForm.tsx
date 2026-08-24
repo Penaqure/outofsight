@@ -70,7 +70,7 @@ export function HomeContentForm({
         <input
           ref={fileInputRef}
           type="file"
-          accept="video/mp4"
+          accept="video/*"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0];
@@ -99,12 +99,12 @@ export function HomeContentForm({
                 Click to Browse
               </span>
             </p>
-            <p className="text-xs text-obsidian/40">MP4 formats only, upto 1GB</p>
+            <p className="text-xs text-obsidian/40">All video formats, upto 1GB</p>
           </>
         )}
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-8">
+      <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div>
           <label className="flex items-center justify-between text-base text-obsidian">
             <span>Body Text</span>

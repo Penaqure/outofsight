@@ -127,11 +127,11 @@ export function WorkFormModal({
       <p className="mt-1 text-sm text-obsidian/50">Upload Thumbline</p>
       <div className="mt-3 border-t border-obsidian/10" />
 
-      <div className="mt-6 grid grid-cols-2 gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Dropzone
           label="Upload Thumbline"
           accept="image/*"
-          helperText="MP4 formats only, upto 1GB"
+          helperText="JPG or PNG, upto 10MB"
           preview={
             thumbnailImage
               ? { label: thumbnailLabel ?? "", url: thumbnailImage }
@@ -151,8 +151,8 @@ export function WorkFormModal({
         />
         <Dropzone
           label="Upload Video"
-          accept="video/mp4"
-          helperText="MP4 formats only, upto 1GB"
+          accept="video/*"
+          helperText="All video formats, upto 1GB"
           preview={
             videoName
               ? { label: videoLabel ?? "", url: videoPreviewImage }
@@ -211,7 +211,7 @@ export function WorkFormModal({
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-2 gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
           <p className="text-base text-obsidian">Title Text</p>
           <input
@@ -238,7 +238,7 @@ export function WorkFormModal({
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
           <p className="text-base text-obsidian">
             Credits <span className="font-normal text-obsidian/40">(optional)</span>

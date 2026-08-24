@@ -67,7 +67,7 @@ export default async function ProjectPage(
               )}
             </div>
             {filmstrip.length > 0 && (
-              <div className="grid grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {filmstrip.map((photo, index) => (
                   <img
                     key={index}

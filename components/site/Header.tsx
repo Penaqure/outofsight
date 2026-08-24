@@ -101,16 +101,16 @@ export function Header() {
     <header className="fixed inset-x-0 top-0 z-50">
       <Container>
         <div className="flex h-20 items-center justify-between">
-          <Link href="/">
+          <Link href="/" className="shrink-0">
             <Image
               src={logo}
               alt={siteConfig.name}
-              className={`h-24 w-auto transition-[filter] duration-200 ${isDark ? "invert" : ""}`}
+              className={`h-8 w-auto transition-[filter] duration-200 sm:h-14 lg:h-24 ${isDark ? "invert" : ""}`}
               priority
             />
           </Link>
           <nav
-            className={`flex gap-10 text-xs tracking-wider uppercase transition-colors duration-200 ${
+            className={`flex gap-2 text-[10px] tracking-wider uppercase transition-colors duration-200 sm:gap-6 sm:text-xs lg:gap-10 ${
               isDark ? "text-white" : "text-obsidian"
             }`}
           >
@@ -123,13 +123,13 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={
+                  className={`whitespace-nowrap ${
                     isActive
                       ? isDark
                         ? "border-b border-white"
                         : "border-b border-obsidian"
                       : "opacity-70 hover:opacity-100"
-                  }
+                  }`}
                 >
                   {item.label}
                 </Link>

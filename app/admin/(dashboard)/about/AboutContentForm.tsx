@@ -297,7 +297,7 @@ export function AboutContentForm({
 
       <div className="border-t border-obsidian/10 pt-10">
         <p className="text-2xl text-obsidian">Story Section</p>
-        <div className="mt-6 grid grid-cols-2 gap-6">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="flex flex-col">
             <p className="text-base text-obsidian">Story Text</p>
             <textarea
@@ -328,7 +328,7 @@ export function AboutContentForm({
 
       <div className="border-t border-obsidian/10 pt-10">
         <p className="text-2xl text-obsidian">Founder Profile</p>
-        <div className="mt-6 grid grid-cols-2 gap-6">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
           <Dropzone
             label="Founder Photo"
             accept="image/*"
@@ -377,7 +377,7 @@ export function AboutContentForm({
           />
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-6">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <p className="text-base text-obsidian">LinkedIn URL</p>
             <input
@@ -401,7 +401,7 @@ export function AboutContentForm({
 
       <div className="border-t border-obsidian/10 pt-10">
         <p className="text-2xl text-obsidian">Points Section</p>
-        <div className="mt-6 grid grid-cols-3 gap-6">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {processCards.map((card, index) => (
             <div key={index}>
               <input
@@ -470,7 +470,7 @@ export function AboutContentForm({
 
       <div className="border-t border-obsidian/10 pt-10">
         <p className="text-2xl text-obsidian">Call to Action</p>
-        <div className="mt-6 grid grid-cols-2 gap-6">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
           <input
             value={ctaText}
             onChange={(e) => update(setCtaText)(e.target.value)}
