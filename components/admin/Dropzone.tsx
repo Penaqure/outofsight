@@ -50,7 +50,9 @@ export function Dropzone({
   accept: string;
   helperText: string;
   preview: FilePreview | null;
-  onSelect: (file: File) => void;
+  // May return a Promise (e.g. an upload to Blob storage) — Dropzone shows
+  // a busy state and blocks further picks/drops until it settles.
+  onSelect: (file: File) => void | Promise<void>;
   onRemove: () => void;
   // Called instead of onSelect when the drop is a pool image (a URL) rather
   // than a raw OS file. Optional — only sections that participate in the
@@ -66,9 +68,20 @@ export function Dropzone({
   const previewRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isPositioning, setIsPositioning] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadFailed, setUploadFailed] = useState(false);
 
-  function pick(file: File | undefined) {
-    if (file) onSelect(file);
+  async function pick(file: File | undefined) {
+    if (!file) return;
+    setUploadFailed(false);
+    setIsUploading(true);
+    try {
+      await onSelect(file);
+    } catch {
+      setUploadFailed(true);
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   function updateFocalPoint(e: React.PointerEvent) {
@@ -98,12 +111,13 @@ export function Dropzone({
       <div
         onDragOver={(e) => {
           e.preventDefault();
-          setIsDragging(true);
+          if (!isUploading) setIsDragging(true);
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={(e) => {
           e.preventDefault();
           setIsDragging(false);
+          if (isUploading) return;
           const poolUrl = e.dataTransfer.getData(POOL_IMAGE_MIME);
           if (poolUrl && onDropUrl) {
             onDropUrl(poolUrl);
@@ -111,9 +125,9 @@ export function Dropzone({
           }
           pick(e.dataTransfer.files?.[0]);
         }}
-        onClick={() => !preview && inputRef.current?.click()}
+        onClick={() => !preview && !isUploading && inputRef.current?.click()}
         className={`relative mt-2 flex h-40 overflow-hidden border border-obsidian/10 bg-obsidian/[.05] transition-colors ${
-          !preview ? "cursor-pointer" : ""
+          !preview && !isUploading ? "cursor-pointer" : ""
         } ${isDragging ? "bg-primary/10 ring-2 ring-primary" : ""}`}
       >
         <input
@@ -123,7 +137,12 @@ export function Dropzone({
           className="hidden"
           onChange={(e) => pick(e.target.files?.[0])}
         />
-        {preview ? (
+        {isUploading ? (
+          <div className="flex w-full flex-col items-center justify-center gap-2 text-center">
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-obsidian/20 border-t-obsidian/60" />
+            <p className="text-sm text-obsidian/70">Uploading…</p>
+          </div>
+        ) : preview ? (
           <>
             {preview.url ? (
               <img
@@ -202,6 +221,11 @@ export function Dropzone({
           </div>
         )}
       </div>
+      {uploadFailed && (
+        <p className="mt-1 text-xs text-red-600">
+          Upload failed. Check your connection and try again.
+        </p>
+      )}
     </div>
   );
 }

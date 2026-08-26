@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import type { HomeContent } from "@/types/content";
-import { readFileAsDataUrl } from "@/lib/files";
+import { uploadFile } from "@/lib/blob-upload";
 import logoOnly from "@/public/logo/logo_only.png";
 
 export function HomeContentForm({
@@ -20,12 +20,25 @@ export function HomeContentForm({
   const [isDragging, setIsDragging] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadFailed, setUploadFailed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File) {
-    setVideoName(file.name);
-    setVideoUrl(await readFileAsDataUrl(file));
-    setDirty(true);
+    setUploadFailed(false);
+    setUploading(true);
+    setUploadProgress(0);
+    try {
+      const url = await uploadFile(file, file.name, setUploadProgress);
+      setVideoName(file.name);
+      setVideoUrl(url);
+      setDirty(true);
+    } catch {
+      setUploadFailed(true);
+    } finally {
+      setUploading(false);
+    }
   }
 
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -63,11 +76,11 @@ export function HomeContentForm({
           setIsDragging(true);
         }}
         onDragLeave={() => setIsDragging(false)}
-        onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
-        className={`mt-2 flex h-40 cursor-pointer flex-col items-center justify-center gap-2 bg-obsidian/10 text-center transition-colors ${
-          isDragging ? "bg-obsidian/[.15]" : ""
-        }`}
+        onDrop={uploading ? undefined : handleDrop}
+        onClick={() => !uploading && fileInputRef.current?.click()}
+        className={`mt-2 flex h-40 flex-col items-center justify-center gap-2 bg-obsidian/10 text-center transition-colors ${
+          uploading ? "cursor-default" : "cursor-pointer"
+        } ${isDragging ? "bg-obsidian/[.15]" : ""}`}
       >
         <input
           ref={fileInputRef}
@@ -79,7 +92,20 @@ export function HomeContentForm({
             if (file) handleFile(file);
           }}
         />
-        {videoName ? (
+        {uploading ? (
+          <>
+            <p className="text-sm text-obsidian">Uploading…</p>
+            <div className="h-1.5 w-48 overflow-hidden bg-obsidian/20">
+              <div
+                className="h-full bg-primary transition-[width]"
+                style={{ width: `${Math.round(uploadProgress * 100)}%` }}
+              />
+            </div>
+            <p className="text-xs text-obsidian/40">
+              Large files can take a while — keep this tab open
+            </p>
+          </>
+        ) : videoName ? (
           <p className="text-sm text-obsidian">{videoName}</p>
         ) : (
           <>
@@ -105,6 +131,11 @@ export function HomeContentForm({
           </>
         )}
       </div>
+      {uploadFailed && (
+        <p className="mt-2 text-xs text-red-600">
+          Upload failed. Check your connection and try again.
+        </p>
+      )}
 
       <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div>
@@ -159,7 +190,7 @@ export function HomeContentForm({
       <div className="mt-8 flex justify-end">
         <button
           onClick={handleSave}
-          disabled={!dirty || saving}
+          disabled={!dirty || saving || uploading}
           className="bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
         >
           {saving ? "Saving..." : "Save"}

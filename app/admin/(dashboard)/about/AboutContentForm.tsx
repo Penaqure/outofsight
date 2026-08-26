@@ -7,7 +7,7 @@ import {
   POOL_IMAGE_MIME,
   DEFAULT_FOCAL_POINT,
 } from "@/components/admin/Dropzone";
-import { readFileAsDataUrl } from "@/lib/files";
+import { uploadFile } from "@/lib/blob-upload";
 
 const fieldClass =
   "mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary";
@@ -80,7 +80,7 @@ export function AboutContentForm({
   async function handlePoolSelect(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
     const urls = await Promise.all(
-      Array.from(fileList).map((file) => readFileAsDataUrl(file))
+      Array.from(fileList).map((file) => uploadFile(file))
     );
     setImagePool((prev) => [...prev, ...urls]);
   }
@@ -120,7 +120,7 @@ export function AboutContentForm({
   async function handleLogosSelect(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
     const urls = await Promise.all(
-      Array.from(fileList).map((file) => readFileAsDataUrl(file))
+      Array.from(fileList).map((file) => uploadFile(file))
     );
     setTrustedByLogos((prev) => [...prev, ...urls]);
     setDirty(true);
@@ -265,7 +265,7 @@ export function AboutContentForm({
               heroImage ? { label: "Hero image", url: heroImage } : null
             }
             onSelect={async (file) => {
-              update(setHeroImage)(await readFileAsDataUrl(file));
+              update(setHeroImage)(await uploadFile(file));
             }}
             onRemove={() => update(setHeroImage)(null)}
             onDropUrl={(url) => assignPoolImage(url, "Hero Image")}
@@ -316,7 +316,7 @@ export function AboutContentForm({
               storyImage ? { label: "Story image", url: storyImage } : null
             }
             onSelect={async (file) => {
-              update(setStoryImage)(await readFileAsDataUrl(file));
+              update(setStoryImage)(await uploadFile(file));
             }}
             onRemove={() => update(setStoryImage)(null)}
             onDropUrl={(url) => assignPoolImage(url, "Story Image")}
@@ -337,7 +337,7 @@ export function AboutContentForm({
               founderPhoto ? { label: "Founder photo", url: founderPhoto } : null
             }
             onSelect={async (file) => {
-              update(setFounderPhoto)(await readFileAsDataUrl(file));
+              update(setFounderPhoto)(await uploadFile(file));
             }}
             onRemove={() => update(setFounderPhoto)(null)}
             onDropUrl={(url) => assignPoolImage(url, "Founder Photo")}
@@ -489,7 +489,7 @@ export function AboutContentForm({
                 : null
             }
             onSelect={async (file) => {
-              update(setCtaBackgroundImage)(await readFileAsDataUrl(file));
+              update(setCtaBackgroundImage)(await uploadFile(file));
             }}
             onRemove={() => update(setCtaBackgroundImage)(null)}
             onDropUrl={(url) => assignPoolImage(url, "CTA Background Image")}

@@ -1,15 +1,8 @@
-export function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-// Captures a mid-point frame from a video file as a JPEG data URL, purely
-// client-side (no server-side video processing available in this scaffold).
-export function captureVideoFrame(file: File): Promise<string | null> {
+// Captures a mid-point frame from a video file as a JPEG Blob, purely
+// client-side (no server-side video processing available in this
+// scaffold). Returns a Blob rather than a data URL so the caller can
+// upload it directly instead of embedding it inline.
+export function captureVideoFrame(file: File): Promise<Blob | null> {
   return new Promise((resolve) => {
     const video = document.createElement("video");
     video.preload = "metadata";
@@ -18,7 +11,7 @@ export function captureVideoFrame(file: File): Promise<string | null> {
     const url = URL.createObjectURL(file);
     video.src = url;
 
-    const cleanupAndResolve = (result: string | null) => {
+    const cleanupAndResolve = (result: Blob | null) => {
       URL.revokeObjectURL(url);
       resolve(result);
     };
@@ -37,7 +30,11 @@ export function captureVideoFrame(file: File): Promise<string | null> {
           return;
         }
         ctx.drawImage(video, 0, 0);
-        cleanupAndResolve(canvas.toDataURL("image/jpeg", 0.7));
+        canvas.toBlob(
+          (blob) => cleanupAndResolve(blob),
+          "image/jpeg",
+          0.7
+        );
       } catch {
         cleanupAndResolve(null);
       }

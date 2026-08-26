@@ -8,7 +8,8 @@ import {
   formatFileSize,
   DEFAULT_FOCAL_POINT,
 } from "@/components/admin/Dropzone";
-import { readFileAsDataUrl, captureVideoFrame } from "@/lib/files";
+import { captureVideoFrame } from "@/lib/files";
+import { uploadFile } from "@/lib/blob-upload";
 
 export function WorkFormModal({
   project,
@@ -53,7 +54,7 @@ export function WorkFormModal({
   const [saving, setSaving] = useState(false);
 
   async function handleThumbnailSelect(file: File) {
-    const url = await readFileAsDataUrl(file);
+    const url = await uploadFile(file);
     setThumbnailImage(url);
     setThumbnailLabel(`${file.name} • ${formatFileSize(file.size)}`);
     setDirty(true);
@@ -62,14 +63,15 @@ export function WorkFormModal({
   async function handleVideoSelect(file: File) {
     setVideoName(file.name);
     setVideoLabel(`${file.name} • ${formatFileSize(file.size)}`);
-    setVideoPreviewImage(await captureVideoFrame(file));
+    const frame = await captureVideoFrame(file);
+    setVideoPreviewImage(frame ? await uploadFile(frame, "preview.jpg") : null);
     setDirty(true);
   }
 
   async function handlePhotosSelect(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
     const urls = await Promise.all(
-      Array.from(fileList).map((file) => readFileAsDataUrl(file))
+      Array.from(fileList).map((file) => uploadFile(file))
     );
     setPhotos((prev) => [...prev, ...urls]);
     setDirty(true);
