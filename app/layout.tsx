@@ -19,6 +19,22 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.tagline,
+  // favicon.ico (obsidian icon) is the universal fallback for browsers that
+  // don't support prefers-color-scheme favicons. These two entries layer on
+  // top for browsers that do, so the icon stays visible against the tab bar
+  // either way — a dark icon on a light tab bar, a light icon on a dark one.
+  icons: {
+    icon: [
+      {
+        url: "/logo/favicon-light-theme.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/logo/favicon-dark-theme.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

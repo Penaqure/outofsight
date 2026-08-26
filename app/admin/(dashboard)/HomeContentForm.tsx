@@ -1,8 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import type { HomeContent } from "@/types/content";
 import { readFileAsDataUrl } from "@/lib/files";
+import logoOnly from "@/public/logo/logo_only.png";
 
 export function HomeContentForm({
   initialContent,
@@ -145,8 +147,11 @@ export function HomeContentForm({
               className="accent-primary"
             />
           </label>
-          <div className="mt-2 w-full truncate bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian/50">
-            {initialContent.logoFileName}
+          <div className="mt-2 flex w-full items-center gap-3 bg-obsidian/10 px-4 py-3 text-sm text-obsidian/50">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-obsidian p-1.5">
+              <Image src={logoOnly} alt="" className="h-full w-full object-contain" />
+            </span>
+            <span className="truncate">{initialContent.logoFileName}</span>
           </div>
         </div>
       </div>

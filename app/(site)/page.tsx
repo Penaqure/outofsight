@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getHomeContent } from "@/lib/data/content";
 import { siteConfig } from "@/lib/config";
-import logo from "@/public/logo/outofsight-logo.png";
+import logoOnly from "@/public/logo/logo_only.png";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // see the same note in works/page.tsx.
@@ -35,9 +35,9 @@ export default async function HomePage() {
       <div className="relative px-6 text-center sm:px-10 lg:px-16">
         {content.displayMode === "logo-only" ? (
           <Image
-            src={logo}
+            src={logoOnly}
             alt={siteConfig.name}
-            className="mx-auto w-72 invert"
+            className="mx-auto w-40 sm:w-48"
             priority
           />
         ) : (
