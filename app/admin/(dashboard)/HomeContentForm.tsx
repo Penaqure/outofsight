@@ -137,7 +137,7 @@ export function HomeContentForm({
         </p>
       )}
 
-      <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3">
         <div>
           <label className="flex items-center justify-between text-base text-obsidian">
             <span>Body Text</span>
@@ -183,6 +183,24 @@ export function HomeContentForm({
               <Image src={logoOnly} alt="" className="h-full w-full object-contain" />
             </span>
             <span className="truncate">{initialContent.logoFileName}</span>
+          </div>
+        </div>
+        <div>
+          <label className="flex items-center justify-between text-base text-obsidian">
+            <span>Blank</span>
+            <input
+              type="radio"
+              name="displayMode"
+              checked={displayMode === "blank"}
+              onChange={() => {
+                setDisplayMode("blank");
+                setDirty(true);
+              }}
+              className="accent-primary"
+            />
+          </label>
+          <div className="mt-2 flex h-[46px] w-full items-center bg-obsidian/10 px-4 text-sm text-obsidian/50">
+            No text or logo — background only
           </div>
         </div>
       </div>

@@ -19,21 +19,16 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.tagline,
-  // favicon.ico (obsidian icon) is the universal fallback for browsers that
-  // don't support prefers-color-scheme favicons. These two entries layer on
-  // top for browsers that do, so the icon stays visible against the tab bar
-  // either way — a dark icon on a light tab bar, a light icon on a dark one.
+  // One icon, no light/dark variants: favicon dark-mode switching
+  // (`prefers-color-scheme`, whether via the `media` attribute on <link>
+  // or embedded in an SVG's own stylesheet) isn't reliably applied to
+  // favicons across browsers — Chrome in particular just renders the
+  // default state regardless of theme. The icon itself carries a light
+  // halo behind its dark linework (see public/logo/favicon.png) so it
+  // stays legible on both light and dark tab bars without needing any
+  // theme detection to work.
   icons: {
-    icon: [
-      {
-        url: "/logo/favicon-light-theme.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/logo/favicon-dark-theme.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-    ],
+    icon: "/logo/favicon.png",
   },
 };
 
