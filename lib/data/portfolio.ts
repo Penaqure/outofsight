@@ -1,79 +1,103 @@
 import type { Project } from "@/types/portfolio";
 import { slugify } from "@/lib/slugify";
+import { prisma } from "@/lib/prisma";
 
-// In-memory placeholder store. Swap this module for a real database layer
-// (e.g. Prisma, Drizzle) once the data model is finalized — the function
-// signatures below are the contract the rest of the app depends on.
-//
-// Anchored on globalThis rather than a plain module-level `let`: in dev,
-// Route Handlers and Server Components can end up in separate Turbopack
-// module graphs, so a closured variable doesn't stay shared between them.
-// globalThis is the actual Node process, so it does.
-declare global {
-  var __projects: Project[] | undefined;
+// Postgres-backed now (see prisma/schema.prisma). Prisma's `createdAt` is a
+// native DateTime (JS Date at runtime) — the Project type keeps it as an
+// ISO string like before, so every row is converted on the way out.
+function toProject(row: {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  credits: string;
+  thumbnailImage: string | null;
+  thumbnailImagePosition: string;
+  thumbnailLabel: string | null;
+  videoName: string | null;
+  videoLabel: string | null;
+  videoPreviewImage: string | null;
+  videoPreviewImagePosition: string;
+  photos: string[];
+  tags: string[];
+  createdAt: Date;
+}): Project {
+  return { ...row, createdAt: row.createdAt.toISOString() };
 }
 
-function store(): Project[] {
-  if (!globalThis.__projects) {
-    globalThis.__projects = [
-      {
-        id: "1",
-        slug: "sample-project-one",
-        title: "Sample Project One",
-        description:
-          "Replace this with a real case study once project details are available.",
-        credits: "",
-        thumbnailImage: null,
-        thumbnailImagePosition: "50% 50%",
-        thumbnailLabel: null,
-        videoName: null,
-        videoLabel: null,
-        videoPreviewImage: null,
-        videoPreviewImagePosition: "50% 50%",
-        photos: [],
-        tags: ["web", "branding"],
-        createdAt: new Date("2026-01-10").toISOString(),
-      },
-      {
-        id: "2",
-        slug: "sample-project-two",
-        title: "Sample Project Two",
-        description:
-          "Replace this with a real case study once project details are available.",
-        credits: "",
-        thumbnailImage: null,
-        thumbnailImagePosition: "50% 50%",
-        thumbnailLabel: null,
-        videoName: null,
-        videoLabel: null,
-        videoPreviewImage: null,
-        videoPreviewImagePosition: "50% 50%",
-        photos: [],
-        tags: ["mobile"],
-        createdAt: new Date("2026-02-20").toISOString(),
-      },
-    ];
-  }
-  return globalThis.__projects;
+const seedProjects = [
+  {
+    slug: "sample-project-one",
+    title: "Sample Project One",
+    description:
+      "Replace this with a real case study once project details are available.",
+    credits: "",
+    thumbnailImage: null,
+    thumbnailImagePosition: "50% 50%",
+    thumbnailLabel: null,
+    videoName: null,
+    videoLabel: null,
+    videoPreviewImage: null,
+    videoPreviewImagePosition: "50% 50%",
+    photos: [],
+    tags: ["web", "branding"],
+    createdAt: new Date("2026-01-10"),
+  },
+  {
+    slug: "sample-project-two",
+    title: "Sample Project Two",
+    description:
+      "Replace this with a real case study once project details are available.",
+    credits: "",
+    thumbnailImage: null,
+    thumbnailImagePosition: "50% 50%",
+    thumbnailLabel: null,
+    videoName: null,
+    videoLabel: null,
+    videoPreviewImage: null,
+    videoPreviewImagePosition: "50% 50%",
+    photos: [],
+    tags: ["mobile"],
+    createdAt: new Date("2026-02-20"),
+  },
+];
+
+// Seeds the two sample projects on first run only (table empty). Safe to
+// call on every read — it's a no-op once any project exists.
+async function ensureSeeded(): Promise<void> {
+  const count = await prisma.project.count();
+  if (count > 0) return;
+  await prisma.project.createMany({ data: seedProjects });
 }
 
 export async function getProjects(): Promise<Project[]> {
-  return [...store()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  await ensureSeeded();
+  const rows = await prisma.project.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(toProject);
 }
 
-export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
-  return store().find((project) => project.slug === slug);
+export async function getProjectBySlug(
+  slug: string
+): Promise<Project | undefined> {
+  await ensureSeeded();
+  const row = await prisma.project.findUnique({ where: { slug } });
+  return row ? toProject(row) : undefined;
 }
 
-export async function getProjectById(id: string): Promise<Project | undefined> {
-  return store().find((project) => project.id === id);
+export async function getProjectById(
+  id: string
+): Promise<Project | undefined> {
+  const row = await prisma.project.findUnique({ where: { id } });
+  return row ? toProject(row) : undefined;
 }
 
-function uniqueSlug(title: string): string {
+async function uniqueSlug(title: string): Promise<string> {
   const base = slugify(title) || "untitled";
   let candidate = base;
   let suffix = 2;
-  while (store().some((project) => project.slug === candidate)) {
+  while (await prisma.project.findUnique({ where: { slug: candidate } })) {
     candidate = `${base}-${suffix}`;
     suffix += 1;
   }
@@ -83,31 +107,28 @@ function uniqueSlug(title: string): string {
 export async function createProject(
   input: Omit<Project, "id" | "createdAt" | "slug">
 ): Promise<Project> {
-  const project: Project = {
-    ...input,
-    id: crypto.randomUUID(),
-    slug: uniqueSlug(input.title),
-    createdAt: new Date().toISOString(),
-  };
-  globalThis.__projects = [...store(), project];
-  return project;
+  const slug = await uniqueSlug(input.title);
+  const row = await prisma.project.create({ data: { ...input, slug } });
+  return toProject(row);
 }
 
 export async function updateProject(
   id: string,
   input: Partial<Omit<Project, "id" | "createdAt" | "slug">>
 ): Promise<Project | undefined> {
-  let updated: Project | undefined;
-  globalThis.__projects = store().map((project) => {
-    if (project.id !== id) return project;
-    updated = { ...project, ...input };
-    return updated;
-  });
-  return updated;
+  try {
+    const row = await prisma.project.update({ where: { id }, data: input });
+    return toProject(row);
+  } catch {
+    return undefined;
+  }
 }
 
 export async function deleteProject(id: string): Promise<boolean> {
-  const before = store().length;
-  globalThis.__projects = store().filter((project) => project.id !== id);
-  return store().length < before;
+  try {
+    await prisma.project.delete({ where: { id } });
+    return true;
+  } catch {
+    return false;
+  }
 }

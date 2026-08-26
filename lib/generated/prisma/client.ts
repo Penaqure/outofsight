@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Projects
- * const projects = await prisma.project.findMany()
+ * // Fetch zero or more HomeContents
+ * const homeContents = await prisma.homeContent.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,22 +42,27 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model Project
- * 
- */
-export type Project = Prisma.ProjectModel
-/**
  * Model HomeContent
  * 
  */
 export type HomeContent = Prisma.HomeContentModel
+/**
+ * Model ContactsContent
+ * 
+ */
+export type ContactsContent = Prisma.ContactsContentModel
+/**
+ * Model WorksContent
+ * 
+ */
+export type WorksContent = Prisma.WorksContentModel
 /**
  * Model AboutContent
  * 
  */
 export type AboutContent = Prisma.AboutContentModel
 /**
- * Model ContactsContent
+ * Model Project
  * 
  */
-export type ContactsContent = Prisma.ContactsContentModel
+export type Project = Prisma.ProjectModel

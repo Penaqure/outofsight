@@ -276,7 +276,7 @@ export type HomeContentScalarWhereWithAggregatesInput = {
 export type HomeContentCreateInput = {
   id?: number
   heroText: string
-  displayMode?: string
+  displayMode: string
   backgroundVideoName?: string | null
   backgroundVideoUrl?: string | null
   logoFileName?: string | null
@@ -285,7 +285,7 @@ export type HomeContentCreateInput = {
 export type HomeContentUncheckedCreateInput = {
   id?: number
   heroText: string
-  displayMode?: string
+  displayMode: string
   backgroundVideoName?: string | null
   backgroundVideoUrl?: string | null
   logoFileName?: string | null
@@ -312,7 +312,7 @@ export type HomeContentUncheckedUpdateInput = {
 export type HomeContentCreateManyInput = {
   id?: number
   heroText: string
-  displayMode?: string
+  displayMode: string
   backgroundVideoName?: string | null
   backgroundVideoUrl?: string | null
   logoFileName?: string | null
@@ -377,6 +377,14 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type StringFieldUpdateOperationsInput = {
+  set?: string
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 

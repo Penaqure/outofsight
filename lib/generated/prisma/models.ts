@@ -8,8 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Project'
 export type * from './models/HomeContent'
-export type * from './models/AboutContent'
 export type * from './models/ContactsContent'
+export type * from './models/WorksContent'
+export type * from './models/AboutContent'
+export type * from './models/Project'
 export type * from './commonInputTypes'

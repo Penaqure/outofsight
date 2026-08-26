@@ -51,10 +51,11 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  Project: 'Project',
   HomeContent: 'HomeContent',
+  ContactsContent: 'ContactsContent',
+  WorksContent: 'WorksContent',
   AboutContent: 'AboutContent',
-  ContactsContent: 'ContactsContent'
+  Project: 'Project'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -73,26 +74,6 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const ProjectScalarFieldEnum = {
-  id: 'id',
-  slug: 'slug',
-  title: 'title',
-  description: 'description',
-  credits: 'credits',
-  thumbnailImage: 'thumbnailImage',
-  thumbnailLabel: 'thumbnailLabel',
-  videoName: 'videoName',
-  videoLabel: 'videoLabel',
-  videoUrl: 'videoUrl',
-  videoPreviewImage: 'videoPreviewImage',
-  photos: 'photos',
-  tags: 'tags',
-  createdAt: 'createdAt'
-} as const
-
-export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
-
-
 export const HomeContentScalarFieldEnum = {
   id: 'id',
   heroText: 'heroText',
@@ -105,24 +86,6 @@ export const HomeContentScalarFieldEnum = {
 export type HomeContentScalarFieldEnum = (typeof HomeContentScalarFieldEnum)[keyof typeof HomeContentScalarFieldEnum]
 
 
-export const AboutContentScalarFieldEnum = {
-  id: 'id',
-  heroImage: 'heroImage',
-  founderPhoto: 'founderPhoto',
-  founderName: 'founderName',
-  founderTitle: 'founderTitle',
-  bio: 'bio',
-  linkedinUrl: 'linkedinUrl',
-  instagramUrl: 'instagramUrl',
-  processCards: 'processCards',
-  trustedByLogos: 'trustedByLogos',
-  ctaText: 'ctaText',
-  ctaBackgroundImage: 'ctaBackgroundImage'
-} as const
-
-export type AboutContentScalarFieldEnum = (typeof AboutContentScalarFieldEnum)[keyof typeof AboutContentScalarFieldEnum]
-
-
 export const ContactsContentScalarFieldEnum = {
   id: 'id',
   bodyText: 'bodyText',
@@ -133,6 +96,64 @@ export const ContactsContentScalarFieldEnum = {
 } as const
 
 export type ContactsContentScalarFieldEnum = (typeof ContactsContentScalarFieldEnum)[keyof typeof ContactsContentScalarFieldEnum]
+
+
+export const WorksContentScalarFieldEnum = {
+  id: 'id',
+  heroImage: 'heroImage',
+  heroImagePosition: 'heroImagePosition',
+  heroHeading: 'heroHeading',
+  heroDescription: 'heroDescription'
+} as const
+
+export type WorksContentScalarFieldEnum = (typeof WorksContentScalarFieldEnum)[keyof typeof WorksContentScalarFieldEnum]
+
+
+export const AboutContentScalarFieldEnum = {
+  id: 'id',
+  heroImage: 'heroImage',
+  heroImagePosition: 'heroImagePosition',
+  heroHeadline: 'heroHeadline',
+  introText: 'introText',
+  storyImage: 'storyImage',
+  storyImagePosition: 'storyImagePosition',
+  storyText: 'storyText',
+  founderPhoto: 'founderPhoto',
+  founderPhotoPosition: 'founderPhotoPosition',
+  founderName: 'founderName',
+  founderTitle: 'founderTitle',
+  bio: 'bio',
+  linkedinUrl: 'linkedinUrl',
+  instagramUrl: 'instagramUrl',
+  processCards: 'processCards',
+  trustedByLogos: 'trustedByLogos',
+  ctaText: 'ctaText',
+  ctaBackgroundImage: 'ctaBackgroundImage',
+  ctaBackgroundImagePosition: 'ctaBackgroundImagePosition'
+} as const
+
+export type AboutContentScalarFieldEnum = (typeof AboutContentScalarFieldEnum)[keyof typeof AboutContentScalarFieldEnum]
+
+
+export const ProjectScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  credits: 'credits',
+  thumbnailImage: 'thumbnailImage',
+  thumbnailImagePosition: 'thumbnailImagePosition',
+  thumbnailLabel: 'thumbnailLabel',
+  videoName: 'videoName',
+  videoLabel: 'videoLabel',
+  videoPreviewImage: 'videoPreviewImage',
+  videoPreviewImagePosition: 'videoPreviewImagePosition',
+  photos: 'photos',
+  tags: 'tags',
+  createdAt: 'createdAt'
+} as const
+
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -276,19 +276,19 @@ export type ContactsContentScalarWhereWithAggregatesInput = {
 export type ContactsContentCreateInput = {
   id?: number
   bodyText: string
-  email?: string
-  countryCode?: string
-  phoneNumber?: string
-  location?: string
+  email: string
+  countryCode: string
+  phoneNumber: string
+  location: string
 }
 
 export type ContactsContentUncheckedCreateInput = {
   id?: number
   bodyText: string
-  email?: string
-  countryCode?: string
-  phoneNumber?: string
-  location?: string
+  email: string
+  countryCode: string
+  phoneNumber: string
+  location: string
 }
 
 export type ContactsContentUpdateInput = {
@@ -312,10 +312,10 @@ export type ContactsContentUncheckedUpdateInput = {
 export type ContactsContentCreateManyInput = {
   id?: number
   bodyText: string
-  email?: string
-  countryCode?: string
-  phoneNumber?: string
-  location?: string
+  email: string
+  countryCode: string
+  phoneNumber: string
+  location: string
 }
 
 export type ContactsContentUpdateManyMutationInput = {

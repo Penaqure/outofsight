@@ -37,7 +37,14 @@ export type AboutContentSumAggregateOutputType = {
 export type AboutContentMinAggregateOutputType = {
   id: number | null
   heroImage: string | null
+  heroImagePosition: string | null
+  heroHeadline: string | null
+  introText: string | null
+  storyImage: string | null
+  storyImagePosition: string | null
+  storyText: string | null
   founderPhoto: string | null
+  founderPhotoPosition: string | null
   founderName: string | null
   founderTitle: string | null
   bio: string | null
@@ -45,12 +52,20 @@ export type AboutContentMinAggregateOutputType = {
   instagramUrl: string | null
   ctaText: string | null
   ctaBackgroundImage: string | null
+  ctaBackgroundImagePosition: string | null
 }
 
 export type AboutContentMaxAggregateOutputType = {
   id: number | null
   heroImage: string | null
+  heroImagePosition: string | null
+  heroHeadline: string | null
+  introText: string | null
+  storyImage: string | null
+  storyImagePosition: string | null
+  storyText: string | null
   founderPhoto: string | null
+  founderPhotoPosition: string | null
   founderName: string | null
   founderTitle: string | null
   bio: string | null
@@ -58,12 +73,20 @@ export type AboutContentMaxAggregateOutputType = {
   instagramUrl: string | null
   ctaText: string | null
   ctaBackgroundImage: string | null
+  ctaBackgroundImagePosition: string | null
 }
 
 export type AboutContentCountAggregateOutputType = {
   id: number
   heroImage: number
+  heroImagePosition: number
+  heroHeadline: number
+  introText: number
+  storyImage: number
+  storyImagePosition: number
+  storyText: number
   founderPhoto: number
+  founderPhotoPosition: number
   founderName: number
   founderTitle: number
   bio: number
@@ -73,6 +96,7 @@ export type AboutContentCountAggregateOutputType = {
   trustedByLogos: number
   ctaText: number
   ctaBackgroundImage: number
+  ctaBackgroundImagePosition: number
   _all: number
 }
 
@@ -88,7 +112,14 @@ export type AboutContentSumAggregateInputType = {
 export type AboutContentMinAggregateInputType = {
   id?: true
   heroImage?: true
+  heroImagePosition?: true
+  heroHeadline?: true
+  introText?: true
+  storyImage?: true
+  storyImagePosition?: true
+  storyText?: true
   founderPhoto?: true
+  founderPhotoPosition?: true
   founderName?: true
   founderTitle?: true
   bio?: true
@@ -96,12 +127,20 @@ export type AboutContentMinAggregateInputType = {
   instagramUrl?: true
   ctaText?: true
   ctaBackgroundImage?: true
+  ctaBackgroundImagePosition?: true
 }
 
 export type AboutContentMaxAggregateInputType = {
   id?: true
   heroImage?: true
+  heroImagePosition?: true
+  heroHeadline?: true
+  introText?: true
+  storyImage?: true
+  storyImagePosition?: true
+  storyText?: true
   founderPhoto?: true
+  founderPhotoPosition?: true
   founderName?: true
   founderTitle?: true
   bio?: true
@@ -109,12 +148,20 @@ export type AboutContentMaxAggregateInputType = {
   instagramUrl?: true
   ctaText?: true
   ctaBackgroundImage?: true
+  ctaBackgroundImagePosition?: true
 }
 
 export type AboutContentCountAggregateInputType = {
   id?: true
   heroImage?: true
+  heroImagePosition?: true
+  heroHeadline?: true
+  introText?: true
+  storyImage?: true
+  storyImagePosition?: true
+  storyText?: true
   founderPhoto?: true
+  founderPhotoPosition?: true
   founderName?: true
   founderTitle?: true
   bio?: true
@@ -124,6 +171,7 @@ export type AboutContentCountAggregateInputType = {
   trustedByLogos?: true
   ctaText?: true
   ctaBackgroundImage?: true
+  ctaBackgroundImagePosition?: true
   _all?: true
 }
 
@@ -216,7 +264,14 @@ export type AboutContentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type AboutContentGroupByOutputType = {
   id: number
   heroImage: string | null
+  heroImagePosition: string
+  heroHeadline: string
+  introText: string
+  storyImage: string | null
+  storyImagePosition: string
+  storyText: string
   founderPhoto: string | null
+  founderPhotoPosition: string
   founderName: string
   founderTitle: string
   bio: string
@@ -226,6 +281,7 @@ export type AboutContentGroupByOutputType = {
   trustedByLogos: string[]
   ctaText: string
   ctaBackgroundImage: string | null
+  ctaBackgroundImagePosition: string
   _count: AboutContentCountAggregateOutputType | null
   _avg: AboutContentAvgAggregateOutputType | null
   _sum: AboutContentSumAggregateOutputType | null
@@ -254,7 +310,14 @@ export type AboutContentWhereInput = {
   NOT?: Prisma.AboutContentWhereInput | Prisma.AboutContentWhereInput[]
   id?: Prisma.IntFilter<"AboutContent"> | number
   heroImage?: Prisma.StringNullableFilter<"AboutContent"> | string | null
+  heroImagePosition?: Prisma.StringFilter<"AboutContent"> | string
+  heroHeadline?: Prisma.StringFilter<"AboutContent"> | string
+  introText?: Prisma.StringFilter<"AboutContent"> | string
+  storyImage?: Prisma.StringNullableFilter<"AboutContent"> | string | null
+  storyImagePosition?: Prisma.StringFilter<"AboutContent"> | string
+  storyText?: Prisma.StringFilter<"AboutContent"> | string
   founderPhoto?: Prisma.StringNullableFilter<"AboutContent"> | string | null
+  founderPhotoPosition?: Prisma.StringFilter<"AboutContent"> | string
   founderName?: Prisma.StringFilter<"AboutContent"> | string
   founderTitle?: Prisma.StringFilter<"AboutContent"> | string
   bio?: Prisma.StringFilter<"AboutContent"> | string
@@ -264,12 +327,20 @@ export type AboutContentWhereInput = {
   trustedByLogos?: Prisma.StringNullableListFilter<"AboutContent">
   ctaText?: Prisma.StringFilter<"AboutContent"> | string
   ctaBackgroundImage?: Prisma.StringNullableFilter<"AboutContent"> | string | null
+  ctaBackgroundImagePosition?: Prisma.StringFilter<"AboutContent"> | string
 }
 
 export type AboutContentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   heroImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  heroImagePosition?: Prisma.SortOrder
+  heroHeadline?: Prisma.SortOrder
+  introText?: Prisma.SortOrder
+  storyImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  storyImagePosition?: Prisma.SortOrder
+  storyText?: Prisma.SortOrder
   founderPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
+  founderPhotoPosition?: Prisma.SortOrder
   founderName?: Prisma.SortOrder
   founderTitle?: Prisma.SortOrder
   bio?: Prisma.SortOrder
@@ -279,6 +350,7 @@ export type AboutContentOrderByWithRelationInput = {
   trustedByLogos?: Prisma.SortOrder
   ctaText?: Prisma.SortOrder
   ctaBackgroundImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  ctaBackgroundImagePosition?: Prisma.SortOrder
 }
 
 export type AboutContentWhereUniqueInput = Prisma.AtLeast<{
@@ -287,7 +359,14 @@ export type AboutContentWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.AboutContentWhereInput[]
   NOT?: Prisma.AboutContentWhereInput | Prisma.AboutContentWhereInput[]
   heroImage?: Prisma.StringNullableFilter<"AboutContent"> | string | null
+  heroImagePosition?: Prisma.StringFilter<"AboutContent"> | string
+  heroHeadline?: Prisma.StringFilter<"AboutContent"> | string
+  introText?: Prisma.StringFilter<"AboutContent"> | string
+  storyImage?: Prisma.StringNullableFilter<"AboutContent"> | string | null
+  storyImagePosition?: Prisma.StringFilter<"AboutContent"> | string
+  storyText?: Prisma.StringFilter<"AboutContent"> | string
   founderPhoto?: Prisma.StringNullableFilter<"AboutContent"> | string | null
+  founderPhotoPosition?: Prisma.StringFilter<"AboutContent"> | string
   founderName?: Prisma.StringFilter<"AboutContent"> | string
   founderTitle?: Prisma.StringFilter<"AboutContent"> | string
   bio?: Prisma.StringFilter<"AboutContent"> | string
@@ -297,12 +376,20 @@ export type AboutContentWhereUniqueInput = Prisma.AtLeast<{
   trustedByLogos?: Prisma.StringNullableListFilter<"AboutContent">
   ctaText?: Prisma.StringFilter<"AboutContent"> | string
   ctaBackgroundImage?: Prisma.StringNullableFilter<"AboutContent"> | string | null
+  ctaBackgroundImagePosition?: Prisma.StringFilter<"AboutContent"> | string
 }, "id">
 
 export type AboutContentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   heroImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  heroImagePosition?: Prisma.SortOrder
+  heroHeadline?: Prisma.SortOrder
+  introText?: Prisma.SortOrder
+  storyImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  storyImagePosition?: Prisma.SortOrder
+  storyText?: Prisma.SortOrder
   founderPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
+  founderPhotoPosition?: Prisma.SortOrder
   founderName?: Prisma.SortOrder
   founderTitle?: Prisma.SortOrder
   bio?: Prisma.SortOrder
@@ -312,6 +399,7 @@ export type AboutContentOrderByWithAggregationInput = {
   trustedByLogos?: Prisma.SortOrder
   ctaText?: Prisma.SortOrder
   ctaBackgroundImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  ctaBackgroundImagePosition?: Prisma.SortOrder
   _count?: Prisma.AboutContentCountOrderByAggregateInput
   _avg?: Prisma.AboutContentAvgOrderByAggregateInput
   _max?: Prisma.AboutContentMaxOrderByAggregateInput
@@ -325,7 +413,14 @@ export type AboutContentScalarWhereWithAggregatesInput = {
   NOT?: Prisma.AboutContentScalarWhereWithAggregatesInput | Prisma.AboutContentScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"AboutContent"> | number
   heroImage?: Prisma.StringNullableWithAggregatesFilter<"AboutContent"> | string | null
+  heroImagePosition?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
+  heroHeadline?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
+  introText?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
+  storyImage?: Prisma.StringNullableWithAggregatesFilter<"AboutContent"> | string | null
+  storyImagePosition?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
+  storyText?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
   founderPhoto?: Prisma.StringNullableWithAggregatesFilter<"AboutContent"> | string | null
+  founderPhotoPosition?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
   founderName?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
   founderTitle?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
   bio?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
@@ -335,42 +430,66 @@ export type AboutContentScalarWhereWithAggregatesInput = {
   trustedByLogos?: Prisma.StringNullableListFilter<"AboutContent">
   ctaText?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
   ctaBackgroundImage?: Prisma.StringNullableWithAggregatesFilter<"AboutContent"> | string | null
+  ctaBackgroundImagePosition?: Prisma.StringWithAggregatesFilter<"AboutContent"> | string
 }
 
 export type AboutContentCreateInput = {
   id?: number
   heroImage?: string | null
+  heroImagePosition: string
+  heroHeadline: string
+  introText: string
+  storyImage?: string | null
+  storyImagePosition: string
+  storyText: string
   founderPhoto?: string | null
+  founderPhotoPosition: string
   founderName: string
   founderTitle: string
   bio: string
-  linkedinUrl?: string
-  instagramUrl?: string
+  linkedinUrl: string
+  instagramUrl: string
   processCards: Prisma.JsonNullValueInput | runtime.InputJsonValue
   trustedByLogos?: Prisma.AboutContentCreatetrustedByLogosInput | string[]
   ctaText: string
   ctaBackgroundImage?: string | null
+  ctaBackgroundImagePosition: string
 }
 
 export type AboutContentUncheckedCreateInput = {
   id?: number
   heroImage?: string | null
+  heroImagePosition: string
+  heroHeadline: string
+  introText: string
+  storyImage?: string | null
+  storyImagePosition: string
+  storyText: string
   founderPhoto?: string | null
+  founderPhotoPosition: string
   founderName: string
   founderTitle: string
   bio: string
-  linkedinUrl?: string
-  instagramUrl?: string
+  linkedinUrl: string
+  instagramUrl: string
   processCards: Prisma.JsonNullValueInput | runtime.InputJsonValue
   trustedByLogos?: Prisma.AboutContentCreatetrustedByLogosInput | string[]
   ctaText: string
   ctaBackgroundImage?: string | null
+  ctaBackgroundImagePosition: string
 }
 
 export type AboutContentUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   heroImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+  heroHeadline?: Prisma.StringFieldUpdateOperationsInput | string
+  introText?: Prisma.StringFieldUpdateOperationsInput | string
+  storyImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storyImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+  storyText?: Prisma.StringFieldUpdateOperationsInput | string
   founderPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  founderPhotoPosition?: Prisma.StringFieldUpdateOperationsInput | string
   founderName?: Prisma.StringFieldUpdateOperationsInput | string
   founderTitle?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
@@ -380,12 +499,20 @@ export type AboutContentUpdateInput = {
   trustedByLogos?: Prisma.AboutContentUpdatetrustedByLogosInput | string[]
   ctaText?: Prisma.StringFieldUpdateOperationsInput | string
   ctaBackgroundImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ctaBackgroundImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AboutContentUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   heroImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+  heroHeadline?: Prisma.StringFieldUpdateOperationsInput | string
+  introText?: Prisma.StringFieldUpdateOperationsInput | string
+  storyImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storyImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+  storyText?: Prisma.StringFieldUpdateOperationsInput | string
   founderPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  founderPhotoPosition?: Prisma.StringFieldUpdateOperationsInput | string
   founderName?: Prisma.StringFieldUpdateOperationsInput | string
   founderTitle?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
@@ -395,27 +522,43 @@ export type AboutContentUncheckedUpdateInput = {
   trustedByLogos?: Prisma.AboutContentUpdatetrustedByLogosInput | string[]
   ctaText?: Prisma.StringFieldUpdateOperationsInput | string
   ctaBackgroundImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ctaBackgroundImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AboutContentCreateManyInput = {
   id?: number
   heroImage?: string | null
+  heroImagePosition: string
+  heroHeadline: string
+  introText: string
+  storyImage?: string | null
+  storyImagePosition: string
+  storyText: string
   founderPhoto?: string | null
+  founderPhotoPosition: string
   founderName: string
   founderTitle: string
   bio: string
-  linkedinUrl?: string
-  instagramUrl?: string
+  linkedinUrl: string
+  instagramUrl: string
   processCards: Prisma.JsonNullValueInput | runtime.InputJsonValue
   trustedByLogos?: Prisma.AboutContentCreatetrustedByLogosInput | string[]
   ctaText: string
   ctaBackgroundImage?: string | null
+  ctaBackgroundImagePosition: string
 }
 
 export type AboutContentUpdateManyMutationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   heroImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+  heroHeadline?: Prisma.StringFieldUpdateOperationsInput | string
+  introText?: Prisma.StringFieldUpdateOperationsInput | string
+  storyImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storyImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+  storyText?: Prisma.StringFieldUpdateOperationsInput | string
   founderPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  founderPhotoPosition?: Prisma.StringFieldUpdateOperationsInput | string
   founderName?: Prisma.StringFieldUpdateOperationsInput | string
   founderTitle?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
@@ -425,12 +568,20 @@ export type AboutContentUpdateManyMutationInput = {
   trustedByLogos?: Prisma.AboutContentUpdatetrustedByLogosInput | string[]
   ctaText?: Prisma.StringFieldUpdateOperationsInput | string
   ctaBackgroundImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ctaBackgroundImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AboutContentUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   heroImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  heroImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+  heroHeadline?: Prisma.StringFieldUpdateOperationsInput | string
+  introText?: Prisma.StringFieldUpdateOperationsInput | string
+  storyImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storyImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+  storyText?: Prisma.StringFieldUpdateOperationsInput | string
   founderPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  founderPhotoPosition?: Prisma.StringFieldUpdateOperationsInput | string
   founderName?: Prisma.StringFieldUpdateOperationsInput | string
   founderTitle?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
@@ -440,12 +591,28 @@ export type AboutContentUncheckedUpdateManyInput = {
   trustedByLogos?: Prisma.AboutContentUpdatetrustedByLogosInput | string[]
   ctaText?: Prisma.StringFieldUpdateOperationsInput | string
   ctaBackgroundImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ctaBackgroundImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type AboutContentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   heroImage?: Prisma.SortOrder
+  heroImagePosition?: Prisma.SortOrder
+  heroHeadline?: Prisma.SortOrder
+  introText?: Prisma.SortOrder
+  storyImage?: Prisma.SortOrder
+  storyImagePosition?: Prisma.SortOrder
+  storyText?: Prisma.SortOrder
   founderPhoto?: Prisma.SortOrder
+  founderPhotoPosition?: Prisma.SortOrder
   founderName?: Prisma.SortOrder
   founderTitle?: Prisma.SortOrder
   bio?: Prisma.SortOrder
@@ -455,6 +622,7 @@ export type AboutContentCountOrderByAggregateInput = {
   trustedByLogos?: Prisma.SortOrder
   ctaText?: Prisma.SortOrder
   ctaBackgroundImage?: Prisma.SortOrder
+  ctaBackgroundImagePosition?: Prisma.SortOrder
 }
 
 export type AboutContentAvgOrderByAggregateInput = {
@@ -464,7 +632,14 @@ export type AboutContentAvgOrderByAggregateInput = {
 export type AboutContentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   heroImage?: Prisma.SortOrder
+  heroImagePosition?: Prisma.SortOrder
+  heroHeadline?: Prisma.SortOrder
+  introText?: Prisma.SortOrder
+  storyImage?: Prisma.SortOrder
+  storyImagePosition?: Prisma.SortOrder
+  storyText?: Prisma.SortOrder
   founderPhoto?: Prisma.SortOrder
+  founderPhotoPosition?: Prisma.SortOrder
   founderName?: Prisma.SortOrder
   founderTitle?: Prisma.SortOrder
   bio?: Prisma.SortOrder
@@ -472,12 +647,20 @@ export type AboutContentMaxOrderByAggregateInput = {
   instagramUrl?: Prisma.SortOrder
   ctaText?: Prisma.SortOrder
   ctaBackgroundImage?: Prisma.SortOrder
+  ctaBackgroundImagePosition?: Prisma.SortOrder
 }
 
 export type AboutContentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   heroImage?: Prisma.SortOrder
+  heroImagePosition?: Prisma.SortOrder
+  heroHeadline?: Prisma.SortOrder
+  introText?: Prisma.SortOrder
+  storyImage?: Prisma.SortOrder
+  storyImagePosition?: Prisma.SortOrder
+  storyText?: Prisma.SortOrder
   founderPhoto?: Prisma.SortOrder
+  founderPhotoPosition?: Prisma.SortOrder
   founderName?: Prisma.SortOrder
   founderTitle?: Prisma.SortOrder
   bio?: Prisma.SortOrder
@@ -485,6 +668,7 @@ export type AboutContentMinOrderByAggregateInput = {
   instagramUrl?: Prisma.SortOrder
   ctaText?: Prisma.SortOrder
   ctaBackgroundImage?: Prisma.SortOrder
+  ctaBackgroundImagePosition?: Prisma.SortOrder
 }
 
 export type AboutContentSumOrderByAggregateInput = {
@@ -505,7 +689,14 @@ export type AboutContentUpdatetrustedByLogosInput = {
 export type AboutContentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   heroImage?: boolean
+  heroImagePosition?: boolean
+  heroHeadline?: boolean
+  introText?: boolean
+  storyImage?: boolean
+  storyImagePosition?: boolean
+  storyText?: boolean
   founderPhoto?: boolean
+  founderPhotoPosition?: boolean
   founderName?: boolean
   founderTitle?: boolean
   bio?: boolean
@@ -515,12 +706,20 @@ export type AboutContentSelect<ExtArgs extends runtime.Types.Extensions.Internal
   trustedByLogos?: boolean
   ctaText?: boolean
   ctaBackgroundImage?: boolean
+  ctaBackgroundImagePosition?: boolean
 }, ExtArgs["result"]["aboutContent"]>
 
 export type AboutContentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   heroImage?: boolean
+  heroImagePosition?: boolean
+  heroHeadline?: boolean
+  introText?: boolean
+  storyImage?: boolean
+  storyImagePosition?: boolean
+  storyText?: boolean
   founderPhoto?: boolean
+  founderPhotoPosition?: boolean
   founderName?: boolean
   founderTitle?: boolean
   bio?: boolean
@@ -530,12 +729,20 @@ export type AboutContentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   trustedByLogos?: boolean
   ctaText?: boolean
   ctaBackgroundImage?: boolean
+  ctaBackgroundImagePosition?: boolean
 }, ExtArgs["result"]["aboutContent"]>
 
 export type AboutContentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   heroImage?: boolean
+  heroImagePosition?: boolean
+  heroHeadline?: boolean
+  introText?: boolean
+  storyImage?: boolean
+  storyImagePosition?: boolean
+  storyText?: boolean
   founderPhoto?: boolean
+  founderPhotoPosition?: boolean
   founderName?: boolean
   founderTitle?: boolean
   bio?: boolean
@@ -545,12 +752,20 @@ export type AboutContentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   trustedByLogos?: boolean
   ctaText?: boolean
   ctaBackgroundImage?: boolean
+  ctaBackgroundImagePosition?: boolean
 }, ExtArgs["result"]["aboutContent"]>
 
 export type AboutContentSelectScalar = {
   id?: boolean
   heroImage?: boolean
+  heroImagePosition?: boolean
+  heroHeadline?: boolean
+  introText?: boolean
+  storyImage?: boolean
+  storyImagePosition?: boolean
+  storyText?: boolean
   founderPhoto?: boolean
+  founderPhotoPosition?: boolean
   founderName?: boolean
   founderTitle?: boolean
   bio?: boolean
@@ -560,9 +775,10 @@ export type AboutContentSelectScalar = {
   trustedByLogos?: boolean
   ctaText?: boolean
   ctaBackgroundImage?: boolean
+  ctaBackgroundImagePosition?: boolean
 }
 
-export type AboutContentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "heroImage" | "founderPhoto" | "founderName" | "founderTitle" | "bio" | "linkedinUrl" | "instagramUrl" | "processCards" | "trustedByLogos" | "ctaText" | "ctaBackgroundImage", ExtArgs["result"]["aboutContent"]>
+export type AboutContentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "heroImage" | "heroImagePosition" | "heroHeadline" | "introText" | "storyImage" | "storyImagePosition" | "storyText" | "founderPhoto" | "founderPhotoPosition" | "founderName" | "founderTitle" | "bio" | "linkedinUrl" | "instagramUrl" | "processCards" | "trustedByLogos" | "ctaText" | "ctaBackgroundImage" | "ctaBackgroundImagePosition", ExtArgs["result"]["aboutContent"]>
 
 export type $AboutContentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AboutContent"
@@ -570,7 +786,14 @@ export type $AboutContentPayload<ExtArgs extends runtime.Types.Extensions.Intern
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     heroImage: string | null
+    heroImagePosition: string
+    heroHeadline: string
+    introText: string
+    storyImage: string | null
+    storyImagePosition: string
+    storyText: string
     founderPhoto: string | null
+    founderPhotoPosition: string
     founderName: string
     founderTitle: string
     bio: string
@@ -580,6 +803,7 @@ export type $AboutContentPayload<ExtArgs extends runtime.Types.Extensions.Intern
     trustedByLogos: string[]
     ctaText: string
     ctaBackgroundImage: string | null
+    ctaBackgroundImagePosition: string
   }, ExtArgs["result"]["aboutContent"]>
   composites: {}
 }
@@ -1005,7 +1229,14 @@ export interface Prisma__AboutContentClient<T, Null = never, ExtArgs extends run
 export interface AboutContentFieldRefs {
   readonly id: Prisma.FieldRef<"AboutContent", 'Int'>
   readonly heroImage: Prisma.FieldRef<"AboutContent", 'String'>
+  readonly heroImagePosition: Prisma.FieldRef<"AboutContent", 'String'>
+  readonly heroHeadline: Prisma.FieldRef<"AboutContent", 'String'>
+  readonly introText: Prisma.FieldRef<"AboutContent", 'String'>
+  readonly storyImage: Prisma.FieldRef<"AboutContent", 'String'>
+  readonly storyImagePosition: Prisma.FieldRef<"AboutContent", 'String'>
+  readonly storyText: Prisma.FieldRef<"AboutContent", 'String'>
   readonly founderPhoto: Prisma.FieldRef<"AboutContent", 'String'>
+  readonly founderPhotoPosition: Prisma.FieldRef<"AboutContent", 'String'>
   readonly founderName: Prisma.FieldRef<"AboutContent", 'String'>
   readonly founderTitle: Prisma.FieldRef<"AboutContent", 'String'>
   readonly bio: Prisma.FieldRef<"AboutContent", 'String'>
@@ -1015,6 +1246,7 @@ export interface AboutContentFieldRefs {
   readonly trustedByLogos: Prisma.FieldRef<"AboutContent", 'String[]'>
   readonly ctaText: Prisma.FieldRef<"AboutContent", 'String'>
   readonly ctaBackgroundImage: Prisma.FieldRef<"AboutContent", 'String'>
+  readonly ctaBackgroundImagePosition: Prisma.FieldRef<"AboutContent", 'String'>
 }
     
 

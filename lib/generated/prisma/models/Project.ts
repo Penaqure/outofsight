@@ -31,11 +31,12 @@ export type ProjectMinAggregateOutputType = {
   description: string | null
   credits: string | null
   thumbnailImage: string | null
+  thumbnailImagePosition: string | null
   thumbnailLabel: string | null
   videoName: string | null
   videoLabel: string | null
-  videoUrl: string | null
   videoPreviewImage: string | null
+  videoPreviewImagePosition: string | null
   createdAt: Date | null
 }
 
@@ -46,11 +47,12 @@ export type ProjectMaxAggregateOutputType = {
   description: string | null
   credits: string | null
   thumbnailImage: string | null
+  thumbnailImagePosition: string | null
   thumbnailLabel: string | null
   videoName: string | null
   videoLabel: string | null
-  videoUrl: string | null
   videoPreviewImage: string | null
+  videoPreviewImagePosition: string | null
   createdAt: Date | null
 }
 
@@ -61,11 +63,12 @@ export type ProjectCountAggregateOutputType = {
   description: number
   credits: number
   thumbnailImage: number
+  thumbnailImagePosition: number
   thumbnailLabel: number
   videoName: number
   videoLabel: number
-  videoUrl: number
   videoPreviewImage: number
+  videoPreviewImagePosition: number
   photos: number
   tags: number
   createdAt: number
@@ -80,11 +83,12 @@ export type ProjectMinAggregateInputType = {
   description?: true
   credits?: true
   thumbnailImage?: true
+  thumbnailImagePosition?: true
   thumbnailLabel?: true
   videoName?: true
   videoLabel?: true
-  videoUrl?: true
   videoPreviewImage?: true
+  videoPreviewImagePosition?: true
   createdAt?: true
 }
 
@@ -95,11 +99,12 @@ export type ProjectMaxAggregateInputType = {
   description?: true
   credits?: true
   thumbnailImage?: true
+  thumbnailImagePosition?: true
   thumbnailLabel?: true
   videoName?: true
   videoLabel?: true
-  videoUrl?: true
   videoPreviewImage?: true
+  videoPreviewImagePosition?: true
   createdAt?: true
 }
 
@@ -110,11 +115,12 @@ export type ProjectCountAggregateInputType = {
   description?: true
   credits?: true
   thumbnailImage?: true
+  thumbnailImagePosition?: true
   thumbnailLabel?: true
   videoName?: true
   videoLabel?: true
-  videoUrl?: true
   videoPreviewImage?: true
+  videoPreviewImagePosition?: true
   photos?: true
   tags?: true
   createdAt?: true
@@ -200,11 +206,12 @@ export type ProjectGroupByOutputType = {
   description: string
   credits: string
   thumbnailImage: string | null
+  thumbnailImagePosition: string
   thumbnailLabel: string | null
   videoName: string | null
   videoLabel: string | null
-  videoUrl: string | null
   videoPreviewImage: string | null
+  videoPreviewImagePosition: string
   photos: string[]
   tags: string[]
   createdAt: Date
@@ -238,11 +245,12 @@ export type ProjectWhereInput = {
   description?: Prisma.StringFilter<"Project"> | string
   credits?: Prisma.StringFilter<"Project"> | string
   thumbnailImage?: Prisma.StringNullableFilter<"Project"> | string | null
+  thumbnailImagePosition?: Prisma.StringFilter<"Project"> | string
   thumbnailLabel?: Prisma.StringNullableFilter<"Project"> | string | null
   videoName?: Prisma.StringNullableFilter<"Project"> | string | null
   videoLabel?: Prisma.StringNullableFilter<"Project"> | string | null
-  videoUrl?: Prisma.StringNullableFilter<"Project"> | string | null
   videoPreviewImage?: Prisma.StringNullableFilter<"Project"> | string | null
+  videoPreviewImagePosition?: Prisma.StringFilter<"Project"> | string
   photos?: Prisma.StringNullableListFilter<"Project">
   tags?: Prisma.StringNullableListFilter<"Project">
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -255,11 +263,12 @@ export type ProjectOrderByWithRelationInput = {
   description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   thumbnailImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  thumbnailImagePosition?: Prisma.SortOrder
   thumbnailLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   videoName?: Prisma.SortOrderInput | Prisma.SortOrder
   videoLabel?: Prisma.SortOrderInput | Prisma.SortOrder
-  videoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   videoPreviewImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  videoPreviewImagePosition?: Prisma.SortOrder
   photos?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -275,11 +284,12 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringFilter<"Project"> | string
   credits?: Prisma.StringFilter<"Project"> | string
   thumbnailImage?: Prisma.StringNullableFilter<"Project"> | string | null
+  thumbnailImagePosition?: Prisma.StringFilter<"Project"> | string
   thumbnailLabel?: Prisma.StringNullableFilter<"Project"> | string | null
   videoName?: Prisma.StringNullableFilter<"Project"> | string | null
   videoLabel?: Prisma.StringNullableFilter<"Project"> | string | null
-  videoUrl?: Prisma.StringNullableFilter<"Project"> | string | null
   videoPreviewImage?: Prisma.StringNullableFilter<"Project"> | string | null
+  videoPreviewImagePosition?: Prisma.StringFilter<"Project"> | string
   photos?: Prisma.StringNullableListFilter<"Project">
   tags?: Prisma.StringNullableListFilter<"Project">
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -292,11 +302,12 @@ export type ProjectOrderByWithAggregationInput = {
   description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   thumbnailImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  thumbnailImagePosition?: Prisma.SortOrder
   thumbnailLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   videoName?: Prisma.SortOrderInput | Prisma.SortOrder
   videoLabel?: Prisma.SortOrderInput | Prisma.SortOrder
-  videoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   videoPreviewImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  videoPreviewImagePosition?: Prisma.SortOrder
   photos?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -315,11 +326,12 @@ export type ProjectScalarWhereWithAggregatesInput = {
   description?: Prisma.StringWithAggregatesFilter<"Project"> | string
   credits?: Prisma.StringWithAggregatesFilter<"Project"> | string
   thumbnailImage?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  thumbnailImagePosition?: Prisma.StringWithAggregatesFilter<"Project"> | string
   thumbnailLabel?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   videoName?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   videoLabel?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
-  videoUrl?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   videoPreviewImage?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  videoPreviewImagePosition?: Prisma.StringWithAggregatesFilter<"Project"> | string
   photos?: Prisma.StringNullableListFilter<"Project">
   tags?: Prisma.StringNullableListFilter<"Project">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
@@ -329,14 +341,15 @@ export type ProjectCreateInput = {
   id?: string
   slug: string
   title: string
-  description?: string
-  credits?: string
+  description: string
+  credits: string
   thumbnailImage?: string | null
+  thumbnailImagePosition: string
   thumbnailLabel?: string | null
   videoName?: string | null
   videoLabel?: string | null
-  videoUrl?: string | null
   videoPreviewImage?: string | null
+  videoPreviewImagePosition: string
   photos?: Prisma.ProjectCreatephotosInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
   createdAt?: Date | string
@@ -346,14 +359,15 @@ export type ProjectUncheckedCreateInput = {
   id?: string
   slug: string
   title: string
-  description?: string
-  credits?: string
+  description: string
+  credits: string
   thumbnailImage?: string | null
+  thumbnailImagePosition: string
   thumbnailLabel?: string | null
   videoName?: string | null
   videoLabel?: string | null
-  videoUrl?: string | null
   videoPreviewImage?: string | null
+  videoPreviewImagePosition: string
   photos?: Prisma.ProjectCreatephotosInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
   createdAt?: Date | string
@@ -366,11 +380,12 @@ export type ProjectUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnailImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnailLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoPreviewImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoPreviewImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
   photos?: Prisma.ProjectUpdatephotosInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,11 +398,12 @@ export type ProjectUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnailImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnailLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoPreviewImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoPreviewImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
   photos?: Prisma.ProjectUpdatephotosInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -397,14 +413,15 @@ export type ProjectCreateManyInput = {
   id?: string
   slug: string
   title: string
-  description?: string
-  credits?: string
+  description: string
+  credits: string
   thumbnailImage?: string | null
+  thumbnailImagePosition: string
   thumbnailLabel?: string | null
   videoName?: string | null
   videoLabel?: string | null
-  videoUrl?: string | null
   videoPreviewImage?: string | null
+  videoPreviewImagePosition: string
   photos?: Prisma.ProjectCreatephotosInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
   createdAt?: Date | string
@@ -417,11 +434,12 @@ export type ProjectUpdateManyMutationInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnailImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnailLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoPreviewImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoPreviewImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
   photos?: Prisma.ProjectUpdatephotosInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -434,22 +452,15 @@ export type ProjectUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   credits?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnailImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnailLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   videoPreviewImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoPreviewImagePosition?: Prisma.StringFieldUpdateOperationsInput | string
   photos?: Prisma.ProjectUpdatephotosInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type StringNullableListFilter<$PrismaModel = never> = {
-  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
 }
 
 export type ProjectCountOrderByAggregateInput = {
@@ -459,11 +470,12 @@ export type ProjectCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   thumbnailImage?: Prisma.SortOrder
+  thumbnailImagePosition?: Prisma.SortOrder
   thumbnailLabel?: Prisma.SortOrder
   videoName?: Prisma.SortOrder
   videoLabel?: Prisma.SortOrder
-  videoUrl?: Prisma.SortOrder
   videoPreviewImage?: Prisma.SortOrder
+  videoPreviewImagePosition?: Prisma.SortOrder
   photos?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -476,11 +488,12 @@ export type ProjectMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   thumbnailImage?: Prisma.SortOrder
+  thumbnailImagePosition?: Prisma.SortOrder
   thumbnailLabel?: Prisma.SortOrder
   videoName?: Prisma.SortOrder
   videoLabel?: Prisma.SortOrder
-  videoUrl?: Prisma.SortOrder
   videoPreviewImage?: Prisma.SortOrder
+  videoPreviewImagePosition?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -491,11 +504,12 @@ export type ProjectMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   credits?: Prisma.SortOrder
   thumbnailImage?: Prisma.SortOrder
+  thumbnailImagePosition?: Prisma.SortOrder
   thumbnailLabel?: Prisma.SortOrder
   videoName?: Prisma.SortOrder
   videoLabel?: Prisma.SortOrder
-  videoUrl?: Prisma.SortOrder
   videoPreviewImage?: Prisma.SortOrder
+  videoPreviewImagePosition?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -505,14 +519,6 @@ export type ProjectCreatephotosInput = {
 
 export type ProjectCreatetagsInput = {
   set: string[]
-}
-
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
 }
 
 export type ProjectUpdatephotosInput = {
@@ -538,11 +544,12 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   description?: boolean
   credits?: boolean
   thumbnailImage?: boolean
+  thumbnailImagePosition?: boolean
   thumbnailLabel?: boolean
   videoName?: boolean
   videoLabel?: boolean
-  videoUrl?: boolean
   videoPreviewImage?: boolean
+  videoPreviewImagePosition?: boolean
   photos?: boolean
   tags?: boolean
   createdAt?: boolean
@@ -555,11 +562,12 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   credits?: boolean
   thumbnailImage?: boolean
+  thumbnailImagePosition?: boolean
   thumbnailLabel?: boolean
   videoName?: boolean
   videoLabel?: boolean
-  videoUrl?: boolean
   videoPreviewImage?: boolean
+  videoPreviewImagePosition?: boolean
   photos?: boolean
   tags?: boolean
   createdAt?: boolean
@@ -572,11 +580,12 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   credits?: boolean
   thumbnailImage?: boolean
+  thumbnailImagePosition?: boolean
   thumbnailLabel?: boolean
   videoName?: boolean
   videoLabel?: boolean
-  videoUrl?: boolean
   videoPreviewImage?: boolean
+  videoPreviewImagePosition?: boolean
   photos?: boolean
   tags?: boolean
   createdAt?: boolean
@@ -589,17 +598,18 @@ export type ProjectSelectScalar = {
   description?: boolean
   credits?: boolean
   thumbnailImage?: boolean
+  thumbnailImagePosition?: boolean
   thumbnailLabel?: boolean
   videoName?: boolean
   videoLabel?: boolean
-  videoUrl?: boolean
   videoPreviewImage?: boolean
+  videoPreviewImagePosition?: boolean
   photos?: boolean
   tags?: boolean
   createdAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "description" | "credits" | "thumbnailImage" | "thumbnailLabel" | "videoName" | "videoLabel" | "videoUrl" | "videoPreviewImage" | "photos" | "tags" | "createdAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "description" | "credits" | "thumbnailImage" | "thumbnailImagePosition" | "thumbnailLabel" | "videoName" | "videoLabel" | "videoPreviewImage" | "videoPreviewImagePosition" | "photos" | "tags" | "createdAt", ExtArgs["result"]["project"]>
 
 export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Project"
@@ -611,11 +621,12 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     description: string
     credits: string
     thumbnailImage: string | null
+    thumbnailImagePosition: string
     thumbnailLabel: string | null
     videoName: string | null
     videoLabel: string | null
-    videoUrl: string | null
     videoPreviewImage: string | null
+    videoPreviewImagePosition: string
     photos: string[]
     tags: string[]
     createdAt: Date
@@ -1048,11 +1059,12 @@ export interface ProjectFieldRefs {
   readonly description: Prisma.FieldRef<"Project", 'String'>
   readonly credits: Prisma.FieldRef<"Project", 'String'>
   readonly thumbnailImage: Prisma.FieldRef<"Project", 'String'>
+  readonly thumbnailImagePosition: Prisma.FieldRef<"Project", 'String'>
   readonly thumbnailLabel: Prisma.FieldRef<"Project", 'String'>
   readonly videoName: Prisma.FieldRef<"Project", 'String'>
   readonly videoLabel: Prisma.FieldRef<"Project", 'String'>
-  readonly videoUrl: Prisma.FieldRef<"Project", 'String'>
   readonly videoPreviewImage: Prisma.FieldRef<"Project", 'String'>
+  readonly videoPreviewImagePosition: Prisma.FieldRef<"Project", 'String'>
   readonly photos: Prisma.FieldRef<"Project", 'String[]'>
   readonly tags: Prisma.FieldRef<"Project", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
