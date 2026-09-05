@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Lekton, Open_Sans } from "next/font/google";
+import { Lekton } from "next/font/google";
+import localFont from "next/font/local";
 import { siteConfig } from "@/lib/config";
 import "./globals.css";
 
@@ -10,10 +11,81 @@ const lekton = Lekton({
   subsets: ["latin"],
 });
 
-const openSans = Open_Sans({
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-open-sans",
-  subsets: ["latin"],
+const openSauce = localFont({
+  src: [
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-Light.ttf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-LightItalic.ttf",
+      weight: "300",
+      style: "italic",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-Italic.ttf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-MediumItalic.ttf",
+      weight: "500",
+      style: "italic",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-SemiBoldItalic.ttf",
+      weight: "600",
+      style: "italic",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-BoldItalic.ttf",
+      weight: "700",
+      style: "italic",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-ExtraBold.ttf",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-ExtraBoldItalic.ttf",
+      weight: "800",
+      style: "italic",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-Black.ttf",
+      weight: "900",
+      style: "normal",
+    },
+    {
+      path: "../fonts/OpenSauceOne/OpenSauceOne-BlackItalic.ttf",
+      weight: "900",
+      style: "italic",
+    },
+  ],
+  variable: "--font-open-sauce",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -36,7 +108,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${lekton.variable} ${openSans.variable} h-full antialiased`}
+      className={`${lekton.variable} ${openSauce.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

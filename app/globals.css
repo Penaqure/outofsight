@@ -27,7 +27,7 @@
 
   --font-sans: var(--font-lekton);
   --font-mono: var(--font-lekton);
-  --font-heading: var(--font-open-sans);
+  --font-heading: var(--font-open-sauce);
   }
 
 @media (prefers-color-scheme: dark) {
