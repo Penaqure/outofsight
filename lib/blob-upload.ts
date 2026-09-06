@@ -1,29 +1,42 @@
 "use client";
 
-import { upload } from "@vercel/blob/client";
-
-// Replaces reading files as base64 data: URLs (the old approach embedded
-// the entire file inline in every page/API response — slow, especially for
-// video, and incompatible with Vercel's stateless serverless functions).
-// Uploads go straight from the browser to Blob storage via a short-lived
-// token from /api/upload, and this returns the resulting public CDN URL.
-export async function uploadFile(
+// Uploads go to this app's own /api/upload route, which writes the file to
+// disk on the server and hands back its public path (served straight out of
+// public/uploads). XMLHttpRequest is used instead of fetch purely because
+// fetch has no upload-progress event.
+export function uploadFile(
   file: File | Blob,
   filename = "upload",
   onProgress?: (ratio: number) => void
 ): Promise<string> {
-  const pathname = file instanceof File ? file.name : filename;
-  // Large video files need multipart (chunked, parallel, retryable)
-  // uploads; small images don't benefit and add needless overhead.
-  const multipart = file.size > 10 * 1024 * 1024;
+  const name = file instanceof File ? file.name : filename;
 
-  const blob = await upload(pathname, file, {
-    access: "public",
-    handleUploadUrl: "/api/upload",
-    multipart,
-    onUploadProgress: onProgress
-      ? ({ percentage }) => onProgress(percentage / 100)
-      : undefined,
+  return new Promise((resolve, reject) => {
+    const formData = new FormData();
+    formData.append("file", file, name);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/upload");
+
+    if (onProgress) {
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) onProgress(event.loaded / event.total);
+      });
+    }
+
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const { url } = JSON.parse(xhr.responseText) as { url: string };
+          resolve(url);
+        } catch {
+          reject(new Error("Invalid response from upload endpoint"));
+        }
+      } else {
+        reject(new Error(`Upload failed with status ${xhr.status}`));
+      }
+    });
+    xhr.addEventListener("error", () => reject(new Error("Upload failed")));
+    xhr.send(formData);
   });
-  return blob.url;
 }

@@ -7,13 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate",
-    "db:push": "prisma db push"
+    "db:dev": "node scripts/dev-db.mjs",
+    "db:setup": "node scripts/db-setup.mjs"
   },
   "dependencies": {
-    "@vercel/blob": "^2.8.0",
-    "@prisma/adapter-pg": "^7.9.1",
-    "@prisma/client": "^7.9.1",
     "next": "16.3.1",
     "pg": "^8.23.0",
     "react": "19.2.8",
@@ -26,10 +23,13 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
+    "embedded-postgres": "^18.4.0-beta.17",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
-    "prisma": "^7.9.1",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "@embedded-postgres/linux-x64@18.4.0-beta.17": true
   }
 }

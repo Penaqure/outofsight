@@ -20,6 +20,14 @@
 # production
 /build
 
+# user-uploaded media, written at runtime by app/api/upload — lives on the
+# server's disk, not in git
+/uploads/*
+!/uploads/.gitkeep
+
+# local dev Postgres data directory (npm run db:dev), machine-specific
+/.pgdata/
+
 # misc
 .DS_Store
 *.pem
