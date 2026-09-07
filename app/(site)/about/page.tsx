@@ -163,17 +163,20 @@ export default async function AboutPage() {
         // (not the 64px reading-column padding the rest of the page uses),
         // so it gets a dedicated wrapper instead of <Container>.
         <Section className="pt-0">
-          <div className="mx-auto flex max-w-5xl flex-col items-center gap-9 px-6 sm:px-10 lg:px-24">
+          <div className="px-6 sm:px-10 lg:px-24">
             <p className="font-heading text-center text-2xl font-semibold tracking-tight text-obsidian">
               Trusted By
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
-              {content.trustedByLogos.map((logo, index) => (
+            {/* Figma: one full-width row, logos spread edge to edge
+                (space-between). Wraps to a centered cluster only on
+                narrow screens where a single row can't fit. */}
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 sm:flex-nowrap sm:justify-between sm:gap-x-4">
+              {[...content.trustedByLogos].reverse().map((logo, index) => (
                 <img
                   key={index}
                   src={logo}
                   alt=""
-                  className="h-6 w-auto object-contain opacity-50 grayscale"
+                  className="h-6 w-auto shrink-0 object-contain opacity-50 grayscale"
                 />
               ))}
             </div>
