@@ -117,9 +117,11 @@ export default async function ProjectPage(
                   </span>
                 )}
                 <div className="absolute inset-0 bg-obsidian/0 transition-colors group-hover:bg-obsidian/40" />
-                <p className="absolute bottom-4 left-4 text-sm text-bone-white opacity-0 transition-opacity group-hover:opacity-100">
-                  {p.title}
-                </p>
+                <div className="absolute inset-0 flex items-center justify-center p-4 opacity-0 transition-opacity group-hover:opacity-100">
+                  <p className="text-center font-heading text-sm tracking-tight text-bone-white uppercase">
+                    {p.title}
+                  </p>
+                </div>
               </Link>
             ))}
           </div>

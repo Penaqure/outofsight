@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { WorksContent } from "@/types/content";
 import { Dropzone, DEFAULT_FOCAL_POINT } from "@/components/admin/Dropzone";
 import { uploadFile } from "@/lib/blob-upload";
+import { SaveBar, useSave } from "@/components/admin/SaveBar";
 
 const fieldClass =
   "mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary";
@@ -23,32 +24,24 @@ export function WorksHeroForm({
   );
 
   const [dirty, setDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const { saving, status, save, clearStatus } = useSave("/api/content/works");
 
   function update<T>(setter: (value: T) => void) {
     return (value: T) => {
       setter(value);
       setDirty(true);
+      clearStatus();
     };
   }
 
   async function handleSave() {
-    setSaving(true);
-    try {
-      await fetch("/api/content/works", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          heroImage,
-          heroImagePosition,
-          heroHeading,
-          heroDescription,
-        }),
-      });
-      setDirty(false);
-    } finally {
-      setSaving(false);
-    }
+    const ok = await save({
+      heroImage,
+      heroImagePosition,
+      heroHeading,
+      heroDescription,
+    });
+    if (ok) setDirty(false);
   }
 
   return (
@@ -85,15 +78,12 @@ export function WorksHeroForm({
           className={`${fieldClass} resize-none`}
         />
       </div>
-      <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={!dirty || saving}
-          className="bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
-        >
-          {saving ? "Saving..." : "Save"}
-        </button>
-      </div>
+      <SaveBar
+        status={status}
+        saving={saving}
+        disabled={!dirty || saving}
+        onSave={handleSave}
+      />
     </div>
   );
 }

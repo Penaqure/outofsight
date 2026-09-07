@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import type { HomeContent } from "@/types/content";
 import { uploadFile } from "@/lib/blob-upload";
+import { SaveBar, useSave } from "@/components/admin/SaveBar";
 import logoOnly from "@/public/logo/logo_only.png";
 
 export function HomeContentForm({
@@ -19,7 +20,7 @@ export function HomeContentForm({
   const [videoUrl, setVideoUrl] = useState(initialContent.backgroundVideoUrl);
   const [isDragging, setIsDragging] = useState(false);
   const [dirty, setDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const { saving, status, save, clearStatus } = useSave("/api/content/home");
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadFailed, setUploadFailed] = useState(false);
@@ -34,6 +35,7 @@ export function HomeContentForm({
       setVideoName(file.name);
       setVideoUrl(url);
       setDirty(true);
+      clearStatus();
     } catch {
       setUploadFailed(true);
     } finally {
@@ -49,22 +51,13 @@ export function HomeContentForm({
   }
 
   async function handleSave() {
-    setSaving(true);
-    try {
-      await fetch("/api/content/home", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          heroText,
-          displayMode,
-          backgroundVideoName: videoName,
-          backgroundVideoUrl: videoUrl,
-        }),
-      });
-      setDirty(false);
-    } finally {
-      setSaving(false);
-    }
+    const ok = await save({
+      heroText,
+      displayMode,
+      backgroundVideoName: videoName,
+      backgroundVideoUrl: videoUrl,
+    });
+    if (ok) setDirty(false);
   }
 
   return (
@@ -148,6 +141,7 @@ export function HomeContentForm({
               onChange={() => {
                 setDisplayMode("body-text");
                 setDirty(true);
+                clearStatus();
               }}
               className="accent-primary"
             />
@@ -158,6 +152,7 @@ export function HomeContentForm({
             onChange={(e) => {
               setHeroText(e.target.value);
               setDirty(true);
+              clearStatus();
             }}
             disabled={displayMode !== "body-text"}
             placeholder="Type Here"
@@ -174,6 +169,7 @@ export function HomeContentForm({
               onChange={() => {
                 setDisplayMode("logo-only");
                 setDirty(true);
+                clearStatus();
               }}
               className="accent-primary"
             />
@@ -195,6 +191,7 @@ export function HomeContentForm({
               onChange={() => {
                 setDisplayMode("blank");
                 setDirty(true);
+                clearStatus();
               }}
               className="accent-primary"
             />
@@ -205,14 +202,13 @@ export function HomeContentForm({
         </div>
       </div>
 
-      <div className="mt-8 flex justify-end">
-        <button
-          onClick={handleSave}
+      <div className="mt-8">
+        <SaveBar
+          status={status}
+          saving={saving}
           disabled={!dirty || saving || uploading}
-          className="bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
-        >
-          {saving ? "Saving..." : "Save"}
-        </button>
+          onSave={handleSave}
+        />
       </div>
     </div>
   );

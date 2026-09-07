@@ -8,6 +8,7 @@ import {
   DEFAULT_FOCAL_POINT,
 } from "@/components/admin/Dropzone";
 import { uploadFile } from "@/lib/blob-upload";
+import { SaveBar, useSave } from "@/components/admin/SaveBar";
 
 const fieldClass =
   "mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary";
@@ -59,7 +60,7 @@ export function AboutContentForm({
     useState(initialContent.ctaBackgroundImagePosition ?? DEFAULT_FOCAL_POINT);
 
   const [dirty, setDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const { saving, status, save, clearStatus } = useSave("/api/content/about");
   const logosInputRef = useRef<HTMLInputElement>(null);
 
   // Shared "Image Library" — upload once here, then drag a thumbnail onto
@@ -69,20 +70,31 @@ export function AboutContentForm({
   const [imagePool, setImagePool] = useState<string[]>([]);
   const poolInputRef = useRef<HTMLInputElement>(null);
   const [isPoolDragging, setIsPoolDragging] = useState(false);
+  const [poolUploading, setPoolUploading] = useState(false);
+  const [poolUploadFailed, setPoolUploadFailed] = useState(false);
 
   function update<T>(setter: (value: T) => void) {
     return (value: T) => {
       setter(value);
       setDirty(true);
+      clearStatus();
     };
   }
 
   async function handlePoolSelect(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
-    const urls = await Promise.all(
-      Array.from(fileList).map((file) => uploadFile(file))
-    );
-    setImagePool((prev) => [...prev, ...urls]);
+    setPoolUploadFailed(false);
+    setPoolUploading(true);
+    try {
+      const urls = await Promise.all(
+        Array.from(fileList).map((file) => uploadFile(file))
+      );
+      setImagePool((prev) => [...prev, ...urls]);
+    } catch {
+      setPoolUploadFailed(true);
+    } finally {
+      setPoolUploading(false);
+    }
   }
 
   function removeFromPool(url: string) {
@@ -107,6 +119,7 @@ export function AboutContentForm({
       target?.setter(url);
     }
     setDirty(true);
+    clearStatus();
     removeFromPool(url);
   }
 
@@ -115,6 +128,7 @@ export function AboutContentForm({
       prev.map((card, i) => (i === index ? { ...card, ...patch } : card))
     );
     setDirty(true);
+    clearStatus();
   }
 
   async function handleLogosSelect(fileList: FileList | null) {
@@ -124,45 +138,38 @@ export function AboutContentForm({
     );
     setTrustedByLogos((prev) => [...prev, ...urls]);
     setDirty(true);
+    clearStatus();
   }
 
   function removeLogo(index: number) {
     setTrustedByLogos((prev) => prev.filter((_, i) => i !== index));
     setDirty(true);
+    clearStatus();
   }
 
   async function handleSave() {
-    setSaving(true);
-    try {
-      await fetch("/api/content/about", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          heroImage,
-          heroImagePosition,
-          heroHeadline,
-          introText,
-          storyImage,
-          storyImagePosition,
-          storyText,
-          founderPhoto,
-          founderPhotoPosition,
-          founderName,
-          founderTitle,
-          bio,
-          linkedinUrl,
-          instagramUrl,
-          processCards,
-          trustedByLogos,
-          ctaText,
-          ctaBackgroundImagePosition,
-          ctaBackgroundImage,
-        }),
-      });
-      setDirty(false);
-    } finally {
-      setSaving(false);
-    }
+    const ok = await save({
+      heroImage,
+      heroImagePosition,
+      heroHeadline,
+      introText,
+      storyImage,
+      storyImagePosition,
+      storyText,
+      founderPhoto,
+      founderPhotoPosition,
+      founderName,
+      founderTitle,
+      bio,
+      linkedinUrl,
+      instagramUrl,
+      processCards,
+      trustedByLogos,
+      ctaText,
+      ctaBackgroundImagePosition,
+      ctaBackgroundImage,
+    });
+    if (ok) setDirty(false);
   }
 
   return (
@@ -182,12 +189,13 @@ export function AboutContentForm({
           onDrop={(e) => {
             e.preventDefault();
             setIsPoolDragging(false);
+            if (poolUploading) return;
             void handlePoolSelect(e.dataTransfer.files);
           }}
-          onClick={() => poolInputRef.current?.click()}
-          className={`mt-2 flex min-h-24 cursor-pointer flex-wrap items-start gap-3 border border-dashed border-obsidian/15 bg-obsidian/[.03] p-3 transition-colors ${
-            isPoolDragging ? "bg-primary/10 ring-2 ring-primary" : ""
-          }`}
+          onClick={() => !poolUploading && poolInputRef.current?.click()}
+          className={`mt-2 flex min-h-24 flex-wrap items-start gap-3 border border-dashed border-obsidian/15 bg-obsidian/[.03] p-3 transition-colors ${
+            poolUploading ? "cursor-default" : "cursor-pointer"
+          } ${isPoolDragging ? "bg-primary/10 ring-2 ring-primary" : ""}`}
         >
           <input
             ref={poolInputRef}
@@ -200,7 +208,7 @@ export function AboutContentForm({
               e.target.value = "";
             }}
           />
-          {imagePool.length === 0 && (
+          {imagePool.length === 0 && !poolUploading && (
             <p className="w-full py-4 text-center text-sm text-obsidian/40">
               Drag and Drop or{" "}
               <span className="text-primary underline">Click to Browse</span>
@@ -251,7 +259,18 @@ export function AboutContentForm({
               </select>
             </div>
           ))}
+          {poolUploading && (
+            <div className="flex h-[calc(5rem+29px)] w-32 shrink-0 flex-col items-center justify-center gap-2 border border-obsidian/10 bg-white">
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-obsidian/20 border-t-primary" />
+              <span className="text-[10px] text-obsidian/50">Uploading…</span>
+            </div>
+          )}
         </div>
+        {poolUploadFailed && (
+          <p className="mt-2 text-xs text-red-600">
+            Some images failed to upload. Check your connection and try again.
+          </p>
+        )}
       </div>
 
       <div className="border-t border-obsidian/10 pt-10">
@@ -499,15 +518,12 @@ export function AboutContentForm({
         </div>
       </div>
 
-      <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={!dirty || saving}
-          className="bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
-        >
-          {saving ? "Saving..." : "Save"}
-        </button>
-      </div>
+      <SaveBar
+        status={status}
+        saving={saving}
+        disabled={!dirty || saving || poolUploading}
+        onSave={handleSave}
+      />
     </div>
   );
 }

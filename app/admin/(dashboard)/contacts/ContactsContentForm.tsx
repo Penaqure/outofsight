@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ContactsContent } from "@/types/content";
+import { SaveBar, useSave } from "@/components/admin/SaveBar";
 
 const countryCodes = [
   { code: "+1", label: "+1 (US/Canada)" },
@@ -33,33 +34,25 @@ export function ContactsContentForm({
   const [location, setLocation] = useState(initialContent.location);
 
   const [dirty, setDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const { saving, status, save, clearStatus } = useSave("/api/content/contacts");
 
   function update<T>(setter: (value: T) => void) {
     return (value: T) => {
       setter(value);
       setDirty(true);
+      clearStatus();
     };
   }
 
   async function handleSave() {
-    setSaving(true);
-    try {
-      await fetch("/api/content/contacts", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bodyText,
-          email,
-          countryCode,
-          phoneNumber,
-          location,
-        }),
-      });
-      setDirty(false);
-    } finally {
-      setSaving(false);
-    }
+    const ok = await save({
+      bodyText,
+      email,
+      countryCode,
+      phoneNumber,
+      location,
+    });
+    if (ok) setDirty(false);
   }
 
   return (
@@ -128,14 +121,13 @@ export function ContactsContentForm({
         </div>
       </div>
 
-      <div className="mt-8 flex justify-end">
-        <button
-          onClick={handleSave}
+      <div className="mt-8">
+        <SaveBar
+          status={status}
+          saving={saving}
           disabled={!dirty || saving}
-          className="bg-primary px-8 py-2.5 text-sm font-medium text-bone-white transition-colors hover:brightness-90 disabled:bg-obsidian/15 disabled:text-obsidian/40 disabled:hover:brightness-100"
-        >
-          {saving ? "Saving..." : "Save"}
-        </button>
+          onSave={handleSave}
+        />
       </div>
     </div>
   );
