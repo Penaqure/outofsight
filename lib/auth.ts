@@ -9,6 +9,22 @@
 
 const encoder = new TextEncoder();
 
+// Constant-time string comparison, for comparing submitted login credentials
+// against the env-var secrets. crypto.subtle.digest first so both inputs
+// become fixed-length (a plain length check on the raw strings would leak
+// the correct length via timing before this even runs otherwise).
+export async function safeEqual(a: string, b: string): Promise<boolean> {
+  const [digestA, digestB] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(a)),
+    crypto.subtle.digest("SHA-256", encoder.encode(b)),
+  ]);
+  const bytesA = new Uint8Array(digestA);
+  const bytesB = new Uint8Array(digestB);
+  let diff = 0;
+  for (let i = 0; i < bytesA.length; i++) diff |= bytesA[i] ^ bytesB[i];
+  return diff === 0;
+}
+
 export const SESSION_COOKIE_NAME = "session";
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
