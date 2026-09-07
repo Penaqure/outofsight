@@ -53,11 +53,24 @@ export async function POST(request: Request) {
     );
   }
 
+  // `Secure` must match how the request actually arrived, not just
+  // NODE_ENV — `next start` sets NODE_ENV=production regardless of whether
+  // TLS is in front of it. A `Secure` cookie set while served over plain
+  // HTTP is silently dropped by the browser (never stored), which looks
+  // like a login-then-bounce-back-to-login loop: the POST succeeds and the
+  // Set-Cookie header goes out, but the browser discards it, so the very
+  // next request has no session. x-forwarded-proto covers being behind a
+  // reverse proxy that terminates TLS; the request URL covers serving TLS
+  // directly.
+  const isHttps =
+    request.headers.get("x-forwarded-proto") === "https" ||
+    new URL(request.url).protocol === "https:";
+
   const token = await createSessionToken(email);
   const response = NextResponse.json({ ok: true });
   response.cookies.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isHttps,
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_MAX_AGE_SECONDS,
