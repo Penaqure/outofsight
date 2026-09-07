@@ -11,6 +11,9 @@ export type Project = {
   thumbnailLabel: string | null;
   videoName: string | null;
   videoLabel: string | null;
+  // Public URL of the uploaded video file itself (played on the project
+  // detail page). videoName/videoLabel are just display metadata.
+  videoUrl: string | null;
   videoPreviewImage: string | null;
   videoPreviewImagePosition: string;
   photos: string[];

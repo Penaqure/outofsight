@@ -72,9 +72,14 @@ CREATE TABLE IF NOT EXISTS projects (
   thumbnail_label TEXT,
   video_name TEXT,
   video_label TEXT,
+  video_url TEXT,
   video_preview_image TEXT,
   video_preview_image_position TEXT NOT NULL,
   photos TEXT[] NOT NULL DEFAULT '{}',
   tags TEXT[] NOT NULL DEFAULT '{}',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Migrations for databases created before a column existed. Each is
+-- idempotent, so `npm run db:setup` is safe to re-run.
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS video_url TEXT;

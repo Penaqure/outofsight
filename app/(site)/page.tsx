@@ -25,6 +25,7 @@ export default async function HomePage() {
           muted
           loop
           playsInline
+          preload="auto"
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (
@@ -38,7 +39,7 @@ export default async function HomePage() {
             <Image
               src={logoOnly}
               alt={siteConfig.name}
-              className="mx-auto w-40 sm:w-48"
+              className="mx-auto w-24 sm:w-28"
               priority
             />
           ) : (

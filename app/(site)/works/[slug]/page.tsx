@@ -57,13 +57,24 @@ export default async function ProjectPage(
 
           <div className="flex flex-col gap-2.5">
             <div className="relative aspect-[1341/540] w-full overflow-hidden bg-obsidian/[.05]">
-              {heroImage && (
-                <img
-                  src={heroImage}
-                  alt=""
-                  style={{ objectPosition: heroImagePosition }}
+              {project.videoUrl ? (
+                <video
+                  src={project.videoUrl}
+                  poster={project.videoPreviewImage ?? undefined}
+                  controls
+                  playsInline
+                  preload="metadata"
                   className="h-full w-full object-cover"
                 />
+              ) : (
+                heroImage && (
+                  <img
+                    src={heroImage}
+                    alt=""
+                    style={{ objectPosition: heroImagePosition }}
+                    className="h-full w-full object-cover"
+                  />
+                )
               )}
             </div>
             {filmstrip.length > 0 && (
@@ -84,7 +95,7 @@ export default async function ProjectPage(
 
       <Container>
         <div className="grid grid-cols-1 gap-6 pb-16 sm:grid-cols-[1fr_2fr] sm:gap-10">
-          <h2 className="font-heading text-2xl tracking-tight text-obsidian uppercase">
+          <h2 className="font-heading text-2xl tracking-tight text-obsidian">
             Similar
             <br />
             Videos

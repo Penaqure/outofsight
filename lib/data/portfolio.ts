@@ -17,6 +17,7 @@ type ProjectRow = {
   thumbnail_label: string | null;
   video_name: string | null;
   video_label: string | null;
+  video_url: string | null;
   video_preview_image: string | null;
   video_preview_image_position: string;
   photos: string[];
@@ -36,6 +37,7 @@ function toProject(row: ProjectRow): Project {
     thumbnailLabel: row.thumbnail_label,
     videoName: row.video_name,
     videoLabel: row.video_label,
+    videoUrl: row.video_url,
     videoPreviewImage: row.video_preview_image,
     videoPreviewImagePosition: row.video_preview_image_position,
     photos: row.photos,
@@ -56,6 +58,7 @@ const seedProjects = [
     thumbnailLabel: null,
     videoName: null,
     videoLabel: null,
+    videoUrl: null,
     videoPreviewImage: null,
     videoPreviewImagePosition: "50% 50%",
     photos: [] as string[],
@@ -73,6 +76,7 @@ const seedProjects = [
     thumbnailLabel: null,
     videoName: null,
     videoLabel: null,
+    videoUrl: null,
     videoPreviewImage: null,
     videoPreviewImagePosition: "50% 50%",
     photos: [] as string[],
@@ -94,9 +98,9 @@ async function ensureSeeded(): Promise<void> {
       `INSERT INTO projects
          (id, slug, title, description, credits, thumbnail_image,
           thumbnail_image_position, thumbnail_label, video_name, video_label,
-          video_preview_image, video_preview_image_position, photos, tags,
-          created_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+          video_url, video_preview_image, video_preview_image_position, photos,
+          tags, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
       [
         randomUUID(),
         project.slug,
@@ -108,6 +112,7 @@ async function ensureSeeded(): Promise<void> {
         project.thumbnailLabel,
         project.videoName,
         project.videoLabel,
+        project.videoUrl,
         project.videoPreviewImage,
         project.videoPreviewImagePosition,
         project.photos,
@@ -171,8 +176,9 @@ export async function createProject(
     `INSERT INTO projects
        (id, slug, title, description, credits, thumbnail_image,
         thumbnail_image_position, thumbnail_label, video_name, video_label,
-        video_preview_image, video_preview_image_position, photos, tags)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        video_url, video_preview_image, video_preview_image_position, photos,
+        tags)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
      RETURNING *`,
     [
       id,
@@ -185,6 +191,7 @@ export async function createProject(
       input.thumbnailLabel,
       input.videoName,
       input.videoLabel,
+      input.videoUrl,
       input.videoPreviewImage,
       input.videoPreviewImagePosition,
       input.photos,
@@ -206,9 +213,9 @@ export async function updateProject(
     `UPDATE projects SET
        title = $1, description = $2, credits = $3, thumbnail_image = $4,
        thumbnail_image_position = $5, thumbnail_label = $6, video_name = $7,
-       video_label = $8, video_preview_image = $9,
-       video_preview_image_position = $10, photos = $11, tags = $12
-     WHERE id = $13
+       video_label = $8, video_url = $9, video_preview_image = $10,
+       video_preview_image_position = $11, photos = $12, tags = $13
+     WHERE id = $14
      RETURNING *`,
     [
       merged.title,
@@ -219,6 +226,7 @@ export async function updateProject(
       merged.thumbnailLabel,
       merged.videoName,
       merged.videoLabel,
+      merged.videoUrl,
       merged.videoPreviewImage,
       merged.videoPreviewImagePosition,
       merged.photos,

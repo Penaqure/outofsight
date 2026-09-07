@@ -103,9 +103,11 @@ export function Dropzone({
   return (
     <div>
       <p className="text-base text-obsidian">{label}</p>
-      {onFocalPointChange && preview?.url && (
-        <p className="mt-0.5 text-xs text-obsidian/40">
-          Click or drag on the image to set the focal point.
+      {onFocalPointChange && (
+        <p className="mt-0.5 min-h-4 text-xs text-obsidian/40">
+          {preview?.url
+            ? "Click or drag on the image to set the focal point."
+            : ""}
         </p>
       )}
       <div
