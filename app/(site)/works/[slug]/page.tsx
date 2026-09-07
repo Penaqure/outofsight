@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getProjectBySlug, getProjects } from "@/lib/data/portfolio";
 import { getWorksContent } from "@/lib/data/content";
 import { Footer } from "@/components/site/Footer";
@@ -68,11 +69,14 @@ export default async function ProjectPage(
                 />
               ) : (
                 heroImage && (
-                  <img
+                  <Image
                     src={heroImage}
                     alt=""
+                    fill
+                    priority
+                    sizes="(min-width: 640px) 66vw, 100vw"
                     style={{ objectPosition: heroImagePosition }}
-                    className="h-full w-full object-cover"
+                    className="object-cover"
                   />
                 )
               )}
@@ -80,12 +84,18 @@ export default async function ProjectPage(
             {filmstrip.length > 0 && (
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {filmstrip.map((photo, index) => (
-                  <img
+                  <div
                     key={index}
-                    src={photo}
-                    alt=""
-                    className="aspect-square w-full object-cover"
-                  />
+                    className="relative aspect-square w-full overflow-hidden"
+                  >
+                    <Image
+                      src={photo}
+                      alt=""
+                      fill
+                      sizes="(min-width: 640px) 17vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -116,11 +126,13 @@ export default async function ProjectPage(
                 className="group relative aspect-square overflow-hidden bg-obsidian/[.05]"
               >
                 {p.thumbnailImage ? (
-                  <img
+                  <Image
                     src={p.thumbnailImage}
                     alt=""
+                    fill
+                    sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
                     style={{ objectPosition: p.thumbnailImagePosition }}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <span className="flex h-full items-center justify-center px-4 text-center text-sm text-obsidian/40">

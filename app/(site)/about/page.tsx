@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getAboutContent } from "@/lib/data/content";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
@@ -22,11 +23,14 @@ export default async function AboutPage() {
       >
         {content.heroImage && (
           <>
-            <img
+            <Image
               src={content.heroImage}
               alt=""
+              fill
+              priority
+              sizes="100vw"
               style={{ objectPosition: content.heroImagePosition }}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-obsidian/30" />
             <h1 className="relative max-w-4xl px-6 text-center text-3xl tracking-tight text-bone-white sm:px-10 sm:text-4xl md:text-5xl lg:px-16 lg:text-[48px]">
@@ -57,13 +61,15 @@ export default async function AboutPage() {
             <p className="px-6 text-base mr-9 leading-[1.3] text-obsidian/80 sm:pr-0 sm:pl-10 lg:pl-16">
               {content.storyText}
             </p>
-            <div className="aspect-[1376/633] w-full overflow-hidden bg-obsidian/[.05]">
+            <div className="relative aspect-[1376/633] w-full overflow-hidden bg-obsidian/[.05]">
               {content.storyImage && (
-                <img
+                <Image
                   src={content.storyImage}
                   alt=""
+                  fill
+                  sizes="(min-width: 640px) 66vw, 100vw"
                   style={{ objectPosition: content.storyImagePosition }}
-                  className="h-full w-full object-cover"
+                  className="object-cover"
                 />
               )}
             </div>
@@ -79,13 +85,15 @@ export default async function AboutPage() {
           <Container>, unlike the rest of the page. */}
       <Section className="pt-0 sm:pt-0">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr]">
-          <div className="aspect-square w-full overflow-hidden bg-obsidian/[.05]">
+          <div className="relative aspect-square w-full overflow-hidden bg-obsidian/[.05]">
             {content.founderPhoto && (
-              <img
+              <Image
                 src={content.founderPhoto}
                 alt={content.founderName}
+                fill
+                sizes="(min-width: 640px) 33vw, 100vw"
                 style={{ objectPosition: content.founderPhotoPosition }}
-                className="h-full w-full object-cover grayscale"
+                className="object-cover grayscale"
               />
             )}
           </div>
@@ -172,10 +180,16 @@ export default async function AboutPage() {
                 narrow screens where a single row can't fit. */}
             <div className="mt-9 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 sm:flex-nowrap sm:justify-between sm:gap-x-4">
               {[...content.trustedByLogos].reverse().map((logo, index) => (
+                // Plain <img>: client logos have no fixed aspect ratio and
+                // render tiny (24px tall), so next/image's required width/
+                // height and optimizer round-trip would cost more than they save.
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={index}
                   src={logo}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="h-6 w-auto shrink-0 object-contain opacity-50 grayscale"
                 />
               ))}
@@ -190,11 +204,13 @@ export default async function AboutPage() {
       >
         {content.ctaBackgroundImage && (
           <>
-            <img
+            <Image
               src={content.ctaBackgroundImage}
               alt=""
+              fill
+              sizes="100vw"
               style={{ objectPosition: content.ctaBackgroundImagePosition }}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-obsidian/50" />
           </>

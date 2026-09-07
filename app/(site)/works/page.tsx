@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getProjects } from "@/lib/data/portfolio";
 import { getWorksContent } from "@/lib/data/content";
 import { Footer } from "@/components/site/Footer";
@@ -23,11 +24,14 @@ export default async function WorksPage() {
         className="relative h-[50vh] min-h-[400px] w-full overflow-hidden bg-obsidian"
       >
         {content.heroImage && (
-          <img
+          <Image
             src={content.heroImage}
             alt=""
+            fill
+            priority
+            sizes="100vw"
             style={{ objectPosition: content.heroImagePosition }}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="object-cover"
           />
         )}
         <div className="absolute inset-0 bg-obsidian/30" />
@@ -53,11 +57,13 @@ export default async function WorksPage() {
               className="group relative aspect-square overflow-hidden bg-obsidian/[.05]"
             >
               {project.thumbnailImage ? (
-                <img
+                <Image
                   src={project.thumbnailImage}
                   alt=""
+                  fill
+                  sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
                   style={{ objectPosition: project.thumbnailImagePosition }}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
                 <span className="flex h-full items-center justify-center px-4 text-center text-sm text-obsidian/40">

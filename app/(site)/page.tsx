@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getHomeContent } from "@/lib/data/content";
+import { videoPosterUrl } from "@/lib/media";
 import { siteConfig } from "@/lib/config";
 import logoOnly from "@/public/logo/logo_only.png";
 
@@ -12,6 +13,7 @@ export const dynamic = "force-dynamic";
 // from the admin Home editor; see lib/data/content.ts.
 export default async function HomePage() {
   const content = await getHomeContent();
+  const backgroundVideoPoster = await videoPosterUrl(content.backgroundVideoUrl);
 
   return (
     <section
@@ -21,11 +23,15 @@ export default async function HomePage() {
       {content.backgroundVideoUrl ? (
         <video
           src={content.backgroundVideoUrl}
+          poster={backgroundVideoPoster}
           autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          // "auto" made the browser pull the entire file (often 50MB+)
+          // before rendering anything; "metadata" lets playback start once
+          // the first chunk is buffered, and the poster covers the gap.
+          preload="metadata"
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (

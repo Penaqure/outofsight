@@ -25,6 +25,9 @@
 /uploads/*
 !/uploads/.gitkeep
 
+# pre-transcode backups made by scripts/optimize-media.mjs
+/.media-originals/
+
 # local dev Postgres data directory (npm run db:dev), machine-specific
 /.pgdata/
 
