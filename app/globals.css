@@ -28,7 +28,28 @@
   --font-sans: var(--font-lekton);
   --font-mono: var(--font-lekton);
   --font-heading: var(--font-open-sauce);
+
+  /* Slow continuous scroll for the "Trusted By" logo strip. Duration is
+     deliberately long so the motion reads as a gentle drift, not a slide. */
+  --animate-marquee: marquee 45s linear infinite;
   }
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Track holds two identical copies of the logo set, so shifting by
+       half its width lands exactly on the start of the second copy. */
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
 
 @media (prefers-color-scheme: dark) {
   :root {

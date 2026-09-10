@@ -37,7 +37,26 @@ const HEADER_CENTER_BAND = 8;
 export function Header() {
   const pathname = usePathname();
   const [isDark, setIsDark] = useState(pathname === "/");
+  // Mobile only: the inline nav is replaced by a hamburger that opens a
+  // full-screen overlay (see the Figma "Website Mobile" menu frame). On sm+
+  // the overlay is never shown and the inline nav is always visible.
+  const [menuOpen, setMenuOpen] = useState(false);
   const intersecting = useRef<Set<Element>>(new Set());
+
+  // Lock body scroll and allow Esc to dismiss while the overlay is open.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     // Recreated (not reused) whenever the header's own re-render would
@@ -97,45 +116,111 @@ export function Header() {
     };
   }, [pathname]);
 
+  // While the overlay is open the header sits on a dark scrim, so the logo
+  // and hamburger always take the light treatment regardless of what's
+  // scrolled underneath.
+  const light = isDark || menuOpen;
+
+  const isNavActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
+      {/* Mobile menu overlay. Transparent-to-dark scrim so the links stay
+          legible on any page, not just the dark landing hero. Tapping the
+          scrim (but not the links) closes it. */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 bg-obsidian/95 backdrop-blur-sm sm:hidden"
+          onClick={() => setMenuOpen(false)}
+        >
+          <nav
+            className="flex flex-col items-center gap-6 px-6 pt-28 text-xs tracking-wider text-bone-white uppercase"
+            onClick={(event) => event.stopPropagation()}
+          >
+            {siteConfig.nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                className={`whitespace-nowrap pb-1 ${
+                  isNavActive(item.href)
+                    ? "border-b border-bone-white"
+                    : "opacity-70 hover:opacity-100"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
+
       <Container>
-        <div className="flex h-20 items-center justify-between">
+        <div className="relative flex h-20 items-center justify-between">
           <Link href="/" className="shrink-0">
             <Image
               src={logo}
               alt={siteConfig.name}
-              className={`h-8 w-auto transition-[filter] duration-200 sm:h-14 lg:h-24 ${isDark ? "invert" : ""}`}
+              className={`h-8 w-auto transition-[filter] duration-200 sm:h-14 lg:h-24 ${light ? "invert" : ""}`}
               priority
             />
           </Link>
+
           <nav
-            className={`flex gap-2 text-[10px] tracking-wider uppercase transition-colors duration-200 sm:gap-6 sm:text-xs lg:gap-10 ${
+            className={`hidden gap-2 text-[10px] tracking-wider uppercase transition-colors duration-200 sm:flex sm:gap-6 sm:text-xs lg:gap-10 ${
               isDark ? "text-white" : "text-obsidian"
             }`}
           >
-            {siteConfig.nav.map((item) => {
-              const isActive =
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`whitespace-nowrap ${
-                    isActive
-                      ? isDark
-                        ? "border-b border-white"
-                        : "border-b border-obsidian"
-                      : "opacity-70 hover:opacity-100"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+            {siteConfig.nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`whitespace-nowrap ${
+                  isNavActive(item.href)
+                    ? isDark
+                      ? "border-b border-white"
+                      : "border-b border-obsidian"
+                    : "opacity-70 hover:opacity-100"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className={`-mr-2 inline-flex h-10 w-10 items-center justify-center transition-colors duration-200 sm:hidden ${
+              light ? "text-bone-white" : "text-obsidian"
+            }`}
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              className="h-6 w-6"
+            >
+              {menuOpen ? (
+                <>
+                  <path d="M6 6l12 12" />
+                  <path d="M18 6L6 18" />
+                </>
+              ) : (
+                <>
+                  <path d="M3 6h18" />
+                  <path d="M3 12h18" />
+                  <path d="M3 18h18" />
+                </>
+              )}
+            </svg>
+          </button>
         </div>
       </Container>
     </header>

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/lib/config";
@@ -11,6 +12,50 @@ const mediaLinks = [
   { label: "Dribbble", href: "#" },
 ];
 
+// Label + link-list block. Stacks (label above list) on mobile to match the
+// two-column Figma mobile footer; on sm+ the label sits inline to the left
+// of the list, as on desktop.
+function FooterColumn({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-0">
+      <p className="text-left text-[11px] tracking-[0.2em] text-bone-white/40 sm:min-w-[100px]">
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function BackToTop({ className = "" }: { className?: string }) {
+  return (
+    <a
+      href="#top"
+      aria-label="Back to top"
+      className={`items-center justify-center text-bone-white/60 transition-colors hover:text-bone-white ${className}`}
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-6 w-6"
+      >
+        <path d="M12 18V6" />
+        <path d="m6 12 6-6 6 6" />
+      </svg>
+    </a>
+  );
+}
+
 // Navigation reuses siteConfig.nav; Phone/Email/WhatsApp reuse the same
 // admin-managed contact details shown on /contact — see lib/data/content.ts.
 // Media links have no admin-managed source yet, so they're static for now.
@@ -23,20 +68,25 @@ export async function Footer() {
   const whatsappNumber = phone?.replace(/[^\d]/g, "");
 
   return (
-    <footer data-header-invert className="bg-obsidian py-16 text-bone-white">
+    <footer
+      data-header-invert
+      className="bg-obsidian py-10 text-bone-white sm:py-16"
+    >
       <Container>
-        <div className="flex flex-wrap items-start justify-between gap-[96px]">
-          <Image
-            src={logo}
-            alt={siteConfig.name}
-            className="h-24 w-auto invert"
-          />
+        <div className="flex flex-col gap-10 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-[96px]">
+          {/* Mobile: logo left, back-to-top arrow top-right. Desktop keeps the
+              arrow at the end of the link cluster below. */}
+          <div className="flex items-start justify-between sm:block">
+            <Image
+              src={logo}
+              alt={siteConfig.name}
+              className="h-10 w-auto invert sm:h-24"
+            />
+            <BackToTop className="inline-flex sm:hidden" />
+          </div>
 
-          <div className="flex flex-wrap items-start gap-[96px] text-sm">
-            <div className="flex items-start">
-              <p className="min-w-[100px] text-left text-[11px]  tracking-[0.2em] text-bone-white/40">
-                Navigation
-              </p>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 text-sm sm:flex sm:flex-wrap sm:items-start sm:gap-[96px]">
+            <FooterColumn label="Navigation">
               <ul className="space-y-2 text-left">
                 {siteConfig.nav.map((item) => (
                   <li key={item.href}>
@@ -49,12 +99,9 @@ export async function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </FooterColumn>
 
-            <div className="flex items-start">
-              <p className="min-w-[100px] text-left text-[11px]  tracking-[0.2em] text-bone-white/40">
-                Media
-              </p>
+            <FooterColumn label="Media">
               <ul className="space-y-2 text-left">
                 {mediaLinks.map((item) => (
                   <li key={item.label}>
@@ -67,21 +114,15 @@ export async function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </FooterColumn>
 
             {contact.location && (
-              <div className="flex items-start">
-                <p className="min-w-[100px] text-left text-[11px]  tracking-[0.2em] text-bone-white/40">
-                  Address
-                </p>
+              <FooterColumn label="Address">
                 <p className="text-left text-bone-white/80">{contact.location}</p>
-              </div>
+              </FooterColumn>
             )}
 
-            <div className="flex items-start">
-              <p className="min-w-[100px] text-left text-[11px]  tracking-[0.2em] text-bone-white/40">
-                Contacts
-              </p>
+            <FooterColumn label="Contacts">
               <ul className="space-y-2 text-left">
                 {phone && (
                   <li>
@@ -114,30 +155,11 @@ export async function Footer() {
                   </li>
                 )}
               </ul>
-            </div>
-             <a
-              href="#top"
-              aria-label="Back to top"
-              className="inline-flex items-center justify-center text-bone-white/60 transition-colors hover:text-bone-white"
-            >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-6 w-6"
-              >
-                <path d="M12 18V6" />
-                <path d="m6 12 6-6 6 6" />
-              </svg>
-            </a>
-          </div>
+            </FooterColumn>
 
-           
+            <BackToTop className="hidden sm:inline-flex" />
           </div>
+        </div>
       </Container>
     </footer>
   );
