@@ -1,14 +1,45 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getProjectBySlug, getProjects } from "@/lib/data/portfolio";
 import { getWorksContent } from "@/lib/data/content";
+import { metaDescription } from "@/lib/seo";
+import { siteConfig } from "@/lib/config";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // see the same note in works/page.tsx.
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(
+  props: PageProps<"/works/[slug]">
+): Promise<Metadata> {
+  const { slug } = await props.params;
+  const project = await getProjectBySlug(slug);
+
+  if (!project) {
+    return { title: "Project not found" };
+  }
+
+  const description = metaDescription(
+    project.description || siteConfig.description
+  );
+  const ogImage = project.videoPreviewImage ?? project.thumbnailImage;
+  return {
+    title: project.title,
+    description,
+    alternates: { canonical: `/works/${project.slug}` },
+    openGraph: {
+      type: "article",
+      title: `${project.title} — OUTOFSIGHT`,
+      description,
+      url: `/works/${project.slug}`,
+      images: ogImage ? [{ url: ogImage, alt: project.title }] : undefined,
+    },
+  };
+}
 
 export default async function ProjectPage(
   props: PageProps<"/works/[slug]">

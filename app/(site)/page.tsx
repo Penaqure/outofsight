@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { getHomeContent } from "@/lib/data/content";
 import { videoPosterUrl } from "@/lib/media";
@@ -7,6 +8,13 @@ import logoOnly from "@/public/logo/logo_only.png";
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // see the same note in works/page.tsx.
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  // Landing page shows just the brand name, not "Home — OUTOFSIGHT".
+  title: { absolute: siteConfig.name },
+  description: siteConfig.description,
+  alternates: { canonical: "/" },
+};
 
 // Home is the hero and nothing else — full viewport, no footer, no scroll.
 // Everything shown (text/logo mode, hero copy, background video) comes

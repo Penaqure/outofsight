@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getAboutContent } from "@/lib/data/content";
+import { metaDescription } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -8,6 +10,22 @@ import { Section } from "@/components/ui/Section";
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // see the same note in works/page.tsx.
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getAboutContent();
+  const description = metaDescription(content.introText || content.bio);
+  return {
+    title: "About Us",
+    description,
+    alternates: { canonical: "/about" },
+    openGraph: {
+      title: `About Us — OUTOFSIGHT`,
+      description,
+      url: "/about",
+      images: content.heroImage ? [{ url: content.heroImage }] : undefined,
+    },
+  };
+}
 
 // Every section here (hero image, intro, story, founder profile, process
 // cards, trusted-by logos, CTA) comes from the admin About editor — see

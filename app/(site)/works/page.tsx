@@ -1,13 +1,31 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getProjects } from "@/lib/data/portfolio";
 import { getWorksContent } from "@/lib/data/content";
+import { metaDescription } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // otherwise admin edits wouldn't show up here without a rebuild.
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getWorksContent();
+  const description = metaDescription(content.heroDescription);
+  return {
+    title: "Work",
+    description,
+    alternates: { canonical: "/works" },
+    openGraph: {
+      title: "Work — OUTOFSIGHT",
+      description,
+      url: "/works",
+      images: content.heroImage ? [{ url: content.heroImage }] : undefined,
+    },
+  };
+}
 
 // Hero image/heading/description come from the admin Works editor — see
 // lib/data/content.ts.

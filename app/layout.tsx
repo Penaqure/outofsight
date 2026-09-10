@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Lekton } from "next/font/google";
 import localFont from "next/font/local";
@@ -89,8 +89,57 @@ const openSauce = localFont({
 });
 
 export const metadata: Metadata = {
-  title: siteConfig.name,
-  description: siteConfig.tagline,
+  // Resolves every relative URL below (canonical, OG images, …) against the
+  // deployed origin. See siteConfig.url / NEXT_PUBLIC_SITE_URL.
+  metadataBase: new URL(siteConfig.url),
+  // Child pages set a bare `title` string; this wraps it as "Page — OUTOFSIGHT".
+  // The home page overrides with `title.absolute` to show just the brand name.
+  title: {
+    default: siteConfig.name,
+    template: `%s — ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  keywords: [
+    "OUTOFSIGHT",
+    "brand storytelling",
+    "film production",
+    "creative studio",
+    "video production",
+    "filmmaking",
+    "creative direction",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: "/",
+    locale: "en_US",
+    // TODO: replace with a purpose-built 1200×630 social card. The logo is a
+    // stopgap so shared links aren't completely image-less.
+    images: [{ url: "/logo/outofsight-logo.png", alt: siteConfig.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: ["/logo/outofsight-logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      "max-snippet": -1,
+    },
+  },
   // One icon, no light/dark variants: favicon dark-mode switching
   // (`prefers-color-scheme`, whether via the `media` attribute on <link>
   // or embedded in an SVG's own stylesheet) isn't reliably applied to
@@ -104,13 +153,51 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  // --obsidian / --bone-white from app/globals.css — tints the mobile
+  // browser chrome to match the site's dark/light grounds.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#efece8" },
+    { media: "(prefers-color-scheme: dark)", color: "#232323" },
+  ],
+};
+
+// Organization + WebSite structured data — helps search engines show the
+// brand name/logo and a sitelinks search box. Rendered once, site-wide.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteConfig.url}/#organization`,
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/logo/outofsight-logo.png`,
+      description: siteConfig.description,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteConfig.url}/#website`,
+      url: siteConfig.url,
+      name: siteConfig.name,
+      publisher: { "@id": `${siteConfig.url}/#organization` },
+    },
+  ],
+};
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
       className={`${lekton.variable} ${openSauce.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
