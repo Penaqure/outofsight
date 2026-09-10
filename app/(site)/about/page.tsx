@@ -60,7 +60,7 @@ export default async function AboutPage() {
           {/* Mobile (Figma): image full-bleed on top, text below. Desktop:
               narrow text column left, image bleeding to the right edge. */}
           <div className="flex flex-col gap-6 sm:grid sm:grid-cols-[1fr_2fr] sm:items-start sm:gap-0">
-            <p className="order-2 px-6 text-xs leading-[1.23] text-obsidian/80 sm:order-none sm:pr-0 sm:pl-10 sm:text-base sm:leading-[1.3] lg:pl-16">
+            <p className="order-2 px-6 text-xs leading-[1.23] text-obsidian/80 sm:order-none sm:mr-9 sm:pr-0 sm:pl-10 sm:text-base sm:leading-[1.3] lg:pl-16">
               {content.storyText}
             </p>
             <div className="relative order-1 aspect-[412/190] w-full overflow-hidden bg-obsidian/[.05] sm:order-none sm:aspect-[1376/633]">
