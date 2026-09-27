@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { AboutContent, ProcessCard } from "@/types/content";
+import type { AboutContent, ProcessCard, TeamMember } from "@/types/content";
 import {
   Dropzone,
   POOL_IMAGE_MIME,
@@ -12,6 +12,17 @@ import { SaveBar, useSave } from "@/components/admin/SaveBar";
 
 const fieldClass =
   "mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary";
+
+function newTeamMember(photo: string | null): TeamMember {
+  return {
+    name: "",
+    position: "",
+    photo,
+    photoPosition: DEFAULT_FOCAL_POINT,
+    instagramUrl: "",
+    linkedinUrl: "",
+  };
+}
 
 export function AboutContentForm({
   initialContent,
@@ -31,20 +42,8 @@ export function AboutContentForm({
     initialContent.storyImagePosition ?? DEFAULT_FOCAL_POINT
   );
   const [storyText, setStoryText] = useState(initialContent.storyText);
-  const [founderPhoto, setFounderPhoto] = useState(
-    initialContent.founderPhoto
-  );
-  const [founderPhotoPosition, setFounderPhotoPosition] = useState(
-    initialContent.founderPhotoPosition ?? DEFAULT_FOCAL_POINT
-  );
-  const [founderName, setFounderName] = useState(initialContent.founderName);
-  const [founderTitle, setFounderTitle] = useState(
-    initialContent.founderTitle
-  );
-  const [bio, setBio] = useState(initialContent.bio);
-  const [linkedinUrl, setLinkedinUrl] = useState(initialContent.linkedinUrl);
-  const [instagramUrl, setInstagramUrl] = useState(
-    initialContent.instagramUrl
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(
+    initialContent.teamMembers ?? []
   );
   const [processCards, setProcessCards] = useState<ProcessCard[]>(
     initialContent.processCards
@@ -107,13 +106,14 @@ export function AboutContentForm({
   }[] = [
     { label: "Hero Image", setter: setHeroImage },
     { label: "Story Image", setter: setStoryImage },
-    { label: "Founder Photo", setter: setFounderPhoto },
     { label: "CTA Background Image", setter: setCtaBackgroundImage },
   ];
 
   function assignPoolImage(url: string, targetLabel: string) {
     if (targetLabel === "Trusted By Logos") {
       setTrustedByLogos((prev) => [...prev, url]);
+    } else if (targetLabel === "Team Member") {
+      setTeamMembers((prev) => [...prev, newTeamMember(url)]);
     } else {
       const target = assignTargets.find((t) => t.label === targetLabel);
       target?.setter(url);
@@ -127,6 +127,26 @@ export function AboutContentForm({
     setProcessCards((prev) =>
       prev.map((card, i) => (i === index ? { ...card, ...patch } : card))
     );
+    setDirty(true);
+    clearStatus();
+  }
+
+  function updateMember(index: number, patch: Partial<TeamMember>) {
+    setTeamMembers((prev) =>
+      prev.map((member, i) => (i === index ? { ...member, ...patch } : member))
+    );
+    setDirty(true);
+    clearStatus();
+  }
+
+  function addMember() {
+    setTeamMembers((prev) => [...prev, newTeamMember(null)]);
+    setDirty(true);
+    clearStatus();
+  }
+
+  function removeMember(index: number) {
+    setTeamMembers((prev) => prev.filter((_, i) => i !== index));
     setDirty(true);
     clearStatus();
   }
@@ -156,13 +176,7 @@ export function AboutContentForm({
       storyImage,
       storyImagePosition,
       storyText,
-      founderPhoto,
-      founderPhotoPosition,
-      founderName,
-      founderTitle,
-      bio,
-      linkedinUrl,
-      instagramUrl,
+      teamMembers,
       processCards,
       trustedByLogos,
       ctaText,
@@ -255,6 +269,7 @@ export function AboutContentForm({
                     {t.label}
                   </option>
                 ))}
+                <option value="Team Member">Team Member</option>
                 <option value="Trusted By Logos">Trusted By Logos</option>
               </select>
             </div>
@@ -346,75 +361,83 @@ export function AboutContentForm({
       </div>
 
       <div className="border-t border-obsidian/10 pt-10">
-        <p className="text-2xl text-obsidian">Founder Profile</p>
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <Dropzone
-            label="Founder Photo"
-            accept="image/*"
-            helperText="JPG or PNG, upto 10MB"
-            preview={
-              founderPhoto ? { label: "Founder photo", url: founderPhoto } : null
-            }
-            onSelect={async (file) => {
-              update(setFounderPhoto)(await uploadFile(file));
-            }}
-            onRemove={() => update(setFounderPhoto)(null)}
-            onDropUrl={(url) => assignPoolImage(url, "Founder Photo")}
-            focalPoint={founderPhotoPosition}
-            onFocalPointChange={update(setFounderPhotoPosition)}
-          />
-          <div className="flex flex-col gap-4">
-            <div>
-              <p className="text-base text-obsidian">Name</p>
+        <p className="text-2xl text-obsidian">Team Members</p>
+        <p className="mt-1 text-xs text-obsidian/40">
+          Shown as a 3-column grid of black &amp; white photos. Hovering a
+          photo turns it to colour and shows the name, position and social
+          links. Leave a link empty to hide it.
+        </p>
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {teamMembers.map((member, index) => (
+            <div key={index} className="flex flex-col gap-3">
+              <Dropzone
+                label={`Member ${index + 1}`}
+                accept="image/*"
+                helperText="JPG or PNG, upto 10MB"
+                preview={
+                  member.photo
+                    ? { label: member.name || "Team photo", url: member.photo }
+                    : null
+                }
+                onSelect={async (file) => {
+                  updateMember(index, { photo: await uploadFile(file) });
+                }}
+                onRemove={() => updateMember(index, { photo: null })}
+                onDropUrl={(url) => {
+                  updateMember(index, { photo: url });
+                  removeFromPool(url);
+                }}
+                focalPoint={member.photoPosition}
+                onFocalPointChange={(photoPosition) =>
+                  updateMember(index, { photoPosition })
+                }
+              />
               <input
-                value={founderName}
-                onChange={(e) => update(setFounderName)(e.target.value)}
+                value={member.name}
+                onChange={(e) => updateMember(index, { name: e.target.value })}
                 placeholder="Enter Name"
                 className={fieldClass}
               />
-            </div>
-            <div>
-              <p className="text-base text-obsidian">Title</p>
               <input
-                value={founderTitle}
-                onChange={(e) => update(setFounderTitle)(e.target.value)}
-                placeholder="Enter Title"
+                value={member.position}
+                onChange={(e) =>
+                  updateMember(index, { position: e.target.value })
+                }
+                placeholder="Enter Position (e.g. Director of Photography)"
                 className={fieldClass}
               />
+              <input
+                value={member.instagramUrl}
+                onChange={(e) =>
+                  updateMember(index, { instagramUrl: e.target.value })
+                }
+                placeholder="https://instagram.com/..."
+                className={fieldClass}
+              />
+              <input
+                value={member.linkedinUrl}
+                onChange={(e) =>
+                  updateMember(index, { linkedinUrl: e.target.value })
+                }
+                placeholder="https://linkedin.com/in/..."
+                className={fieldClass}
+              />
+              <button
+                type="button"
+                onClick={() => removeMember(index)}
+                className="self-start text-xs text-red-600 hover:underline"
+              >
+                Remove member
+              </button>
             </div>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <p className="text-base text-obsidian">Bio</p>
-          <textarea
-            value={bio}
-            onChange={(e) => update(setBio)(e.target.value)}
-            placeholder="Type Here"
-            rows={4}
-            className={`${fieldClass} resize-none`}
-          />
-        </div>
-
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div>
-            <p className="text-base text-obsidian">LinkedIn URL</p>
-            <input
-              value={linkedinUrl}
-              onChange={(e) => update(setLinkedinUrl)(e.target.value)}
-              placeholder="https://linkedin.com/in/..."
-              className={fieldClass}
-            />
-          </div>
-          <div>
-            <p className="text-base text-obsidian">Instagram URL</p>
-            <input
-              value={instagramUrl}
-              onChange={(e) => update(setInstagramUrl)(e.target.value)}
-              placeholder="https://instagram.com/..."
-              className={fieldClass}
-            />
-          </div>
+          ))}
+          <button
+            type="button"
+            onClick={addMember}
+            className="flex min-h-40 items-center justify-center bg-obsidian/10 text-2xl text-obsidian/40 hover:bg-obsidian/[.15]"
+          >
+            +
+          </button>
         </div>
       </div>
 
@@ -447,6 +470,9 @@ export function AboutContentForm({
 
       <div className="border-t border-obsidian/10 pt-10">
         <p className="text-2xl text-obsidian">Trusted Brands</p>
+        <p className="mt-1 text-xs text-obsidian/40">
+          Shown on the Works page.
+        </p>
         <div className="mt-6 flex flex-wrap gap-3">
           {trustedByLogos.map((logo, index) => (
             <div

@@ -19,6 +19,15 @@ export type ProcessCard = {
   description: string;
 };
 
+export type TeamMember = {
+  name: string;
+  position: string;
+  photo: string | null;
+  photoPosition: string;
+  instagramUrl: string;
+  linkedinUrl: string;
+};
+
 export type AboutContent = {
   heroImage: string | null;
   // CSS object-position (e.g. "62% 30%") — where the image is focused
@@ -29,14 +38,10 @@ export type AboutContent = {
   storyImage: string | null;
   storyImagePosition: string;
   storyText: string;
-  founderPhoto: string | null;
-  founderPhotoPosition: string;
-  founderName: string;
-  founderTitle: string;
-  bio: string;
-  linkedinUrl: string;
-  instagramUrl: string;
+  teamMembers: TeamMember[];
   processCards: ProcessCard[];
+  // Edited in the About admin, but rendered on the Works page (whose
+  // heading/description for that block live in WorksContent).
   trustedByLogos: string[];
   ctaText: string;
   ctaBackgroundImage: string | null;
@@ -48,4 +53,6 @@ export type WorksContent = {
   heroImagePosition: string;
   heroHeading: string;
   heroDescription: string;
+  trustedByHeading: string;
+  trustedByDescription: string;
 };

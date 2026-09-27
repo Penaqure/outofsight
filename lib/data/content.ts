@@ -3,6 +3,7 @@ import type {
   ContactsContent,
   HomeContent,
   ProcessCard,
+  TeamMember,
   WorksContent,
 } from "@/types/content";
 import { pool } from "@/lib/db";
@@ -158,6 +159,9 @@ const worksDefaults: WorksContent = {
   heroHeading: "For Moments That Stay",
   heroDescription:
     "From the vastness of its enchanting desert to the vibrancy of its dazzling cities, discover cultural treasures that tell stories of the past, and surprise yourself on a journey filled with excitement and wonder.",
+  trustedByHeading: "Trusted International Clients",
+  trustedByDescription:
+    "From global brands to local visionaries, we partner with teams who believe in the power of a well-told story.",
 };
 
 type WorksRow = {
@@ -165,6 +169,8 @@ type WorksRow = {
   hero_image_position: string;
   hero_heading: string;
   hero_description: string;
+  trusted_by_heading: string;
+  trusted_by_description: string;
 };
 
 function toWorksContent(row: WorksRow): WorksContent {
@@ -173,6 +179,8 @@ function toWorksContent(row: WorksRow): WorksContent {
     heroImagePosition: row.hero_image_position,
     heroHeading: row.hero_heading,
     heroDescription: row.hero_description,
+    trustedByHeading: row.trusted_by_heading,
+    trustedByDescription: row.trusted_by_description,
   };
 }
 
@@ -184,14 +192,17 @@ export async function getWorksContent(): Promise<WorksContent> {
 
   const { rows: created } = await pool.query<WorksRow>(
     `INSERT INTO works_content
-       (id, hero_image, hero_image_position, hero_heading, hero_description)
-     VALUES (1, $1, $2, $3, $4)
+       (id, hero_image, hero_image_position, hero_heading, hero_description,
+        trusted_by_heading, trusted_by_description)
+     VALUES (1, $1, $2, $3, $4, $5, $6)
      RETURNING *`,
     [
       worksDefaults.heroImage,
       worksDefaults.heroImagePosition,
       worksDefaults.heroHeading,
       worksDefaults.heroDescription,
+      worksDefaults.trustedByHeading,
+      worksDefaults.trustedByDescription,
     ]
   );
   return toWorksContent(created[0]);
@@ -204,7 +215,8 @@ export async function updateWorksContent(
   const { rows } = await pool.query<WorksRow>(
     `UPDATE works_content SET
        hero_image = $1, hero_image_position = $2,
-       hero_heading = $3, hero_description = $4
+       hero_heading = $3, hero_description = $4,
+       trusted_by_heading = $5, trusted_by_description = $6
      WHERE id = 1
      RETURNING *`,
     [
@@ -212,6 +224,8 @@ export async function updateWorksContent(
       merged.heroImagePosition,
       merged.heroHeading,
       merged.heroDescription,
+      merged.trustedByHeading,
+      merged.trustedByDescription,
     ]
   );
   return toWorksContent(rows[0]);
@@ -227,13 +241,7 @@ const aboutDefaults: AboutContent = {
   storyImagePosition: "50% 50%",
   storyText:
     "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
-  founderPhoto: null,
-  founderPhotoPosition: "50% 50%",
-  founderName: "Nihal Muhammed",
-  founderTitle: "Founder & Creative Director",
-  bio: "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
-  linkedinUrl: "",
-  instagramUrl: "",
+  teamMembers: [] as TeamMember[],
   processCards: [
     {
       title: "Vision & Strategy",
@@ -269,13 +277,7 @@ type AboutRow = {
   story_image: string | null;
   story_image_position: string;
   story_text: string;
-  founder_photo: string | null;
-  founder_photo_position: string;
-  founder_name: string;
-  founder_title: string;
-  bio: string;
-  linkedin_url: string;
-  instagram_url: string;
+  team_members: TeamMember[];
   process_cards: ProcessCard[];
   trusted_by_logos: string[];
   cta_text: string;
@@ -283,8 +285,21 @@ type AboutRow = {
   cta_background_image_position: string;
 };
 
-// process_cards comes back already parsed from jsonb (node-postgres parses
-// json/jsonb columns automatically), so it's cast rather than JSON.parsed.
+// team_members and process_cards come back already parsed from jsonb
+// (node-postgres parses json/jsonb columns automatically), so they're cast
+// rather than JSON.parsed. Team members saved before position/social links
+// existed lack those keys, so they're filled with "" here.
+function toTeamMember(member: Partial<TeamMember>): TeamMember {
+  return {
+    name: member.name ?? "",
+    position: member.position ?? "",
+    photo: member.photo ?? null,
+    photoPosition: member.photoPosition ?? "50% 50%",
+    instagramUrl: member.instagramUrl ?? "",
+    linkedinUrl: member.linkedinUrl ?? "",
+  };
+}
+
 function toAboutContent(row: AboutRow): AboutContent {
   return {
     heroImage: row.hero_image,
@@ -294,13 +309,7 @@ function toAboutContent(row: AboutRow): AboutContent {
     storyImage: row.story_image,
     storyImagePosition: row.story_image_position,
     storyText: row.story_text,
-    founderPhoto: row.founder_photo,
-    founderPhotoPosition: row.founder_photo_position,
-    founderName: row.founder_name,
-    founderTitle: row.founder_title,
-    bio: row.bio,
-    linkedinUrl: row.linkedin_url,
-    instagramUrl: row.instagram_url,
+    teamMembers: row.team_members.map(toTeamMember),
     processCards: row.process_cards,
     trustedByLogos: row.trusted_by_logos,
     ctaText: row.cta_text,
@@ -318,11 +327,10 @@ export async function getAboutContent(): Promise<AboutContent> {
   const { rows: created } = await pool.query<AboutRow>(
     `INSERT INTO about_content
        (id, hero_image, hero_image_position, hero_headline, intro_text,
-        story_image, story_image_position, story_text, founder_photo,
-        founder_photo_position, founder_name, founder_title, bio,
-        linkedin_url, instagram_url, process_cards, trusted_by_logos,
-        cta_text, cta_background_image, cta_background_image_position)
-     VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+        story_image, story_image_position, story_text, team_members,
+        process_cards, trusted_by_logos, cta_text, cta_background_image,
+        cta_background_image_position)
+     VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
      RETURNING *`,
     [
       aboutDefaults.heroImage,
@@ -332,13 +340,7 @@ export async function getAboutContent(): Promise<AboutContent> {
       aboutDefaults.storyImage,
       aboutDefaults.storyImagePosition,
       aboutDefaults.storyText,
-      aboutDefaults.founderPhoto,
-      aboutDefaults.founderPhotoPosition,
-      aboutDefaults.founderName,
-      aboutDefaults.founderTitle,
-      aboutDefaults.bio,
-      aboutDefaults.linkedinUrl,
-      aboutDefaults.instagramUrl,
+      JSON.stringify(aboutDefaults.teamMembers),
       JSON.stringify(aboutDefaults.processCards),
       aboutDefaults.trustedByLogos,
       aboutDefaults.ctaText,
@@ -357,11 +359,9 @@ export async function updateAboutContent(
     `UPDATE about_content SET
        hero_image = $1, hero_image_position = $2, hero_headline = $3,
        intro_text = $4, story_image = $5, story_image_position = $6,
-       story_text = $7, founder_photo = $8, founder_photo_position = $9,
-       founder_name = $10, founder_title = $11, bio = $12,
-       linkedin_url = $13, instagram_url = $14, process_cards = $15,
-       trusted_by_logos = $16, cta_text = $17, cta_background_image = $18,
-       cta_background_image_position = $19
+       story_text = $7, team_members = $8, process_cards = $9,
+       trusted_by_logos = $10, cta_text = $11, cta_background_image = $12,
+       cta_background_image_position = $13
      WHERE id = 1
      RETURNING *`,
     [
@@ -372,13 +372,7 @@ export async function updateAboutContent(
       merged.storyImage,
       merged.storyImagePosition,
       merged.storyText,
-      merged.founderPhoto,
-      merged.founderPhotoPosition,
-      merged.founderName,
-      merged.founderTitle,
-      merged.bio,
-      merged.linkedinUrl,
-      merged.instagramUrl,
+      JSON.stringify(merged.teamMembers),
       JSON.stringify(merged.processCards),
       merged.trustedByLogos,
       merged.ctaText,

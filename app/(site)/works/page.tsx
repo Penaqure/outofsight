@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getProjects } from "@/lib/data/portfolio";
-import { getWorksContent } from "@/lib/data/content";
+import { getAboutContent, getWorksContent } from "@/lib/data/content";
 import { metaDescription } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
+import { TrustedBy } from "@/components/site/TrustedBy";
 import { Container } from "@/components/ui/Container";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
@@ -27,12 +28,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Hero image/heading/description come from the admin Works editor — see
-// lib/data/content.ts.
+// Hero image/heading/description come from the admin Works editor; the
+// Trusted By logos from the admin About editor — see lib/data/content.ts.
 export default async function WorksPage() {
-  const [projects, content] = await Promise.all([
+  const [projects, content, about] = await Promise.all([
     getProjects(),
     getWorksContent(),
+    getAboutContent(),
   ]);
 
   return (
@@ -55,8 +57,14 @@ export default async function WorksPage() {
         <div className="absolute inset-0 bg-obsidian/30" />
       </section>
 
+      <TrustedBy
+        heading={content.trustedByHeading}
+        description={content.trustedByDescription}
+        logos={about.trustedByLogos}
+      />
+
       <Container>
-        <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-[1fr_2fr] sm:gap-10 sm:py-24">
+        <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 sm:gap-10 sm:pt-32 sm:pb-16">
           <h1 className="font-heading text-2xl tracking-tight text-obsidian uppercase">
             {content.heroHeading}
           </h1>

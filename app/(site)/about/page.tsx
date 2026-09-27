@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getAboutContent();
-  const description = metaDescription(content.introText || content.bio);
+  const description = metaDescription(content.introText || content.storyText);
   return {
     title: "About Us",
     description,
@@ -27,9 +27,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Every section here (hero image, intro, story, founder profile, process
-// cards, trusted-by logos, CTA) comes from the admin About editor — see
-// lib/data/content.ts.
+// Every section here (hero image, intro, story, team members, process
+// cards, CTA) comes from the admin About editor — see lib/data/content.ts.
+// The Trusted By logos are edited there too but render on the Works page.
 export default async function AboutPage() {
   const content = await getAboutContent();
 
@@ -71,10 +71,8 @@ export default async function AboutPage() {
       {(content.storyText || content.storyImage) && (
         // Image bleeds to the right screen edge here (matches Figma) — only
         // the text column keeps the standard left padding, so this section
-        // is NOT wrapped in <Container>, unlike the rest of the page. No
-        // bottom padding: its bottom-right corner touches the founder
-        // image directly below (same column split, so their edges align).
-        <Section className="pb-0 sm:pb-0">
+        // is NOT wrapped in <Container>, unlike the rest of the page.
+        <Section>
           {/* Mobile (Figma): image full-bleed on top, text below. Desktop:
               narrow text column left, image bleeding to the right edge. */}
           <div className="flex flex-col gap-6 sm:grid sm:grid-cols-[1fr_2fr] sm:items-start sm:gap-0">
@@ -97,79 +95,91 @@ export default async function AboutPage() {
         </Section>
       )}
 
-      {/* Photo bleeds to the left screen edge here (matches Figma), using
-          the same column split as the story section above (so the story
-          image's left edge lines up with this photo's right edge, with no
-          gap between the two sections). Only the text column keeps the
-          standard right padding, so this section is NOT wrapped in
-          <Container>, unlike the rest of the page. */}
-      <Section className="pt-0 sm:pt-0">
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr]">
-          <div className="relative aspect-[412/512] w-full overflow-hidden bg-obsidian/[.05] sm:aspect-square">
-            {content.founderPhoto && (
-              <Image
-                src={content.founderPhoto}
-                alt={content.founderName}
-                fill
-                sizes="(min-width: 640px) 33vw, 100vw"
-                style={{ objectPosition: content.founderPhotoPosition }}
-                className="object-cover grayscale"
-              />
-            )}
-          </div>
-          <div className="flex flex-col justify-between gap-9 px-6 pr-16 pt-8 text-right sm:gap-10 sm:pr-10 sm:pl-0 sm:pt-16 lg:pr-16">
-            <div>
-              <p className="font-heading text-base leading-tight font-semibold tracking-tight text-obsidian sm:text-2xl">
-                {content.founderName.includes(" ") ? (
-                  <>
-                    {content.founderName.slice(
-                      0,
-                      content.founderName.indexOf(" ")
+      {content.teamMembers.length > 0 && (
+        <Section className="pt-0">
+          <Container>
+            <p className="font-heading text-base font-semibold tracking-tight text-obsidian sm:text-2xl">
+              Team Members
+            </p>
+            <ul className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-9 sm:grid-cols-3">
+              {content.teamMembers.map((member, index) => {
+                const spaceAt = member.name.indexOf(" ");
+                return (
+                  // Figma "Component 1": black & white at rest; on hover the
+                  // photo fades to full colour and the name/position appear
+                  // bottom-right. tabIndex makes it focusable so keyboard and
+                  // touch users (a tap focuses it) get the same reveal.
+                  <li
+                    key={index}
+                    tabIndex={0}
+                    className="group relative aspect-[3/2] overflow-hidden bg-obsidian/[.05] outline-none"
+                  >
+                    {member.photo && (
+                      <Image
+                        src={member.photo}
+                        alt={member.name}
+                        fill
+                        sizes="(min-width: 640px) 33vw, 50vw"
+                        style={{ objectPosition: member.photoPosition }}
+                        className="object-cover grayscale transition-[filter] duration-500 group-hover:grayscale-0 group-focus-within:grayscale-0"
+                      />
                     )}
-                    <br />
-                    {content.founderName.slice(
-                      content.founderName.indexOf(" ") + 1
-                    )}
-                  </>
-                ) : (
-                  content.founderName
-                )}
-              </p>
-              <p className="text-xs uppercase tracking-wider text-obsidian/50 sm:text-base">
-                {content.founderTitle}
-              </p>
-            </div>
-            <div>
-              <p className="ml-auto max-w-4xl text-xs leading-[1.23] text-obsidian/70 sm:text-base sm:leading-[1.3]">
-                {content.bio}
-              </p>
-              {(content.linkedinUrl || content.instagramUrl) && (
-                <div className="mt-4 flex justify-end gap-3">
-                  {content.linkedinUrl && (
-                    <a
-                      href={content.linkedinUrl}
-                      className="text-xs text-obsidian/60 hover:text-obsidian"
-                    >
-                      Linkedin
-                    </a>
-                  )}
-                  {content.linkedinUrl && content.instagramUrl && (
-                    <span className="text-xs text-obsidian/30">|</span>
-                  )}
-                  {content.instagramUrl && (
-                    <a
-                      href={content.instagramUrl}
-                      className="text-xs text-obsidian/60 hover:text-obsidian"
-                    >
-                      Instagram
-                    </a>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </Section>
+                    <div className="pointer-events-none absolute inset-0 flex flex-col items-end justify-end bg-gradient-to-t from-obsidian/40 via-transparent to-transparent p-3 text-right opacity-0 transition-opacity duration-500 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 sm:p-5">
+                      {member.name && (
+                        <p className="font-heading text-sm leading-tight font-semibold tracking-tight text-bone-white sm:text-xl">
+                          {spaceAt > 0 ? (
+                            <>
+                              {member.name.slice(0, spaceAt)}
+                              <br />
+                              {member.name.slice(spaceAt + 1)}
+                            </>
+                          ) : (
+                            member.name
+                          )}
+                        </p>
+                      )}
+                      {member.position && (
+                        <p className="mt-2 text-[10px] uppercase tracking-wider text-bone-white/80 sm:mt-3 sm:text-xs">
+                          {member.position}
+                        </p>
+                      )}
+                      {(member.instagramUrl || member.linkedinUrl) && (
+                        <div className="mt-2 flex gap-2 text-[10px] text-bone-white/80 sm:text-xs">
+                          {member.instagramUrl && (
+                            <a
+                              href={member.instagramUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`${member.name || "Team member"} on Instagram`}
+                              className="hover:text-bone-white hover:underline"
+                            >
+                              Instagram
+                            </a>
+                          )}
+                          {member.instagramUrl && member.linkedinUrl && (
+                            <span className="text-bone-white/40">|</span>
+                          )}
+                          {member.linkedinUrl && (
+                            <a
+                              href={member.linkedinUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`${member.name || "Team member"} on LinkedIn`}
+                              className="hover:text-bone-white hover:underline"
+                            >
+                              LinkedIn
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </Container>
+        </Section>
+      )}
 
       <Section className="pt-0">
         <Container>
@@ -187,52 +197,6 @@ export default async function AboutPage() {
           </div>
         </Container>
       </Section>
-
-      {content.trustedByLogos.length > 0 && (
-        // Figma gives this standalone block its own 96px box padding
-        // (not the 64px reading-column padding the rest of the page uses),
-        // so it gets a dedicated wrapper instead of <Container>.
-        <Section className="pt-0">
-          <div className="px-6 sm:px-10 lg:px-24">
-            <p className="font-heading text-center text-base font-semibold tracking-tight text-obsidian sm:text-2xl">
-              Trusted By
-            </p>
-          </div>
-          {/* Figma shows the logos as one long horizontal strip. Rendered as
-              a slow continuous marquee: two identical copies on the track and
-              a -50% shift give a seamless loop, the edge mask fades logos in
-              and out, and hovering pauses it. Honors prefers-reduced-motion
-              (see .animate-marquee in globals.css). */}
-          <div className="mt-6 overflow-hidden sm:mt-9 [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]">
-            <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
-              {[0, 1].map((copy) => (
-                <ul
-                  key={copy}
-                  aria-hidden={copy === 1}
-                  className="flex shrink-0 items-center gap-x-16 pr-16"
-                >
-                  {[...content.trustedByLogos].reverse().map((logo, index) => (
-                    <li key={index}>
-                      {/* Plain <img>: client logos have no fixed aspect ratio
-                          and render tiny (24px tall), so next/image's required
-                          width/height and optimizer round-trip would cost more
-                          than they save. */}
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={logo}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                        className="h-6 w-auto object-contain opacity-50 grayscale"
-                      />
-                    </li>
-                  ))}
-                </ul>
-              ))}
-            </div>
-          </div>
-        </Section>
-      )}
 
       <section
         data-header-invert

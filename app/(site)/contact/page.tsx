@@ -38,17 +38,39 @@ export default async function ContactPage() {
       ? `${contact.countryCode} ${contact.phoneNumber}`
       : null;
 
+  const words = contact.bodyText.split(" ");
+  const infoLines = [contact.email, phone, contact.location].filter(Boolean);
+  // Info lines start fading in only once the heading has finished its
+  // word-by-word reveal (see auteurstudios.au/contact for the reference).
+  const infoStartDelay = words.length * 70 + 150;
+
   return (
     <div className="flex flex-col bg-bone-white">
       <main className="flex h-dvh flex-col items-center justify-center text-center">
         <Container>
           <h1 className="text-4xl tracking-tight text-obsidian sm:text-5xl lg:text-[48px]">
-            {contact.bodyText}
+            {words.map((word, i) => (
+              <span key={i}>
+                <span
+                  className="inline-block animate-fade-up"
+                  style={{ animationDelay: `${i * 70}ms` }}
+                >
+                  {word}
+                </span>
+                {i < words.length - 1 ? " " : ""}
+              </span>
+            ))}
           </h1>
           <div className="mt-6 space-y-2 text-base text-obsidian/70">
-            {contact.email && <p>{contact.email}</p>}
-            {phone && <p>{phone}</p>}
-            {contact.location && <p>{contact.location}</p>}
+            {infoLines.map((line, i) => (
+              <p
+                key={line}
+                className="animate-fade-up"
+                style={{ animationDelay: `${infoStartDelay + i * 100}ms` }}
+              >
+                {line}
+              </p>
+            ))}
           </div>
         </Container>
       </main>

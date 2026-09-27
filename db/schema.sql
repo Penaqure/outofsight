@@ -32,12 +32,15 @@ CREATE TABLE IF NOT EXISTS works_content (
   hero_image TEXT,
   hero_image_position TEXT NOT NULL,
   hero_heading TEXT NOT NULL,
-  hero_description TEXT NOT NULL
+  hero_description TEXT NOT NULL,
+  trusted_by_heading TEXT NOT NULL,
+  trusted_by_description TEXT NOT NULL
 );
 
--- process_cards ((title, description) pairs) is stored as jsonb — it's a
--- small, fixed-shape array with no query/filter need of its own, so a
--- relational table would be overhead without benefit.
+-- process_cards ((title, description) pairs) and team_members (name,
+-- position, photo and social links per member) are stored as jsonb — small, fixed-shape
+-- arrays with no query/filter need of their own, so a relational table
+-- would be overhead without benefit.
 CREATE TABLE IF NOT EXISTS about_content (
   id INTEGER PRIMARY KEY DEFAULT 1,
   hero_image TEXT,
@@ -47,13 +50,7 @@ CREATE TABLE IF NOT EXISTS about_content (
   story_image TEXT,
   story_image_position TEXT NOT NULL,
   story_text TEXT NOT NULL,
-  founder_photo TEXT,
-  founder_photo_position TEXT NOT NULL,
-  founder_name TEXT NOT NULL,
-  founder_title TEXT NOT NULL,
-  bio TEXT NOT NULL,
-  linkedin_url TEXT NOT NULL,
-  instagram_url TEXT NOT NULL,
+  team_members JSONB NOT NULL DEFAULT '[]',
   process_cards JSONB NOT NULL,
   trusted_by_logos TEXT[] NOT NULL DEFAULT '{}',
   cta_text TEXT NOT NULL,
@@ -83,3 +80,25 @@ CREATE TABLE IF NOT EXISTS projects (
 -- Migrations for databases created before a column existed. Each is
 -- idempotent, so `npm run db:setup` is safe to re-run.
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS video_url TEXT;
+ALTER TABLE works_content ADD COLUMN IF NOT EXISTS trusted_by_heading TEXT NOT NULL DEFAULT 'Trusted International Clients';
+ALTER TABLE works_content ADD COLUMN IF NOT EXISTS trusted_by_description TEXT NOT NULL DEFAULT 'From global brands to local visionaries, we partner with teams who believe in the power of a well-told story.';
+ALTER TABLE about_content ADD COLUMN IF NOT EXISTS team_members JSONB NOT NULL DEFAULT '[]';
+
+-- The single founder profile was replaced by the team_members grid. Its old
+-- columns are left in place (not dropped, so no data is lost) but made
+-- nullable, since lib/data/content.ts no longer writes them.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'about_content' AND column_name = 'founder_name'
+  ) THEN
+    ALTER TABLE about_content
+      ALTER COLUMN founder_photo_position DROP NOT NULL,
+      ALTER COLUMN founder_name DROP NOT NULL,
+      ALTER COLUMN founder_title DROP NOT NULL,
+      ALTER COLUMN bio DROP NOT NULL,
+      ALTER COLUMN linkedin_url DROP NOT NULL,
+      ALTER COLUMN instagram_url DROP NOT NULL;
+  END IF;
+END $$;

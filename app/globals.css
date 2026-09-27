@@ -29,24 +29,24 @@
   --font-mono: var(--font-lekton);
   --font-heading: var(--font-open-sauce);
 
-  /* Slow continuous scroll for the "Trusted By" logo strip. Duration is
-     deliberately long so the motion reads as a gentle drift, not a slide. */
-  --animate-marquee: marquee 45s linear infinite;
+  /* Word-by-word / staggered entrance for the Contact page copy — each
+     span gets its own animation-delay via inline style. */
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-@keyframes marquee {
+@keyframes fade-up {
   from {
-    transform: translateX(0);
+    opacity: 0;
+    transform: translateY(0.6em);
   }
   to {
-    /* Track holds two identical copies of the logo set, so shifting by
-       half its width lands exactly on the start of the second copy. */
-    transform: translateX(-50%);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
+  .animate-fade-up {
     animation: none;
   }
 }
