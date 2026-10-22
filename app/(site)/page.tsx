@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import { getHomeContent } from "@/lib/data/content";
+import {
+  getAboutContent,
+  getHomeContent,
+  getWorksContent,
+} from "@/lib/data/content";
 import { videoPosterUrl } from "@/lib/media";
 import { siteConfig } from "@/lib/config";
+import { Footer } from "@/components/site/Footer";
+import { TrustedBy } from "@/components/site/TrustedBy";
+import { Reveal } from "@/components/ui/Reveal";
 import HomeHero from "./HomeHero";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
@@ -15,12 +22,32 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// Home is the hero and nothing else — full viewport, no footer, no scroll.
-// Everything shown (text/logo mode, hero copy, background video) comes
-// from the admin Home editor; see lib/data/content.ts.
+// Full-viewport hero, then (Figma v2) the Trusted International Clients
+// block and the Footer. Hero text/logo mode, copy and background video come
+// from the admin Home editor; the Trusted block reuses the Works heading/
+// description and the About logos, same as the Works page — see
+// lib/data/content.ts.
 export default async function HomePage() {
-  const content = await getHomeContent();
+  const [content, works, about] = await Promise.all([
+    getHomeContent(),
+    getWorksContent(),
+    getAboutContent(),
+  ]);
   const backgroundVideoPoster = await videoPosterUrl(content.backgroundVideoUrl);
 
-  return <HomeHero content={content} poster={backgroundVideoPoster} />;
+  return (
+    <div className="flex flex-col bg-bone-white">
+      <HomeHero content={content} poster={backgroundVideoPoster} />
+      {/* Target of the hero's "Scroll" cue; slowly fades in on first view. */}
+      <Reveal id="home-next">
+        <TrustedBy
+          heading={works.trustedByHeading}
+          description={works.trustedByDescription}
+          logos={about.trustedByLogos}
+          animated
+        />
+      </Reveal>
+      <Footer />
+    </div>
+  );
 }

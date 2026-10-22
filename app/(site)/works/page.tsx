@@ -64,11 +64,17 @@ export default async function WorksPage() {
       />
 
       <Container>
-        <div className="grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 sm:gap-10 sm:pt-32 sm:pb-16">
+        {/* TrustedBy already leaves the design's 126px gap below itself; only
+            add top padding here when it rendered nothing (no logos yet). */}
+        <div
+          className={`grid grid-cols-1 gap-6 pb-16 sm:grid-cols-2 sm:gap-10 ${
+            about.trustedByLogos.length > 0 ? "" : "pt-16 sm:pt-[126px]"
+          }`}
+        >
           <h1 className="font-heading text-2xl tracking-tight text-obsidian uppercase">
             {content.heroHeading}
           </h1>
-          <p className="text-sm leading-[1.3] tracking-tight text-obsidian/70">
+          <p className="text-sm leading-[1.3] tracking-tight text-obsidian">
             {content.heroDescription}
           </p>
         </div>

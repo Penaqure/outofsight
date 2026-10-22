@@ -38,10 +38,17 @@ export type AboutContent = {
   storyImage: string | null;
   storyImagePosition: string;
   storyText: string;
+  founderImage: string | null;
+  founderImagePosition: string;
+  founderHeading: string;
+  founderMessage: string;
+  founderName: string;
+  // Short blurb shown to the left of the team member row.
+  teamIntro: string;
   teamMembers: TeamMember[];
   processCards: ProcessCard[];
-  // Edited in the About admin, but rendered on the Works page (whose
-  // heading/description for that block live in WorksContent).
+  // Edited in the About admin, but rendered on Home, Works and About
+  // (Home/Works take the block's heading/description from WorksContent).
   trustedByLogos: string[];
   ctaText: string;
   ctaBackgroundImage: string | null;

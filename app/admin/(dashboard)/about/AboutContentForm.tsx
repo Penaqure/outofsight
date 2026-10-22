@@ -42,6 +42,18 @@ export function AboutContentForm({
     initialContent.storyImagePosition ?? DEFAULT_FOCAL_POINT
   );
   const [storyText, setStoryText] = useState(initialContent.storyText);
+  const [founderImage, setFounderImage] = useState(initialContent.founderImage);
+  const [founderImagePosition, setFounderImagePosition] = useState(
+    initialContent.founderImagePosition ?? DEFAULT_FOCAL_POINT
+  );
+  const [founderHeading, setFounderHeading] = useState(
+    initialContent.founderHeading
+  );
+  const [founderMessage, setFounderMessage] = useState(
+    initialContent.founderMessage
+  );
+  const [founderName, setFounderName] = useState(initialContent.founderName);
+  const [teamIntro, setTeamIntro] = useState(initialContent.teamIntro);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(
     initialContent.teamMembers ?? []
   );
@@ -106,6 +118,7 @@ export function AboutContentForm({
   }[] = [
     { label: "Hero Image", setter: setHeroImage },
     { label: "Story Image", setter: setStoryImage },
+    { label: "Founder Image", setter: setFounderImage },
     { label: "CTA Background Image", setter: setCtaBackgroundImage },
   ];
 
@@ -176,6 +189,12 @@ export function AboutContentForm({
       storyImage,
       storyImagePosition,
       storyText,
+      founderImage,
+      founderImagePosition,
+      founderHeading,
+      founderMessage,
+      founderName,
+      teamIntro,
       teamMembers,
       processCards,
       trustedByLogos,
@@ -361,12 +380,64 @@ export function AboutContentForm({
       </div>
 
       <div className="border-t border-obsidian/10 pt-10">
+        <p className="text-2xl text-obsidian">Founder&rsquo;s Message</p>
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <Dropzone
+            label="Founder Image"
+            accept="image/*"
+            helperText="JPG or PNG, upto 10MB"
+            preview={
+              founderImage ? { label: "Founder image", url: founderImage } : null
+            }
+            onSelect={async (file) => {
+              update(setFounderImage)(await uploadFile(file));
+            }}
+            onRemove={() => update(setFounderImage)(null)}
+            onDropUrl={(url) => assignPoolImage(url, "Founder Image")}
+            focalPoint={founderImagePosition}
+            onFocalPointChange={update(setFounderImagePosition)}
+          />
+          <div className="flex flex-col gap-4">
+            <input
+              value={founderHeading}
+              onChange={(e) => update(setFounderHeading)(e.target.value)}
+              placeholder="Enter Heading"
+              className={fieldClass}
+            />
+            <textarea
+              value={founderMessage}
+              onChange={(e) => update(setFounderMessage)(e.target.value)}
+              placeholder="Type Here"
+              rows={8}
+              className={`${fieldClass} resize-none`}
+            />
+            <input
+              value={founderName}
+              onChange={(e) => update(setFounderName)(e.target.value)}
+              placeholder="Enter Signature (e.g. founder's name)"
+              className={fieldClass}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-obsidian/10 pt-10">
         <p className="text-2xl text-obsidian">Team Members</p>
         <p className="mt-1 text-xs text-obsidian/40">
-          Shown as a 3-column grid of black &amp; white photos. Hovering a
-          photo turns it to colour and shows the name, position and social
-          links. Leave a link empty to hide it.
+          Shown as a row of round black &amp; white portraits (colour on
+          hover) with name and position underneath. Leave a link empty to
+          hide it.
         </p>
+        <div className="mt-6">
+          <p className="text-base text-obsidian">Team Intro</p>
+          <textarea
+            value={teamIntro}
+            onChange={(e) => update(setTeamIntro)(e.target.value)}
+            placeholder="Type Here"
+            rows={3}
+            className={`${fieldClass} resize-none`}
+          />
+        </div>
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {teamMembers.map((member, index) => (
             <div key={index} className="flex flex-col gap-3">
@@ -471,7 +542,7 @@ export function AboutContentForm({
       <div className="border-t border-obsidian/10 pt-10">
         <p className="text-2xl text-obsidian">Trusted Brands</p>
         <p className="mt-1 text-xs text-obsidian/40">
-          Shown on the Works page.
+          Shown on the Home, Works and About pages.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           {trustedByLogos.map((logo, index) => (

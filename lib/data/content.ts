@@ -10,7 +10,9 @@ import { pool } from "@/lib/db";
 
 // Postgres-backed via raw SQL (see db/schema.sql). Each *_content table is a
 // singleton — exactly one row, fixed at id: 1 — seeded with these defaults
-// on first read. update* upserts, so it works even before that first read
+// on first read. The seed INSERTs are ON CONFLICT no-op updates so two
+// requests racing to seed the same empty table both get the one row back
+// instead of the loser failing on the primary key. update* upserts, so it works even before that first read
 // has happened.
 
 const homeDefaults: HomeContent = {
@@ -49,6 +51,7 @@ export async function getHomeContent(): Promise<HomeContent> {
     `INSERT INTO home_content
        (id, hero_text, display_mode, background_video_name, background_video_url, logo_file_name)
      VALUES (1, $1, $2, $3, $4, $5)
+     ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
      RETURNING *`,
     [
       homeDefaults.heroText,
@@ -118,6 +121,7 @@ export async function getContactsContent(): Promise<ContactsContent> {
     `INSERT INTO contacts_content
        (id, body_text, email, country_code, phone_number, location)
      VALUES (1, $1, $2, $3, $4, $5)
+     ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
      RETURNING *`,
     [
       contactsDefaults.bodyText,
@@ -195,6 +199,7 @@ export async function getWorksContent(): Promise<WorksContent> {
        (id, hero_image, hero_image_position, hero_heading, hero_description,
         trusted_by_heading, trusted_by_description)
      VALUES (1, $1, $2, $3, $4, $5, $6)
+     ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
      RETURNING *`,
     [
       worksDefaults.heroImage,
@@ -231,42 +236,74 @@ export async function updateWorksContent(
   return toWorksContent(rows[0]);
 }
 
+const clientLogos = [
+  "01-abu-dhabi",
+  "02-porsche",
+  "03-f1",
+  "04-mercedes",
+  "05-samsung",
+  "06-lamborghini",
+  "07-bentley",
+  "08-volkswagen",
+  "09-edition",
+  "10-byd",
+  "11-dji",
+  "12-ferrari",
+  "13-genesis",
+  "14-fairmont",
+].map((name) => `/images/clients/${name}.svg`);
+
+// Seeded from the Figma "Website Desktop. v2" About frame — images live in
+// public/images/about. Swap any of them via the admin About editor. Existing
+// databases get the same images once via the v2 migration in db/schema.sql.
 const aboutDefaults: AboutContent = {
-  heroImage: null,
+  heroImage: "/images/about/hero.jpg",
   heroImagePosition: "50% 50%",
   heroHeadline: "Pineers in brand Storytelling",
   introText:
-    "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
-  storyImage: null,
+    "Outofsight is an independent creative studio built around film, photography, and visual storytelling.\n\nWorking across automotive, lifestyle, travel, and hospitality, we collaborate with brands and creative partners to develop and produce visual work with a distinct point of view.\n\nOur approach is guided by curiosity, authenticity, and an obsession with detail creating imagery that goes beyond what you see to capture how something feels.",
+  storyImage: "/images/about/story.jpg",
   storyImagePosition: "50% 50%",
   storyText:
-    "I believe the best stories aren't just seen, they're felt. As a filmmaker and creative director, I'm committed to turning ideas into visuals that spark imagination, emotion, and meaning. For over seven years I've been immersed in filmmaking, working with brands, businesses, and individuals to craft compelling films that connect, inspire, and leave a lasting impact.",
-  teamMembers: [] as TeamMember[],
+    "We’re drawn to the details that make a story its own.\nThe way light falls across a surface. The movement of a landscape. The feeling of being somewhere unfamiliar.\nThese are the moments that shape our perspective and inform the way we create — with intention, restraint, and a focus on what matters.",
+  founderImage: "/images/about/founder.jpg",
+  founderImagePosition: "50% 50%",
+  founderHeading: "Founder’s Message",
+  founderMessage:
+    "Outofsight began as an extension of my own curiosity for film, photography, and the world around me.\n\nOver the years, working across different places, people, and creative disciplines has shaped the way I see and approach visual storytelling. Today, that perspective continues to guide OUTOFSIGHT bringing together people and ideas to create work that feels considered, honest, and distinct and immersive.",
+  founderName: "Nihal Muhammed",
+  teamIntro:
+    "I believe the best stories aren’t just seen, they’re felt. As a filmmaker and creative director, I’m committed to turning ideas into visuals that spark imagination, emotion, and meaning.",
+  teamMembers: [1, 2, 3, 4, 5].map((n) => ({
+    name: "Nihal Muhammed",
+    position: "Co Founder & Creative Director",
+    photo: `/images/about/team-${n}.jpg`,
+    photoPosition: "50% 100%",
+    instagramUrl: "",
+    linkedinUrl: "",
+  })) satisfies TeamMember[],
   processCards: [
     {
       title: "Vision & Strategy",
       description:
-        "Every great story starts with a bold idea. We collaborate closely to refine your vision, crafting compelling concepts that resonate with your audience. Through meticulous planning, storyboarding, and strategic direction, we lay the foundation for impactful storytelling.",
+        "Every project begins with understanding the story, finding its perspective, and shaping a creative direction that gives the idea purpose.",
     },
     {
       title: "Creation & Execution",
       description:
-        "From script to screen, we bring your vision to life. Our team blends artistry and precision, capturing stunning visuals, dynamic pacing, and authentic moments that engage and inspire. Every frame is crafted to tell a story that connects.",
+        "From concept to production, we bring together creative talent, thoughtful planning, and the right execution to translate ideas into imagery.",
     },
     {
       title: "Refinement & Impact",
       description:
-        "We refine every frame through expert editing, dynamic pacing, and seamless transitions to craft a compelling narrative. Every cut, color, and sound is refined to ensure your story leaves a lasting impression.",
+        "The final details matter. Through considered editing, pacing, colour, and sound, we shape every frame into a cohesive visual experience.",
     },
   ] satisfies ProcessCard[],
-  // Left empty rather than seeded with real company logos from the
-  // Figma mock — showing brand marks like DJI/Mercedes/Ferrari would
-  // imply a client relationship that doesn't actually exist yet.
-  // Add real client logos here once there are real clients.
-  trustedByLogos: [] as string[],
+  trustedByLogos: clientLogos,
   ctaText: "Have a project in mind?",
-  ctaBackgroundImage: null,
-  ctaBackgroundImagePosition: "50% 50%",
+  ctaBackgroundImage: "/images/about/cta.jpg",
+  // The Figma crop shows the light streak a little below centre.
+  ctaBackgroundImagePosition: "50% 60%",
 };
 
 type AboutRow = {
@@ -277,6 +314,12 @@ type AboutRow = {
   story_image: string | null;
   story_image_position: string;
   story_text: string;
+  founder_message_image: string | null;
+  founder_message_image_position: string;
+  founder_message_heading: string;
+  founder_message_text: string;
+  founder_message_signature: string;
+  team_intro: string;
   team_members: TeamMember[];
   process_cards: ProcessCard[];
   trusted_by_logos: string[];
@@ -309,6 +352,12 @@ function toAboutContent(row: AboutRow): AboutContent {
     storyImage: row.story_image,
     storyImagePosition: row.story_image_position,
     storyText: row.story_text,
+    founderImage: row.founder_message_image,
+    founderImagePosition: row.founder_message_image_position,
+    founderHeading: row.founder_message_heading,
+    founderMessage: row.founder_message_text,
+    founderName: row.founder_message_signature,
+    teamIntro: row.team_intro,
     teamMembers: row.team_members.map(toTeamMember),
     processCards: row.process_cards,
     trustedByLogos: row.trusted_by_logos,
@@ -327,10 +376,15 @@ export async function getAboutContent(): Promise<AboutContent> {
   const { rows: created } = await pool.query<AboutRow>(
     `INSERT INTO about_content
        (id, hero_image, hero_image_position, hero_headline, intro_text,
-        story_image, story_image_position, story_text, team_members,
+        story_image, story_image_position, story_text,
+        founder_message_image, founder_message_image_position,
+        founder_message_heading, founder_message_text,
+        founder_message_signature, team_intro, team_members,
         process_cards, trusted_by_logos, cta_text, cta_background_image,
         cta_background_image_position)
-     VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+     VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+             $15, $16, $17, $18, $19)
+     ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
      RETURNING *`,
     [
       aboutDefaults.heroImage,
@@ -340,6 +394,12 @@ export async function getAboutContent(): Promise<AboutContent> {
       aboutDefaults.storyImage,
       aboutDefaults.storyImagePosition,
       aboutDefaults.storyText,
+      aboutDefaults.founderImage,
+      aboutDefaults.founderImagePosition,
+      aboutDefaults.founderHeading,
+      aboutDefaults.founderMessage,
+      aboutDefaults.founderName,
+      aboutDefaults.teamIntro,
       JSON.stringify(aboutDefaults.teamMembers),
       JSON.stringify(aboutDefaults.processCards),
       aboutDefaults.trustedByLogos,
@@ -359,9 +419,12 @@ export async function updateAboutContent(
     `UPDATE about_content SET
        hero_image = $1, hero_image_position = $2, hero_headline = $3,
        intro_text = $4, story_image = $5, story_image_position = $6,
-       story_text = $7, team_members = $8, process_cards = $9,
-       trusted_by_logos = $10, cta_text = $11, cta_background_image = $12,
-       cta_background_image_position = $13
+       story_text = $7, founder_message_image = $8,
+       founder_message_image_position = $9, founder_message_heading = $10,
+       founder_message_text = $11, founder_message_signature = $12,
+       team_intro = $13, team_members = $14, process_cards = $15,
+       trusted_by_logos = $16, cta_text = $17, cta_background_image = $18,
+       cta_background_image_position = $19
      WHERE id = 1
      RETURNING *`,
     [
@@ -372,6 +435,12 @@ export async function updateAboutContent(
       merged.storyImage,
       merged.storyImagePosition,
       merged.storyText,
+      merged.founderImage,
+      merged.founderImagePosition,
+      merged.founderHeading,
+      merged.founderMessage,
+      merged.founderName,
+      merged.teamIntro,
       JSON.stringify(merged.teamMembers),
       JSON.stringify(merged.processCards),
       merged.trustedByLogos,

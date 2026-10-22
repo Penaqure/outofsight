@@ -24,6 +24,7 @@
 # server's disk, not in git
 /uploads/*
 !/uploads/.gitkeep
+/public
 
 # pre-transcode backups made by scripts/optimize-media.mjs
 /.media-originals/

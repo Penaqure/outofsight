@@ -6,6 +6,30 @@ import type { HomeContent } from "@/types/content";
 import { siteConfig } from "@/lib/config";
 import logoOnly from "@/public/logo/logo_only.png";
 
+// Browser smooth scrolling is quick and its speed can't be tuned, so the
+// scroll cue drives its own slow, eased glide instead. Reduced-motion users
+// jump straight there.
+const SCROLL_DURATION = 1600;
+
+function slowScrollTo(target: HTMLElement) {
+  const startY = window.scrollY;
+  const distance = target.getBoundingClientRect().top;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    window.scrollTo(0, startY + distance);
+    return;
+  }
+  const startTime = performance.now();
+  const easeInOut = (t: number) =>
+    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  function step(now: number) {
+    const progress = Math.min((now - startTime) / SCROLL_DURATION, 1);
+    window.scrollTo(0, startY + distance * easeInOut(progress));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
 // While the background video downloads, show the logo instead of a blank
 // frame (see https://auteurstudios.au/ for the reference behavior). Once
 // the video has buffered enough to play, fade it in and fade the loading
@@ -64,6 +88,26 @@ export default function HomeHero({
           )}
         </div>
       )}
+
+      {/* Scroll cue: slowly glides to the section below the hero (the
+          #home-next <Reveal> in page.tsx), which then slowly fades in. Placed
+          before the loading overlay so it stays hidden until the video is
+          ready. A link, so it still jumps there with JS disabled. */}
+      <a
+        href="#home-next"
+        onClick={(event) => {
+          event.preventDefault();
+          const target = document.getElementById("home-next");
+          if (target) slowScrollTo(target);
+        }}
+        aria-label="Scroll to next section"
+        className="group absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] tracking-[0.2em] text-bone-white/70 uppercase transition-colors hover:text-bone-white sm:bottom-10 sm:text-xs"
+      >
+        Scroll
+        <span className="relative block h-10 w-px overflow-hidden bg-bone-white/25 sm:h-12">
+          <span className="absolute inset-x-0 top-0 h-1/2 animate-scroll-cue bg-bone-white" />
+        </span>
+      </a>
 
       {/* Loading state: only the logo, shown until the video can play. */}
       <div
