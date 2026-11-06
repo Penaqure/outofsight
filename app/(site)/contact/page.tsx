@@ -3,6 +3,8 @@ import { getContactsContent } from "@/lib/data/content";
 import { metaDescription } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
+import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // see the same note in works/page.tsx.
@@ -38,41 +40,32 @@ export default async function ContactPage() {
       ? `${contact.countryCode} ${contact.phoneNumber}`
       : null;
 
-  const words = contact.bodyText.split(" ");
   const infoLines = [contact.email, phone, contact.location].filter(Boolean);
-  // Info lines start fading in only once the heading has finished its
-  // word-by-word reveal (see auteurstudios.au/contact for the reference).
-  const infoStartDelay = words.length * 70 + 150;
 
+  // The heading rises in word by word, then the info lines fade up — the
+  // reference entrance every other page reuses (components/ui/RevealText).
   return (
     <div className="flex flex-col bg-bone-white">
       <main className="flex h-dvh flex-col items-center justify-center text-center">
-        <Container>
-          <h1 className="text-4xl tracking-tight text-obsidian sm:text-5xl lg:text-[48px]">
-            {words.map((word, i) => (
-              <span key={i}>
-                <span
-                  className="inline-block animate-fade-up"
-                  style={{ animationDelay: `${i * 70}ms` }}
+        <Reveal>
+          <Container>
+            <h1 className="text-4xl tracking-tight text-obsidian sm:text-5xl lg:text-[48px]">
+              <RevealWords text={contact.bodyText} />
+            </h1>
+            <div className="mt-6 space-y-2 text-base text-obsidian/70">
+              {infoLines.map((line, i) => (
+                <RevealItem
+                  key={line}
+                  as="p"
+                  startMs={afterWords(contact.bodyText)}
+                  index={i}
                 >
-                  {word}
-                </span>
-                {i < words.length - 1 ? " " : ""}
-              </span>
-            ))}
-          </h1>
-          <div className="mt-6 space-y-2 text-base text-obsidian/70">
-            {infoLines.map((line, i) => (
-              <p
-                key={line}
-                className="animate-fade-up"
-                style={{ animationDelay: `${infoStartDelay + i * 100}ms` }}
-              >
-                {line}
-              </p>
-            ))}
-          </div>
-        </Container>
+                  {line}
+                </RevealItem>
+              ))}
+            </div>
+          </Container>
+        </Reveal>
       </main>
       <Footer />
     </div>

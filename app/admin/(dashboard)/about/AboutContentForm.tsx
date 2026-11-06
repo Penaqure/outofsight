@@ -542,7 +542,8 @@ export function AboutContentForm({
       <div className="border-t border-obsidian/10 pt-10">
         <p className="text-2xl text-obsidian">Trusted Brands</p>
         <p className="mt-1 text-xs text-obsidian/40">
-          Shown on the Home, Works and About pages.
+          Shown on the About page. The Home page has its own list in the Home
+          editor.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           {trustedByLogos.map((logo, index) => (

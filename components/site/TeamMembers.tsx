@@ -4,11 +4,13 @@ import { useRef } from "react";
 import Image from "next/image";
 import type { TeamMember } from "@/types/content";
 import teamArrow from "@/public/images/about/team-arrow.svg";
+import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText";
 
 // Figma v2 "Team Members": heading + blurb on the left, a row of round
 // portraits on the right. The row scrolls sideways once there are more
 // members than fit, driven by the ← → arrow under the blurb (a single
-// design asset, so two invisible buttons sit over its halves).
+// design asset, so two invisible buttons sit over its halves). Animates in
+// with the shared entrance — render it inside a <Reveal>.
 export function TeamMembers({
   intro,
   members,
@@ -17,6 +19,7 @@ export function TeamMembers({
   members: TeamMember[];
 }) {
   const rowRef = useRef<HTMLUListElement>(null);
+  const itemsStart = afterWords("Team Members");
 
   function scrollRow(direction: -1 | 1) {
     const row = rowRef.current;
@@ -29,15 +32,23 @@ export function TeamMembers({
       <div className="flex shrink-0 flex-col gap-10 lg:w-[353px] lg:gap-[100px]">
         <div className="flex flex-col gap-4 sm:gap-6">
           <h2 className="font-heading text-base leading-none font-semibold tracking-tight text-obsidian sm:text-2xl">
-            Team Members
+            <RevealWords text="Team Members" />
           </h2>
           {intro && (
-            <p className="text-xs leading-[1.23] tracking-tight text-obsidian sm:text-base">
+            <RevealItem
+              as="p"
+              startMs={itemsStart}
+              className="text-xs leading-[1.23] tracking-tight text-obsidian sm:text-base"
+            >
               {intro}
-            </p>
+            </RevealItem>
           )}
         </div>
-        <div className="relative hidden self-start sm:block">
+        <RevealItem
+          startMs={itemsStart}
+          index={1}
+          className="relative hidden self-start sm:block"
+        >
           <Image src={teamArrow} alt="" />
           <button
             type="button"
@@ -51,7 +62,7 @@ export function TeamMembers({
             onClick={() => scrollRow(1)}
             className="absolute -inset-y-3 right-0 w-1/2"
           />
-        </div>
+        </RevealItem>
       </div>
 
       <ul
@@ -61,8 +72,11 @@ export function TeamMembers({
         {members.map((member, index) => {
           const spaceAt = member.name.indexOf(" ");
           return (
-            <li
+            <RevealItem
               key={index}
+              as="li"
+              startMs={itemsStart}
+              index={index + 1}
               className="group flex w-[140px] shrink-0 snap-start flex-col items-center text-center sm:w-[208px]"
             >
               <div className="relative size-24 overflow-hidden rounded-full bg-obsidian/[.05] sm:size-[126px]">
@@ -124,7 +138,7 @@ export function TeamMembers({
                   )}
                 </div>
               )}
-            </li>
+            </RevealItem>
           );
         })}
       </ul>

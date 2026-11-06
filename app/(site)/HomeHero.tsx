@@ -5,6 +5,8 @@ import Image from "next/image";
 import type { HomeContent } from "@/types/content";
 import { siteConfig } from "@/lib/config";
 import logoOnly from "@/public/logo/logo_only.png";
+import { Reveal } from "@/components/ui/Reveal";
+import { RevealItem, RevealWords } from "@/components/ui/RevealText";
 
 // Browser smooth scrolling is quick and its speed can't be tuned, so the
 // scroll cue drives its own slow, eased glide instead. Reduced-motion users
@@ -37,9 +39,11 @@ function slowScrollTo(target: HTMLElement) {
 export default function HomeHero({
   content,
   poster,
+  showScrollCue,
 }: {
   content: HomeContent;
   poster: string | undefined;
+  showScrollCue: boolean;
 }) {
   const [videoReady, setVideoReady] = useState(!content.backgroundVideoUrl);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -73,41 +77,51 @@ export default function HomeHero({
       <div className="absolute inset-0 bg-obsidian/40" />
 
       {content.displayMode === "blank" ? null : (
-        <div className="relative px-6 text-center sm:px-10 lg:px-16">
+        // Plays once the video is ready, so the entrance isn't spent
+        // behind the loading overlay.
+        <Reveal
+          active={videoReady}
+          className="relative px-6 text-center sm:px-10 lg:px-16"
+        >
           {content.displayMode === "logo-only" ? (
-            <Image
-              src={logoOnly}
-              alt={siteConfig.name}
-              className="mx-auto w-24 sm:w-28"
-              priority
-            />
+            <RevealItem>
+              <Image
+                src={logoOnly}
+                alt={siteConfig.name}
+                className="mx-auto w-24 sm:w-28"
+                priority
+              />
+            </RevealItem>
           ) : (
             <h1 className="max-w-4xl text-3xl font-normal tracking-tight text-bone-white sm:text-4xl md:text-5xl lg:text-[48px]">
-              {content.heroText}
+              <RevealWords text={content.heroText} />
             </h1>
           )}
-        </div>
+        </Reveal>
       )}
 
       {/* Scroll cue: slowly glides to the section below the hero (the
-          #home-next <Reveal> in page.tsx), which then slowly fades in. Placed
+          #home-next TrustedBy in page.tsx), which then animates in. Placed
           before the loading overlay so it stays hidden until the video is
-          ready. A link, so it still jumps there with JS disabled. */}
-      <a
-        href="#home-next"
-        onClick={(event) => {
-          event.preventDefault();
-          const target = document.getElementById("home-next");
-          if (target) slowScrollTo(target);
-        }}
-        aria-label="Scroll to next section"
-        className="group absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] tracking-[0.2em] text-bone-white/70 uppercase transition-colors hover:text-bone-white sm:bottom-10 sm:text-xs"
-      >
-        Scroll
-        <span className="relative block h-10 w-px overflow-hidden bg-bone-white/25 sm:h-12">
-          <span className="absolute inset-x-0 top-0 h-1/2 animate-scroll-cue bg-bone-white" />
-        </span>
-      </a>
+          ready. A link, so it still jumps there with JS disabled. Left out when
+          the section is off, since there would be nothing to scroll to. */}
+      {showScrollCue && (
+        <a
+          href="#home-next"
+          onClick={(event) => {
+            event.preventDefault();
+            const target = document.getElementById("home-next");
+            if (target) slowScrollTo(target);
+          }}
+          aria-label="Scroll to next section"
+          className="group absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] tracking-[0.2em] text-bone-white/70 uppercase transition-colors hover:text-bone-white sm:bottom-10 sm:text-xs"
+        >
+          Scroll
+          <span className="relative block h-10 w-px overflow-hidden bg-bone-white/25 sm:h-12">
+            <span className="absolute inset-x-0 top-0 h-1/2 animate-scroll-cue bg-bone-white" />
+          </span>
+        </a>
+      )}
 
       {/* Loading state: only the logo, shown until the video can play. */}
       <div

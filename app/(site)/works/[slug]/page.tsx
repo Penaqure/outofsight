@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
 import { getProjectBySlug, getProjects } from "@/lib/data/portfolio";
 import { getWorksContent } from "@/lib/data/content";
 import { metaDescription } from "@/lib/seo";
 import { siteConfig } from "@/lib/config";
 import { Footer } from "@/components/site/Footer";
+import { ProjectTile } from "@/components/site/ProjectTile";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
+import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // see the same note in works/page.tsx.
@@ -61,122 +63,114 @@ export default async function ProjectPage(
     getWorksContent(),
   ]);
   const otherProjects = allProjects.filter((p) => p.id !== project.id);
+  const detailsStart = afterWords(project.title);
 
   return (
     <div className="flex min-h-screen flex-col bg-bone-white">
-      <Container>
-        <div className="grid grid-cols-1 gap-10 pt-32 pb-16 sm:grid-cols-[1fr_2fr] sm:gap-16 sm:pt-40 sm:pb-24">
-          <div className="flex flex-col gap-8">
-            <div>
-              <h1 className="font-heading text-2xl tracking-tight text-obsidian uppercase">
-                {project.title}
-              </h1>
-              <p className="mt-4 text-sm leading-[1.3] tracking-tight text-obsidian/70">
-                {project.description}
-              </p>
-            </div>
-            {project.credits && (
+      <Reveal>
+        <Container>
+          <div className="grid grid-cols-1 gap-10 pt-32 pb-16 sm:grid-cols-[1fr_2fr] sm:gap-16 sm:pt-40 sm:pb-24">
+            <div className="flex flex-col gap-8">
               <div>
-                <p className="font-heading text-base tracking-tight text-obsidian">
-                  Credits
-                </p>
-                <p className="mt-4 whitespace-pre-line text-sm leading-[1.3] tracking-tight text-obsidian/70">
-                  {project.credits}
-                </p>
+                <h1 className="font-heading text-2xl tracking-tight text-obsidian">
+                  <RevealWords text={project.title} />
+                </h1>
+                <RevealItem
+                  as="p"
+                  startMs={detailsStart}
+                  className="mt-4 text-sm leading-[1.3] tracking-tight text-obsidian/70"
+                >
+                  {project.description}
+                </RevealItem>
               </div>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2.5">
-            <div className="relative aspect-[1341/540] w-full overflow-hidden bg-obsidian/[.05]">
-              {project.videoUrl ? (
-                <video
-                  src={project.videoUrl}
-                  poster={project.videoPreviewImage ?? undefined}
-                  controls
-                  playsInline
-                  preload="metadata"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                heroImage && (
-                  <Image
-                    src={heroImage}
-                    alt=""
-                    fill
-                    priority
-                    sizes="(min-width: 640px) 66vw, 100vw"
-                    style={{ objectPosition: heroImagePosition }}
-                    className="object-cover"
-                  />
-                )
+              {project.credits && (
+                <RevealItem startMs={detailsStart} index={1}>
+                  <p className="font-heading text-base tracking-tight text-obsidian">
+                    Credits
+                  </p>
+                  <p className="mt-4 whitespace-pre-line text-sm leading-[1.3] tracking-tight text-obsidian/70">
+                    {project.credits}
+                  </p>
+                </RevealItem>
               )}
             </div>
-            {filmstrip.length > 0 && (
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                {filmstrip.map((photo, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-square w-full overflow-hidden"
-                  >
+
+            <div className="flex flex-col gap-2.5">
+              <RevealItem
+                startMs={detailsStart}
+                index={2}
+                className="relative aspect-[1341/540] w-full overflow-hidden bg-obsidian/[.05]"
+              >
+                {project.videoUrl ? (
+                  <video
+                    src={project.videoUrl}
+                    poster={project.videoPreviewImage ?? undefined}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  heroImage && (
                     <Image
-                      src={photo}
+                      src={heroImage}
                       alt=""
                       fill
-                      sizes="(min-width: 640px) 17vw, 50vw"
+                      priority
+                      sizes="(min-width: 640px) 66vw, 100vw"
+                      style={{ objectPosition: heroImagePosition }}
                       className="object-cover"
                     />
-                  </div>
-                ))}
-              </div>
-            )}
+                  )
+                )}
+              </RevealItem>
+              {filmstrip.length > 0 && (
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                  {filmstrip.map((photo, index) => (
+                    <RevealItem
+                      key={index}
+                      startMs={detailsStart}
+                      index={3 + index}
+                      className="relative aspect-square w-full overflow-hidden"
+                    >
+                      <Image
+                        src={photo}
+                        alt=""
+                        fill
+                        sizes="(min-width: 640px) 17vw, 50vw"
+                        className="object-cover"
+                      />
+                    </RevealItem>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </Container>
+        </Container>
+      </Reveal>
 
-      <Container>
-        <div className="grid grid-cols-1 gap-6 pb-16 sm:grid-cols-[1fr_2fr] sm:gap-10">
-          <h2 className="font-heading text-2xl tracking-tight text-obsidian">
-            Similar
-            <br />
-            Videos
-          </h2>
-          <p className="text-sm leading-[1.3] tracking-tight text-obsidian/70">
-            {worksContent.heroDescription}
-          </p>
-        </div>
-      </Container>
+      <Reveal>
+        <Container>
+          <div className="grid grid-cols-1 gap-6 pb-16 sm:grid-cols-[1fr_2fr] sm:gap-10">
+            <h2 className="font-heading text-2xl tracking-tight text-obsidian">
+              <RevealWords text={"Similar\nVideos"} />
+            </h2>
+            <RevealItem
+              as="p"
+              startMs={afterWords("Similar Videos")}
+              className="text-sm leading-[1.3] tracking-tight text-obsidian/70"
+            >
+              {worksContent.heroDescription}
+            </RevealItem>
+          </div>
+        </Container>
+      </Reveal>
 
       {otherProjects.length > 0 && (
         <Container className="pb-6">
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
-            {otherProjects.map((p) => (
-              <Link
-                key={p.id}
-                href={`/works/${p.slug}`}
-                className="group relative aspect-square overflow-hidden bg-obsidian/[.05]"
-              >
-                {p.thumbnailImage ? (
-                  <Image
-                    src={p.thumbnailImage}
-                    alt=""
-                    fill
-                    sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
-                    style={{ objectPosition: p.thumbnailImagePosition }}
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <span className="flex h-full items-center justify-center px-4 text-center text-sm text-obsidian/40">
-                    {p.title}
-                  </span>
-                )}
-                <div className="absolute inset-0 bg-obsidian/0 transition-colors group-hover:bg-obsidian/40" />
-                <div className="absolute inset-0 flex items-center justify-center p-4 opacity-0 transition-opacity group-hover:opacity-100">
-                  <p className="text-center font-heading text-sm tracking-tight text-bone-white uppercase">
-                    {p.title}
-                  </p>
-                </div>
-              </Link>
+            {otherProjects.map((p, index) => (
+              <ProjectTile key={p.id} project={p} index={index} />
             ))}
           </div>
         </Container>

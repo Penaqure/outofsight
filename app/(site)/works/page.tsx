@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { getProjects } from "@/lib/data/portfolio";
-import { getAboutContent, getWorksContent } from "@/lib/data/content";
+import { getWorksContent } from "@/lib/data/content";
 import { metaDescription } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
-import { TrustedBy } from "@/components/site/TrustedBy";
+import { ProjectTile } from "@/components/site/ProjectTile";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
+import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // otherwise admin edits wouldn't show up here without a rebuild.
@@ -28,13 +29,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Hero image/heading/description come from the admin Works editor; the
-// Trusted By logos from the admin About editor — see lib/data/content.ts.
+// Hero image/heading/description come from the admin Works editor — see
+// lib/data/content.ts.
 export default async function WorksPage() {
-  const [projects, content, about] = await Promise.all([
+  const [projects, content] = await Promise.all([
     getProjects(),
     getWorksContent(),
-    getAboutContent(),
   ]);
 
   return (
@@ -57,58 +57,27 @@ export default async function WorksPage() {
         <div className="absolute inset-0 bg-obsidian/30" />
       </section>
 
-      <TrustedBy
-        heading={content.trustedByHeading}
-        description={content.trustedByDescription}
-        logos={about.trustedByLogos}
-      />
-
-      <Container>
-        {/* TrustedBy already leaves the design's 126px gap below itself; only
-            add top padding here when it rendered nothing (no logos yet). */}
-        <div
-          className={`grid grid-cols-1 gap-6 pb-16 sm:grid-cols-2 sm:gap-10 ${
-            about.trustedByLogos.length > 0 ? "" : "pt-16 sm:pt-[126px]"
-          }`}
-        >
-          <h1 className="font-heading text-2xl tracking-tight text-obsidian uppercase">
-            {content.heroHeading}
-          </h1>
-          <p className="text-sm leading-[1.3] tracking-tight text-obsidian">
-            {content.heroDescription}
-          </p>
-        </div>
-      </Container>
+      <Reveal>
+        <Container>
+          <div className="grid grid-cols-1 gap-6 pt-16 pb-16 sm:grid-cols-2 sm:gap-10 sm:pt-[126px]">
+            <h1 className="font-heading text-2xl tracking-tight text-obsidian">
+              <RevealWords text={content.heroHeading} />
+            </h1>
+            <RevealItem
+              as="p"
+              startMs={afterWords(content.heroHeading)}
+              className="text-sm leading-[1.3] tracking-tight text-obsidian"
+            >
+              {content.heroDescription}
+            </RevealItem>
+          </div>
+        </Container>
+      </Reveal>
 
       <Container className="pb-6">
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
-          {projects.map((project) => (
-            <Link
-              key={project.id}
-              href={`/works/${project.slug}`}
-              className="group relative aspect-square overflow-hidden bg-obsidian/[.05]"
-            >
-              {project.thumbnailImage ? (
-                <Image
-                  src={project.thumbnailImage}
-                  alt=""
-                  fill
-                  sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
-                  style={{ objectPosition: project.thumbnailImagePosition }}
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              ) : (
-                <span className="flex h-full items-center justify-center px-4 text-center text-sm text-obsidian/40">
-                  {project.title}
-                </span>
-              )}
-              <div className="absolute inset-0 bg-obsidian/0 transition-colors group-hover:bg-obsidian/40" />
-              <div className="absolute inset-0 flex items-center justify-center p-4 opacity-0 transition-opacity group-hover:opacity-100">
-                <p className="text-center font-heading text-sm tracking-tight text-bone-white uppercase">
-                  {project.title}
-                </p>
-              </div>
-            </Link>
+          {projects.map((project, index) => (
+            <ProjectTile key={project.id} project={project} index={index} />
           ))}
         </div>
       </Container>

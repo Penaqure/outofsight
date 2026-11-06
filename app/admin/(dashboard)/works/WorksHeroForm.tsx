@@ -22,12 +22,6 @@ export function WorksHeroForm({
   const [heroDescription, setHeroDescription] = useState(
     initialContent.heroDescription
   );
-  const [trustedByHeading, setTrustedByHeading] = useState(
-    initialContent.trustedByHeading
-  );
-  const [trustedByDescription, setTrustedByDescription] = useState(
-    initialContent.trustedByDescription
-  );
 
   const [dirty, setDirty] = useState(false);
   const { saving, status, save, clearStatus } = useSave("/api/content/works");
@@ -46,8 +40,6 @@ export function WorksHeroForm({
       heroImagePosition,
       heroHeading,
       heroDescription,
-      trustedByHeading,
-      trustedByDescription,
     });
     if (ok) setDirty(false);
   }
@@ -83,32 +75,6 @@ export function WorksHeroForm({
           onChange={(e) => update(setHeroDescription)(e.target.value)}
           placeholder="Type Here"
           rows={4}
-          className={`${fieldClass} resize-none`}
-        />
-      </div>
-      <div className="border-t border-obsidian/10 pt-6">
-        <p className="text-2xl text-obsidian">Trusted By Section</p>
-        <p className="mt-1 text-xs text-obsidian/40">
-          The client logos are managed under About → Trusted Brands. This
-          section is hidden until at least one logo is added.
-        </p>
-      </div>
-      <div>
-        <p className="text-base text-obsidian">Heading</p>
-        <input
-          value={trustedByHeading}
-          onChange={(e) => update(setTrustedByHeading)(e.target.value)}
-          placeholder="Enter Heading"
-          className={fieldClass}
-        />
-      </div>
-      <div>
-        <p className="text-base text-obsidian">Description</p>
-        <textarea
-          value={trustedByDescription}
-          onChange={(e) => update(setTrustedByDescription)(e.target.value)}
-          placeholder="Type Here"
-          rows={3}
           className={`${fieldClass} resize-none`}
         />
       </div>

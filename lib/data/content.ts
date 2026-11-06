@@ -6,6 +6,7 @@ import type {
   TeamMember,
   WorksContent,
 } from "@/types/content";
+import { HOME_CLIENT_LOGO_SLOTS } from "@/lib/config";
 import { pool } from "@/lib/db";
 
 // Postgres-backed via raw SQL (see db/schema.sql). Each *_content table is a
@@ -15,12 +16,34 @@ import { pool } from "@/lib/db";
 // instead of the loser failing on the primary key. update* upserts, so it works even before that first read
 // has happened.
 
+const clientLogos = [
+  "01-abu-dhabi",
+  "02-porsche",
+  "03-f1",
+  "04-mercedes",
+  "05-samsung",
+  "06-lamborghini",
+  "07-bentley",
+  "08-volkswagen",
+  "09-edition",
+  "10-byd",
+  "11-dji",
+  "12-ferrari",
+  "13-genesis",
+  "14-fairmont",
+].map((name) => `/images/clients/${name}.svg`);
+
 const homeDefaults: HomeContent = {
   heroText: "Pineers in brand Storytelling",
   displayMode: "body-text",
   backgroundVideoName: null,
   backgroundVideoUrl: null,
   logoFileName: "outofsight_logo_only.png",
+  clientsEnabled: true,
+  clientsHeading: "Trusted International Clients",
+  clientsDescription:
+    "From global brands to local visionaries, we partner with teams who believe in the power of a well-told story.",
+  clientsLogos: clientLogos,
 };
 
 type HomeRow = {
@@ -29,6 +52,10 @@ type HomeRow = {
   background_video_name: string | null;
   background_video_url: string | null;
   logo_file_name: string | null;
+  clients_enabled: boolean;
+  clients_heading: string;
+  clients_description: string;
+  clients_logos: string[];
 };
 
 function toHomeContent(row: HomeRow): HomeContent {
@@ -38,6 +65,10 @@ function toHomeContent(row: HomeRow): HomeContent {
     backgroundVideoName: row.background_video_name,
     backgroundVideoUrl: row.background_video_url,
     logoFileName: row.logo_file_name,
+    clientsEnabled: row.clients_enabled,
+    clientsHeading: row.clients_heading,
+    clientsDescription: row.clients_description,
+    clientsLogos: row.clients_logos,
   };
 }
 
@@ -49,8 +80,9 @@ export async function getHomeContent(): Promise<HomeContent> {
 
   const { rows: created } = await pool.query<HomeRow>(
     `INSERT INTO home_content
-       (id, hero_text, display_mode, background_video_name, background_video_url, logo_file_name)
-     VALUES (1, $1, $2, $3, $4, $5)
+       (id, hero_text, display_mode, background_video_name, background_video_url, logo_file_name,
+        clients_enabled, clients_heading, clients_description, clients_logos)
+     VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9)
      ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
      RETURNING *`,
     [
@@ -59,6 +91,10 @@ export async function getHomeContent(): Promise<HomeContent> {
       homeDefaults.backgroundVideoName,
       homeDefaults.backgroundVideoUrl,
       homeDefaults.logoFileName,
+      homeDefaults.clientsEnabled,
+      homeDefaults.clientsHeading,
+      homeDefaults.clientsDescription,
+      homeDefaults.clientsLogos,
     ]
   );
   return toHomeContent(created[0]);
@@ -71,7 +107,9 @@ export async function updateHomeContent(
   const { rows } = await pool.query<HomeRow>(
     `UPDATE home_content SET
        hero_text = $1, display_mode = $2, background_video_name = $3,
-       background_video_url = $4, logo_file_name = $5
+       background_video_url = $4, logo_file_name = $5,
+       clients_enabled = $6, clients_heading = $7,
+       clients_description = $8, clients_logos = $9
      WHERE id = 1
      RETURNING *`,
     [
@@ -80,6 +118,10 @@ export async function updateHomeContent(
       merged.backgroundVideoName,
       merged.backgroundVideoUrl,
       merged.logoFileName,
+      merged.clientsEnabled,
+      merged.clientsHeading,
+      merged.clientsDescription,
+      merged.clientsLogos.slice(0, HOME_CLIENT_LOGO_SLOTS),
     ]
   );
   return toHomeContent(rows[0]);
@@ -235,23 +277,6 @@ export async function updateWorksContent(
   );
   return toWorksContent(rows[0]);
 }
-
-const clientLogos = [
-  "01-abu-dhabi",
-  "02-porsche",
-  "03-f1",
-  "04-mercedes",
-  "05-samsung",
-  "06-lamborghini",
-  "07-bentley",
-  "08-volkswagen",
-  "09-edition",
-  "10-byd",
-  "11-dji",
-  "12-ferrari",
-  "13-genesis",
-  "14-fairmont",
-].map((name) => `/images/clients/${name}.svg`);
 
 // Seeded from the Figma "Website Desktop. v2" About frame — images live in
 // public/images/about. Swap any of them via the admin About editor. Existing

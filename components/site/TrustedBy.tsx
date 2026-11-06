@@ -1,8 +1,12 @@
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
+import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText";
 
-// Client logos are edited in the About admin; Home/Works take the block's
-// heading/description from the Works admin — see lib/data/content.ts.
-// Both variants render nothing until at least one logo has been added.
+// Home's clients section is edited in the admin Home editor; the About strip's
+// logos in the admin About editor — see lib/data/content.ts.
+// Both variants render nothing until at least one logo has been added, and
+// both play the shared Contact-style entrance (components/ui/RevealText)
+// when scrolled into view: heading word by word, then the rest fades up.
 
 // Plain <img>: client logos have no fixed aspect ratio and render tiny, so
 // next/image's required width/height and optimizer round-trip would cost
@@ -21,59 +25,58 @@ function Logo({ src }: { src: string }) {
   );
 }
 
-// Entrance used when `animated`: the whole block starts slightly lowered and
-// transparent, then slowly settles once an ancestor <Reveal> sets
-// data-shown. motion-safe only, so reduced-motion users get the content
-// without the movement.
-const enter =
-  "transition duration-[1600ms] ease-out motion-safe:translate-y-3 motion-safe:opacity-0 group-data-shown:translate-y-0 group-data-shown:opacity-100";
-
-// "Trusted International Clients" block on Home and Works (Figma v2):
+// "Trusted International Clients" block on Home (Figma v2):
 // heading + short blurb on the left, a 7×2 logo grid on the right half.
-// `animated` (Home) gently fades the block in — it must sit inside a
-// <Reveal>.
+// `id` makes it a scroll target (the Home hero's "Scroll" cue).
 export function TrustedBy({
+  id,
   heading,
   description,
   logos,
-  animated = false,
 }: {
+  id?: string;
   heading: string;
   description: string;
   logos: string[];
-  animated?: boolean;
 }) {
   if (logos.length === 0) return null;
 
+  const itemsStart = afterWords(heading);
+
   return (
-    <Container>
-      <div
-        className={`grid grid-cols-1 items-center gap-10 py-16 sm:grid-cols-2 sm:py-[126px] ${
-          animated ? enter : ""
-        }`}
-      >
-        <div>
-          <h2 className="max-w-[467px] font-heading text-2xl tracking-tight text-obsidian uppercase">
-            {heading}
-          </h2>
-          {description && (
-            <p className="mt-4 max-w-[530px] text-sm leading-[1.3] tracking-tight text-obsidian">
-              {description}
-            </p>
-          )}
+    <Reveal id={id}>
+      <Container>
+        <div className="grid grid-cols-1 items-center gap-10 py-16 sm:grid-cols-2 sm:py-[126px]">
+          <div>
+            <h2 className="max-w-[467px] font-heading text-2xl tracking-tight text-obsidian">
+              <RevealWords text={heading} />
+            </h2>
+            {description && (
+              <RevealItem
+                as="p"
+                startMs={itemsStart}
+                className="mt-4 max-w-[530px] text-sm leading-[1.3] tracking-tight text-obsidian"
+              >
+                {description}
+              </RevealItem>
+            )}
+          </div>
+          <ul className="grid grid-cols-4 opacity-50 sm:grid-cols-7">
+            {logos.map((logo, index) => (
+              <RevealItem
+                key={index}
+                as="li"
+                startMs={itemsStart}
+                index={index + 1}
+                className="flex h-20 items-center justify-center sm:h-32"
+              >
+                <Logo src={logo} />
+              </RevealItem>
+            ))}
+          </ul>
         </div>
-        <ul className="grid grid-cols-4 opacity-50 sm:grid-cols-7">
-          {logos.map((logo, index) => (
-            <li
-              key={index}
-              className="flex h-20 items-center justify-center sm:h-32"
-            >
-              <Logo src={logo} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </Container>
+      </Container>
+    </Reveal>
   );
 }
 
@@ -85,24 +88,29 @@ export function TrustedByMarquee({ logos }: { logos: string[] }) {
   if (logos.length === 0) return null;
 
   return (
-    <section className="flex flex-col items-center gap-9 overflow-hidden py-16 sm:py-24">
+    <Reveal
+      as="section"
+      className="flex flex-col items-center gap-9 overflow-hidden py-16 sm:py-24"
+    >
       <h2 className="font-heading text-base font-semibold tracking-tight text-obsidian sm:text-2xl">
-        Trusted By
+        <RevealWords text="Trusted By" />
       </h2>
-      <div className="flex w-max animate-marquee opacity-50 hover:[animation-play-state:paused]">
-        {[0, 1].map((copy) => (
-          <ul key={copy} aria-hidden={copy === 1} className="flex">
-            {logos.map((logo, index) => (
-              <li
-                key={index}
-                className="flex h-20 w-28 items-center justify-center sm:h-32 sm:w-[180px]"
-              >
-                <Logo src={logo} />
-              </li>
-            ))}
-          </ul>
-        ))}
-      </div>
-    </section>
+      <RevealItem startMs={afterWords("Trusted By")}>
+        <div className="flex w-max animate-marquee opacity-50 hover:[animation-play-state:paused]">
+          {[0, 1].map((copy) => (
+            <ul key={copy} aria-hidden={copy === 1} className="flex">
+              {logos.map((logo, index) => (
+                <li
+                  key={index}
+                  className="flex h-20 w-28 items-center justify-center sm:h-32 sm:w-[180px]"
+                >
+                  <Logo src={logo} />
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </RevealItem>
+    </Reveal>
   );
 }

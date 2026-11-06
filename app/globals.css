@@ -29,10 +29,6 @@
   --font-mono: var(--font-lekton);
   --font-heading: var(--font-open-sauce);
 
-  /* Word-by-word / staggered entrance for the Contact page copy — each
-     span gets its own animation-delay via inline style. */
-  --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-
   /* About "Trusted By" logo strip — the row is rendered twice, so moving
      by -50% lands exactly where it started. */
   --animate-marquee: marquee 40s linear infinite;
@@ -59,19 +55,7 @@
   }
 }
 
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(0.6em);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up,
   .animate-marquee,
   .animate-scroll-cue {
     animation: none;

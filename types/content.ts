@@ -4,6 +4,12 @@ export type HomeContent = {
   backgroundVideoName: string | null;
   backgroundVideoUrl: string | null;
   logoFileName: string | null;
+  // "Trusted International Clients" section below the hero. Its own list,
+  // separate from the About logos (AboutContent.trustedByLogos).
+  clientsEnabled: boolean;
+  clientsHeading: string;
+  clientsDescription: string;
+  clientsLogos: string[];
 };
 
 export type ContactsContent = {
@@ -47,8 +53,8 @@ export type AboutContent = {
   teamIntro: string;
   teamMembers: TeamMember[];
   processCards: ProcessCard[];
-  // Edited in the About admin, but rendered on Home, Works and About
-  // (Home/Works take the block's heading/description from WorksContent).
+  // About's "Trusted By" strip. Home has its own list:
+  // HomeContent.clientsLogos.
   trustedByLogos: string[];
   ctaText: string;
   ctaBackgroundImage: string | null;

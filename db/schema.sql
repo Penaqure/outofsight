@@ -15,7 +15,11 @@ CREATE TABLE IF NOT EXISTS home_content (
   display_mode TEXT NOT NULL,
   background_video_name TEXT,
   background_video_url TEXT,
-  logo_file_name TEXT
+  logo_file_name TEXT,
+  clients_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+  clients_heading TEXT NOT NULL DEFAULT 'Trusted International Clients',
+  clients_description TEXT NOT NULL DEFAULT 'From global brands to local visionaries, we partner with teams who believe in the power of a well-told story.',
+  clients_logos TEXT[] NOT NULL DEFAULT '{}'
 );
 
 CREATE TABLE IF NOT EXISTS contacts_content (
@@ -167,5 +171,34 @@ BEGIN
       ALTER COLUMN bio DROP NOT NULL,
       ALTER COLUMN linkedin_url DROP NOT NULL,
       ALTER COLUMN instagram_url DROP NOT NULL;
+  END IF;
+END $$;
+
+-- Home's clients section got its own content, separate from the Works/About
+-- logos. Keyed on the new column not existing yet, so the first run on an
+-- existing database copies what Home was already showing (so the page doesn't
+-- change) and later runs never overwrite what the admin has set.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'home_content' AND column_name = 'clients_enabled'
+  ) THEN
+    ALTER TABLE home_content
+      ADD COLUMN clients_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+      ADD COLUMN clients_heading TEXT NOT NULL DEFAULT 'Trusted International Clients',
+      ADD COLUMN clients_description TEXT NOT NULL DEFAULT 'From global brands to local visionaries, we partner with teams who believe in the power of a well-told story.',
+      ADD COLUMN clients_logos TEXT[] NOT NULL DEFAULT '{}';
+
+    UPDATE home_content SET
+      clients_heading = COALESCE(
+        (SELECT trusted_by_heading FROM works_content WHERE id = 1), clients_heading
+      ),
+      clients_description = COALESCE(
+        (SELECT trusted_by_description FROM works_content WHERE id = 1), clients_description
+      ),
+      clients_logos = COALESCE(
+        (SELECT trusted_by_logos FROM about_content WHERE id = 1), clients_logos
+      );
   END IF;
 END $$;

@@ -21,6 +21,9 @@ export const siteConfig = {
   ],
 };
 
+// Logo slots in the Home clients section: the design's 7×2 grid.
+export const HOME_CLIENT_LOGO_SLOTS = 14;
+
 // Placeholder until real auth/session data is wired up.
 export const currentAdminUser = {
   name: "Admin",
