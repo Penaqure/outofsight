@@ -2,6 +2,7 @@ import { createReadStream, promises as fs } from "node:fs";
 import { Readable } from "node:stream";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import { UPLOAD_TYPES } from "@/lib/uploads";
 
 // Serves files from the top-level uploads/ directory (written by
 // app/api/upload/route.ts). This can't just be public/uploads served by
@@ -15,19 +16,6 @@ import { NextResponse } from "next/server";
 // background/project video players.
 const UPLOADS_DIR = path.join(process.cwd(), "uploads");
 
-const MIME_TYPES: Record<string, string> = {
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".png": "image/png",
-  ".gif": "image/gif",
-  ".webp": "image/webp",
-  ".avif": "image/avif",
-  ".svg": "image/svg+xml",
-  ".mp4": "video/mp4",
-  ".webm": "video/webm",
-  ".mov": "video/quicktime",
-  ".ogg": "video/ogg",
-};
 
 export async function GET(
   request: Request,
@@ -50,9 +38,14 @@ export async function GET(
   } catch {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  if (!stat.isFile()) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
 
+  // Security headers for these responses (nosniff and a script-blocking
+  // CSP) come from the /uploads rule in next.config.ts.
   const contentType =
-    MIME_TYPES[path.extname(filePath).toLowerCase()] ?? "application/octet-stream";
+    UPLOAD_TYPES[path.extname(filePath).toLowerCase()] ?? "application/octet-stream";
   const range = request.headers.get("range");
   const rangeMatch = range ? /^bytes=(\d*)-(\d*)$/.exec(range) : null;
 

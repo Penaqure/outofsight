@@ -2,6 +2,8 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/request-security";
+import { UPLOAD_TYPES } from "@/lib/uploads";
 
 // Self-hosted replacement for the old Vercel Blob upload: the file is sent
 // straight to this route as multipart form data and written to disk under
@@ -13,16 +15,26 @@ import { NextResponse } from "next/server";
 const UPLOADS_DIR = path.join(process.cwd(), "uploads");
 const MAX_SIZE_BYTES = 1024 * 1024 * 1024; // 1GB, matches the admin upload UI copy
 
-function sanitizeFilename(name: string): string {
-  const ext = path.extname(name).slice(0, 20);
+// Lower-cased extension plus a filesystem-safe base name.
+function sanitizeFilename(name: string): { base: string; ext: string } {
+  const ext = path.extname(name).toLowerCase();
   const base = path
-    .basename(name, ext)
+    .basename(name, path.extname(name))
     .replace(/[^a-zA-Z0-9-_]/g, "_")
     .slice(0, 80);
-  return `${base || "upload"}${ext}`;
+  return { base: base || "upload", ext };
+}
+
+// Browsers report a few types under alternate names.
+function normalizeType(type: string): string {
+  const aliases: Record<string, string> = { "image/jpg": "image/jpeg", "image/pjpeg": "image/jpeg" };
+  return aliases[type] ?? type;
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
+
   try {
     const formData = await request.formData();
     const file = formData.get("file");
@@ -30,7 +42,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
-    if (!/^(image|video)\//.test(file.type)) {
+    // The declared type alone is just a client-supplied string; the
+    // extension decides how the file is served later, so both must agree
+    // with the allowlist.
+    const { base, ext } = sanitizeFilename(file.name || "upload");
+    if (!UPLOAD_TYPES[ext] || UPLOAD_TYPES[ext] !== normalizeType(file.type)) {
       return NextResponse.json(
         { error: "Only image or video files are allowed" },
         { status: 400 }
@@ -43,7 +59,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     // Random prefix avoids collisions between uploads that share a filename
     // (e.g. every video frame capture is named "preview.jpg").
     const uniquePrefix = randomBytes(8).toString("hex");
-    const filename = `${uniquePrefix}-${sanitizeFilename(file.name || "upload")}`;
+    const filename = `${uniquePrefix}-${base}${ext}`;
 
     await fs.mkdir(UPLOADS_DIR, { recursive: true });
     const bytes = Buffer.from(await file.arrayBuffer());
@@ -51,9 +67,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json({ url: `/uploads/${filename}` });
   } catch (error) {
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 400 }
-    );
+    // Log the detail server-side; don't echo internals (paths, etc.) back.
+    console.error("Upload failed:", error);
+    return NextResponse.json({ error: "Upload failed" }, { status: 400 });
   }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
+import { isMutating, isSameOrigin } from "@/lib/request-security";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,6 +17,10 @@ export async function proxy(request: NextRequest) {
   // gets a 401 instead of a redirect, since these are fetched by scripts,
   // not browsed.
   if (isApiRoute) {
+    // CSRF: a state-changing call must come from this site's own pages.
+    if (isMutating(request) && !isSameOrigin(request)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     if (!isAuthenticated) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

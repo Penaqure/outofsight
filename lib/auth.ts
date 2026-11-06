@@ -44,10 +44,32 @@ function fromBase64Url(value: string): Uint8Array<ArrayBuffer> {
   return bytes;
 }
 
-async function getKey(secret: string) {
+// Shortest SESSION_SECRET accepted — anything shorter is guessable enough
+// to forge sessions offline from a single captured cookie.
+export const MIN_SESSION_SECRET_LENGTH = 32;
+
+export function sessionSecretProblem(): string | null {
+  const secret = process.env.SESSION_SECRET;
+  if (!secret) return "SESSION_SECRET is not set";
+  if (secret.length < MIN_SESSION_SECRET_LENGTH) {
+    return `SESSION_SECRET must be at least ${MIN_SESSION_SECRET_LENGTH} characters`;
+  }
+  return null;
+}
+
+// The signing key mixes in the current admin email and password, so changing
+// either one in the environment instantly invalidates every existing session
+// (there's no server-side session store to revoke them from otherwise).
+// Rotating SESSION_SECRET does the same.
+async function getKey() {
+  const material = [
+    process.env.SESSION_SECRET,
+    process.env.ADMIN_EMAIL,
+    process.env.ADMIN_PASSWORD,
+  ].join("\u0000");
   return crypto.subtle.importKey(
     "raw",
-    encoder.encode(secret),
+    encoder.encode(material),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign", "verify"]
@@ -55,12 +77,12 @@ async function getKey(secret: string) {
 }
 
 export async function createSessionToken(email: string): Promise<string> {
-  const secret = process.env.SESSION_SECRET;
-  if (!secret) throw new Error("SESSION_SECRET is not set");
+  const problem = sessionSecretProblem();
+  if (problem) throw new Error(problem);
 
   const expiresAt = Date.now() + SESSION_MAX_AGE_SECONDS * 1000;
   const payload = `${email}:${expiresAt}`;
-  const key = await getKey(secret);
+  const key = await getKey();
   const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
 
   return `${toBase64Url(encoder.encode(payload))}.${toBase64Url(signature)}`;
@@ -69,22 +91,27 @@ export async function createSessionToken(email: string): Promise<string> {
 export async function verifySessionToken(
   token: string | undefined
 ): Promise<boolean> {
-  if (!token) return false;
-  const secret = process.env.SESSION_SECRET;
-  if (!secret) return false;
+  if (!token || sessionSecretProblem()) return false;
 
-  const [payloadB64, signatureB64] = token.split(".");
-  if (!payloadB64 || !signatureB64) return false;
+  const [payloadB64, signatureB64, ...rest] = token.split(".");
+  if (!payloadB64 || !signatureB64 || rest.length > 0) return false;
 
-  const payload = new TextDecoder().decode(fromBase64Url(payloadB64));
-  const expiresAt = Number(payload.split(":")[1]);
-  if (!expiresAt || Date.now() > expiresAt) return false;
+  // A tampered or truncated cookie can be invalid base64 — treat it as
+  // logged out rather than letting atob throw and 500 the request.
+  try {
+    const payload = new TextDecoder().decode(fromBase64Url(payloadB64));
+    const separator = payload.lastIndexOf(":");
+    const expiresAt = Number(payload.slice(separator + 1));
+    if (separator < 0 || !expiresAt || Date.now() > expiresAt) return false;
 
-  const key = await getKey(secret);
-  return crypto.subtle.verify(
-    "HMAC",
-    key,
-    fromBase64Url(signatureB64),
-    encoder.encode(payload)
-  );
+    const key = await getKey();
+    return await crypto.subtle.verify(
+      "HMAC",
+      key,
+      fromBase64Url(signatureB64),
+      encoder.encode(payload)
+    );
+  } catch {
+    return false;
+  }
 }
