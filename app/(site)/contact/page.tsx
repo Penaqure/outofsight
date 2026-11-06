@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getContactsContent } from "@/lib/data/content";
-import { metaDescription } from "@/lib/seo";
+import { metaDescription, pageMetadata } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -15,16 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = metaDescription(
     `${contact.bodyText} ${contact.email} ${contact.location}`.trim()
   );
-  return {
-    title: "Contact",
-    description,
-    alternates: { canonical: "/contact" },
-    openGraph: {
-      title: "Contact — OUTOFSIGHT",
-      description,
-      url: "/contact",
-    },
-  };
+  return pageMetadata({ title: "Contact", description, path: "/contact" });
 }
 
 // The hero fills exactly one viewport (h-dvh), same treatment as Home —

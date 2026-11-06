@@ -3,7 +3,13 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getProjectBySlug, getProjects } from "@/lib/data/portfolio";
 import { getWorksContent } from "@/lib/data/content";
-import { metaDescription } from "@/lib/seo";
+import {
+  absoluteUrl,
+  jsonLd,
+  metaDescription,
+  pageMetadata,
+  shareImage,
+} from "@/lib/seo";
 import { siteConfig } from "@/lib/config";
 import { Footer } from "@/components/site/Footer";
 import { ProjectTile } from "@/components/site/ProjectTile";
@@ -22,25 +28,17 @@ export async function generateMetadata(
   const project = await getProjectBySlug(slug);
 
   if (!project) {
-    return { title: "Project not found" };
+    return { title: "Project not found", robots: { index: false } };
   }
 
-  const description = metaDescription(
-    project.description || siteConfig.description
-  );
   const ogImage = project.videoPreviewImage ?? project.thumbnailImage;
-  return {
+  return pageMetadata({
     title: project.title,
-    description,
-    alternates: { canonical: `/works/${project.slug}` },
-    openGraph: {
-      type: "article",
-      title: `${project.title} — OUTOFSIGHT`,
-      description,
-      url: `/works/${project.slug}`,
-      images: ogImage ? [{ url: ogImage, alt: project.title }] : undefined,
-    },
-  };
+    description: metaDescription(project.description || siteConfig.description),
+    path: `/works/${project.slug}`,
+    image: ogImage ? shareImage(ogImage, project.title) : null,
+    type: "article",
+  });
 }
 
 export default async function ProjectPage(
@@ -65,8 +63,56 @@ export default async function ProjectPage(
   const otherProjects = allProjects.filter((p) => p.id !== project.id);
   const detailsStart = afterWords(project.title);
 
+  // Structured data: the project as a video (when there's a video and an
+  // image to preview it — Google requires a thumbnail) or a creative work,
+  // plus its breadcrumb trail (Home › Work › Project).
+  const pageUrl = absoluteUrl(`/works/${project.slug}`);
+  const work = {
+    "@id": `${pageUrl}#work`,
+    name: project.title,
+    description: project.description || undefined,
+    url: pageUrl,
+    creator: { "@id": absoluteUrl("/#organization") },
+  };
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      project.videoUrl && heroImage
+        ? {
+            "@type": "VideoObject",
+            ...work,
+            thumbnailUrl: absoluteUrl(heroImage),
+            contentUrl: absoluteUrl(project.videoUrl),
+            uploadDate: project.createdAt,
+          }
+        : {
+            "@type": "CreativeWork",
+            ...work,
+            image: heroImage ? absoluteUrl(heroImage) : undefined,
+            dateCreated: project.createdAt,
+          },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/works" },
+          { name: project.title, path: `/works/${project.slug}` },
+        ].map((crumb, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: crumb.name,
+          item: absoluteUrl(crumb.path),
+        })),
+      },
+    ],
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-bone-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd(structuredData)}
+      />
       <Reveal>
         <Container>
           <div className="grid grid-cols-1 gap-10 pt-32 pb-16 sm:grid-cols-[1fr_2fr] sm:gap-16 sm:pt-40 sm:pb-24">
@@ -114,7 +160,7 @@ export default async function ProjectPage(
                   heroImage && (
                     <Image
                       src={heroImage}
-                      alt=""
+                      alt={project.title}
                       fill
                       priority
                       sizes="(min-width: 640px) 66vw, 100vw"
@@ -135,7 +181,7 @@ export default async function ProjectPage(
                     >
                       <Image
                         src={photo}
-                        alt=""
+                        alt={`${project.title} — photo ${index + 1}`}
                         fill
                         sizes="(min-width: 640px) 17vw, 50vw"
                         className="object-cover"

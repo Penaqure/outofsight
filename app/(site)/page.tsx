@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getHomeContent } from "@/lib/data/content";
 import { videoPosterUrl } from "@/lib/media";
 import { siteConfig } from "@/lib/config";
+import { pageMetadata } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { TrustedBy } from "@/components/site/TrustedBy";
 import HomeHero from "./HomeHero";
@@ -10,12 +11,12 @@ import HomeHero from "./HomeHero";
 // see the same note in works/page.tsx.
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  // Landing page shows just the brand name, not "Home — OUTOFSIGHT".
-  title: { absolute: siteConfig.name },
+// Landing page shows just the brand name, not "Home — OUTOFSIGHT".
+export const metadata: Metadata = pageMetadata({
+  title: null,
   description: siteConfig.description,
-  alternates: { canonical: "/" },
-};
+  path: "/",
+});
 
 // Full-viewport hero, then (Figma v2) the Trusted International Clients
 // section and the Footer. Everything comes from the admin Home editor,

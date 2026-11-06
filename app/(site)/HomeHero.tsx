@@ -76,6 +76,11 @@ export default function HomeHero({
       )}
       <div className="absolute inset-0 bg-obsidian/40" />
 
+      {/* Logo-only and blank modes show no hero text, but the page still
+          needs one <h1> for search engines and screen readers. */}
+      {content.displayMode !== "body-text" && (
+        <h1 className="sr-only">{siteConfig.name}</h1>
+      )}
       {content.displayMode === "blank" ? null : (
         // Plays once the video is ready, so the entrance isn't spent
         // behind the loading overlay.

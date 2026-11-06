@@ -1,5 +1,16 @@
 import type { NextConfig } from "next";
 
+// Canonical links, the sitemap, robots.txt, structured data and share images
+// all use NEXT_PUBLIC_SITE_URL (see siteConfig.url). It's inlined at build
+// time, so a production build without it silently points search engines at
+// localhost — say so loudly.
+if (process.env.NODE_ENV === "production" && !process.env.NEXT_PUBLIC_SITE_URL) {
+  console.warn(
+    "\n⚠ NEXT_PUBLIC_SITE_URL is not set — SEO URLs will point at http://localhost:3000.\n" +
+      "  Set it (e.g. NEXT_PUBLIC_SITE_URL=https://outofsight.com) before `npm run build`.\n"
+  );
+}
+
 const nextConfig: NextConfig = {
   experimental: {
     // /api/upload runs through proxy.ts (auth check), which makes Next clone

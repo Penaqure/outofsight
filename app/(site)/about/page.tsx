@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getAboutContent } from "@/lib/data/content";
-import { metaDescription } from "@/lib/seo";
+import { metaDescription, pageMetadata, shareImage } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { TeamMembers } from "@/components/site/TeamMembers";
 import { TrustedByMarquee } from "@/components/site/TrustedBy";
@@ -16,18 +16,14 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getAboutContent();
-  const description = metaDescription(content.introText || content.storyText);
-  return {
+  return pageMetadata({
     title: "About Us",
-    description,
-    alternates: { canonical: "/about" },
-    openGraph: {
-      title: `About Us — OUTOFSIGHT`,
-      description,
-      url: "/about",
-      images: content.heroImage ? [{ url: content.heroImage }] : undefined,
-    },
-  };
+    description: metaDescription(content.introText || content.storyText),
+    path: "/about",
+    image: content.heroImage
+      ? shareImage(content.heroImage, "About OUTOFSIGHT")
+      : null,
+  });
 }
 
 // Every section here (hero image, intro, story, founder's message, team
@@ -56,13 +52,19 @@ export default async function AboutPage() {
               className="object-cover"
             />
             <div className="absolute inset-0 bg-obsidian/20" />
-            <Reveal className="relative">
-              <h1 className="max-w-4xl px-6 text-center text-xl tracking-tight text-bone-white sm:px-10 sm:text-4xl md:text-5xl lg:px-16 lg:text-[48px]">
-                <RevealWords text={content.heroHeadline} />
-              </h1>
-            </Reveal>
           </>
         )}
+        {/* Always rendered — it's the page's only <h1>. Light on the photo,
+            dark on the plain background when no hero image is set. */}
+        <Reveal className="relative">
+          <h1
+            className={`max-w-4xl px-6 text-center text-xl tracking-tight sm:px-10 sm:text-4xl md:text-5xl lg:px-16 lg:text-[48px] ${
+              content.heroImage ? "text-bone-white" : "text-obsidian"
+            }`}
+          >
+            <RevealWords text={content.heroHeadline} />
+          </h1>
+        </Reveal>
       </section>
 
       {content.introText && (

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Lekton } from "next/font/google";
 import localFont from "next/font/local";
 import { siteConfig } from "@/lib/config";
+import { defaultShareImage } from "@/lib/seo";
 import "./globals.css";
 
 const lekton = Lekton({
@@ -109,9 +110,6 @@ export const metadata: Metadata = {
     "filmmaking",
     "creative direction",
   ],
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     siteName: siteConfig.name,
@@ -119,15 +117,13 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     url: "/",
     locale: "en_US",
-    // TODO: replace with a purpose-built 1200×630 social card. The logo is a
-    // stopgap so shared links aren't completely image-less.
-    images: [{ url: "/logo/outofsight-logo.png", alt: siteConfig.name }],
+    images: [defaultShareImage],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: ["/logo/outofsight-logo.png"],
+    images: [defaultShareImage.url],
   },
   robots: {
     index: true,
@@ -150,7 +146,13 @@ export const metadata: Metadata = {
   // theme detection to work.
   icons: {
     icon: "/logo/favicon.png",
+    apple: "/logo/favicon.png",
   },
+  // Google Search Console ownership check — set GOOGLE_SITE_VERIFICATION to
+  // the token from the "HTML tag" method (only the content="…" value).
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
@@ -162,29 +164,6 @@ export const viewport: Viewport = {
   ],
 };
 
-// Organization + WebSite structured data — helps search engines show the
-// brand name/logo and a sitelinks search box. Rendered once, site-wide.
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${siteConfig.url}/#organization`,
-      name: siteConfig.name,
-      url: siteConfig.url,
-      logo: `${siteConfig.url}/logo/outofsight-logo.png`,
-      description: siteConfig.description,
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${siteConfig.url}/#website`,
-      url: siteConfig.url,
-      name: siteConfig.name,
-      publisher: { "@id": `${siteConfig.url}/#organization` },
-    },
-  ],
-};
-
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
@@ -192,10 +171,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${lekton.variable} ${openSauce.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
         {children}
       </body>
     </html>

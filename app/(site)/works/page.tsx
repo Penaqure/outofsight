@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getProjects } from "@/lib/data/portfolio";
 import { getWorksContent } from "@/lib/data/content";
-import { metaDescription } from "@/lib/seo";
+import { metaDescription, pageMetadata, shareImage } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { ProjectTile } from "@/components/site/ProjectTile";
 import { Container } from "@/components/ui/Container";
@@ -15,18 +15,12 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getWorksContent();
-  const description = metaDescription(content.heroDescription);
-  return {
+  return pageMetadata({
     title: "Work",
-    description,
-    alternates: { canonical: "/works" },
-    openGraph: {
-      title: "Work — OUTOFSIGHT",
-      description,
-      url: "/works",
-      images: content.heroImage ? [{ url: content.heroImage }] : undefined,
-    },
-  };
+    description: metaDescription(content.heroDescription),
+    path: "/works",
+    image: content.heroImage ? shareImage(content.heroImage, "Work") : null,
+  });
 }
 
 // Hero image/heading/description come from the admin Works editor — see
