@@ -16,23 +16,6 @@ import { pool } from "@/lib/db";
 // instead of the loser failing on the primary key. update* upserts, so it works even before that first read
 // has happened.
 
-const clientLogos = [
-  "01-abu-dhabi",
-  "02-porsche",
-  "03-f1",
-  "04-mercedes",
-  "05-samsung",
-  "06-lamborghini",
-  "07-bentley",
-  "08-volkswagen",
-  "09-edition",
-  "10-byd",
-  "11-dji",
-  "12-ferrari",
-  "13-genesis",
-  "14-fairmont",
-].map((name) => `/images/clients/${name}.svg`);
-
 const homeDefaults: HomeContent = {
   heroText: "Pineers in brand Storytelling",
   displayMode: "body-text",
@@ -43,7 +26,7 @@ const homeDefaults: HomeContent = {
   clientsHeading: "Trusted International Clients",
   clientsDescription:
     "From global brands to local visionaries, we partner with teams who believe in the power of a well-told story.",
-  clientsLogos: clientLogos,
+  clientsLogos: [],
 };
 
 type HomeRow = {
@@ -278,20 +261,20 @@ export async function updateWorksContent(
   return toWorksContent(rows[0]);
 }
 
-// Seeded from the Figma "Website Desktop. v2" About frame — images live in
-// public/images/about. Swap any of them via the admin About editor. Existing
-// databases get the same images once via the v2 migration in db/schema.sql.
+// Copy seeded from the Figma "Website Desktop. v2" About frame. Images, team
+// members and logos start empty — they're all uploaded via the admin About
+// editor.
 const aboutDefaults: AboutContent = {
-  heroImage: "/images/about/hero.jpg",
+  heroImage: null,
   heroImagePosition: "50% 50%",
   heroHeadline: "Pineers in brand Storytelling",
   introText:
     "Outofsight is an independent creative studio built around film, photography, and visual storytelling.\n\nWorking across automotive, lifestyle, travel, and hospitality, we collaborate with brands and creative partners to develop and produce visual work with a distinct point of view.\n\nOur approach is guided by curiosity, authenticity, and an obsession with detail creating imagery that goes beyond what you see to capture how something feels.",
-  storyImage: "/images/about/story.jpg",
+  storyImage: null,
   storyImagePosition: "50% 50%",
   storyText:
     "We’re drawn to the details that make a story its own.\nThe way light falls across a surface. The movement of a landscape. The feeling of being somewhere unfamiliar.\nThese are the moments that shape our perspective and inform the way we create — with intention, restraint, and a focus on what matters.",
-  founderImage: "/images/about/founder.jpg",
+  founderImage: null,
   founderImagePosition: "50% 50%",
   founderHeading: "Founder’s Message",
   founderMessage:
@@ -299,14 +282,7 @@ const aboutDefaults: AboutContent = {
   founderName: "Nihal Muhammed",
   teamIntro:
     "I believe the best stories aren’t just seen, they’re felt. As a filmmaker and creative director, I’m committed to turning ideas into visuals that spark imagination, emotion, and meaning.",
-  teamMembers: [1, 2, 3, 4, 5].map((n) => ({
-    name: "Nihal Muhammed",
-    position: "Co Founder & Creative Director",
-    photo: `/images/about/team-${n}.jpg`,
-    photoPosition: "50% 100%",
-    instagramUrl: "",
-    linkedinUrl: "",
-  })) satisfies TeamMember[],
+  teamMembers: [] as TeamMember[],
   processCards: [
     {
       title: "Vision & Strategy",
@@ -324,11 +300,10 @@ const aboutDefaults: AboutContent = {
         "The final details matter. Through considered editing, pacing, colour, and sound, we shape every frame into a cohesive visual experience.",
     },
   ] satisfies ProcessCard[],
-  trustedByLogos: clientLogos,
+  trustedByLogos: [],
   ctaText: "Have a project in mind?",
-  ctaBackgroundImage: "/images/about/cta.jpg",
-  // The Figma crop shows the light streak a little below centre.
-  ctaBackgroundImagePosition: "50% 60%",
+  ctaBackgroundImage: null,
+  ctaBackgroundImagePosition: "50% 50%",
 };
 
 type AboutRow = {

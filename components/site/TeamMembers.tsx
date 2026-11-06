@@ -3,13 +3,12 @@
 import { useRef } from "react";
 import Image from "next/image";
 import type { TeamMember } from "@/types/content";
-import teamArrow from "@/public/images/about/team-arrow.svg";
 import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText";
 
 // Figma v2 "Team Members": heading + blurb on the left, a row of round
 // portraits on the right. The row scrolls sideways once there are more
 // members than fit, driven by the ← → arrow under the blurb (a single
-// design asset, so two invisible buttons sit over its halves). Animates in
+// graphic, so two invisible buttons sit over its halves). Animates in
 // with the shared entrance — render it inside a <Reveal>.
 export function TeamMembers({
   intro,
@@ -49,7 +48,22 @@ export function TeamMembers({
           index={1}
           className="relative hidden self-start sm:block"
         >
-          <Image src={teamArrow} alt="" />
+          {/* ← → arrow from the Figma design, drawn inline so the page has
+              no static image file to depend on. */}
+          <svg
+            aria-hidden="true"
+            width="42"
+            height="7.36"
+            viewBox="0 0 42 7.36396"
+            fill="#232323"
+            className="block"
+          >
+            <path
+              opacity="0.3"
+              d="M16.5 3.68198L16.5 3.18198L0.499999 3.18198L0.5 3.68198L0.5 4.18198L16.5 4.18198L16.5 3.68198ZM0.146446 3.32843C-0.0488153 3.52369 -0.0488152 3.84027 0.146446 4.03553L3.32843 7.21751C3.52369 7.41278 3.84027 7.41278 4.03553 7.21751C4.2308 7.02225 4.2308 6.70567 4.03553 6.51041L1.20711 3.68198L4.03553 0.853554C4.2308 0.658292 4.2308 0.341709 4.03553 0.146447C3.84027 -0.0488151 3.52369 -0.0488151 3.32843 0.146447L0.146446 3.32843Z"
+            />
+            <path d="M25.5 3.68198V4.18198L41.5 4.18198V3.68198V3.18198L25.5 3.18198V3.68198ZM41.8536 4.03553C42.0488 3.84027 42.0488 3.52369 41.8536 3.32843L38.6716 0.146447C38.4763 -0.0488155 38.1597 -0.0488155 37.9645 0.146447C37.7692 0.341709 37.7692 0.658291 37.9645 0.853554L40.7929 3.68198L37.9645 6.51041C37.7692 6.70567 37.7692 7.02225 37.9645 7.21751C38.1597 7.41278 38.4763 7.41278 38.6716 7.21751L41.8536 4.03553Z" />
+          </svg>
           <button
             type="button"
             aria-label="Previous team members"
