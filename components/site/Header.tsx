@@ -135,7 +135,7 @@ export function Header() {
           onClick={() => setMenuOpen(false)}
         >
           <nav
-            className="flex flex-col items-center gap-6 px-6 pt-28 text-xs tracking-wider text-bone-white uppercase"
+            className="flex flex-col items-center gap-6 px-6 pt-28 text-xs text-bone-white uppercase"
             onClick={(event) => event.stopPropagation()}
           >
             {siteConfig.nav.map((item) => (
@@ -168,7 +168,7 @@ export function Header() {
           </Link>
 
           <nav
-            className={`hidden gap-2 text-[10px] tracking-wider uppercase transition-colors duration-200 sm:flex sm:gap-6 sm:text-xs lg:gap-10 ${
+            className={`hidden gap-2 text-xs uppercase transition-colors duration-200 sm:flex sm:gap-6 lg:gap-10 ${
               isDark ? "text-white" : "text-obsidian"
             }`}
           >

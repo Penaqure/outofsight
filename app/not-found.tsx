@@ -33,7 +33,7 @@ export default function NotFound() {
           <Container>
             <RevealItem
               as="p"
-              className="text-xs tracking-[0.2em] text-obsidian/50 uppercase"
+              className="text-xs text-obsidian/50 uppercase"
             >
               Error 404
             </RevealItem>
@@ -56,7 +56,7 @@ export default function NotFound() {
                 >
                   <Link
                     href={link.href}
-                    className="border-b border-obsidian pb-1 text-sm tracking-wider text-obsidian uppercase transition-opacity hover:opacity-60"
+                    className="border-b border-obsidian pb-1 text-xs text-obsidian uppercase transition-opacity hover:opacity-60"
                   >
                     {link.label}
                   </Link>

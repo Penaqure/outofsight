@@ -14,7 +14,7 @@ const mediaLinks = [
 
 // Label + link-list block. Stacks (label above list) on mobile to match the
 // two-column Figma mobile footer; on sm+ the label sits inline to the left
-// of the list, as on desktop.
+// of the list with a fixed 16px gap (Figma), whatever the label's length.
 function FooterColumn({
   label,
   children,
@@ -23,8 +23,8 @@ function FooterColumn({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-0">
-      <p className="text-left text-[11px] tracking-[0.2em] text-bone-white/40 sm:min-w-[100px]">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-4">
+      <p className="text-left whitespace-nowrap text-bone-white/40">
         {label}
       </p>
       {children}
@@ -73,9 +73,12 @@ export async function Footer() {
       className="bg-obsidian py-10 text-bone-white sm:py-16"
     >
       <Container>
-        <div className="flex flex-col gap-10 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-[96px]">
-          {/* Mobile: logo left, back-to-top arrow top-right. Desktop keeps the
-              arrow at the end of the link cluster below. */}
+        {/* Logo left, menus right on one row from xl (Figma: 64px page
+            padding; 96px between groups on wide screens). Narrower, the logo
+            sits above the menus instead of the menus half-wrapping under
+            it. Mobile: logo left, back-to-top arrow top-right; wider, the
+            arrow ends the menu row. */}
+        <div className="flex flex-col gap-10 xl:flex-row xl:items-start xl:justify-between xl:gap-16">
           <div className="flex items-start justify-between sm:block">
             <Image
               src={logo}
@@ -85,7 +88,7 @@ export async function Footer() {
             <BackToTop className="inline-flex sm:hidden" />
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 text-sm sm:flex sm:flex-wrap sm:items-start sm:gap-[96px]">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 text-xs sm:flex sm:flex-wrap sm:items-start sm:gap-x-12 sm:gap-y-10 xl:flex-nowrap xl:gap-x-16 2xl:gap-x-24">
             <FooterColumn label="Navigation">
               <ul className="space-y-2 text-left">
                 {siteConfig.nav.map((item) => (
@@ -118,7 +121,9 @@ export async function Footer() {
 
             {contact.location && (
               <FooterColumn label="Address">
-                <p className="text-left text-bone-white/80">{contact.location}</p>
+                <p className="max-w-[220px] text-left whitespace-pre-line text-bone-white/80">
+                  {contact.location}
+                </p>
               </FooterColumn>
             )}
 

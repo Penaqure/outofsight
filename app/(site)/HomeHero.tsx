@@ -119,10 +119,11 @@ export default function HomeHero({
             if (target) slowScrollTo(target);
           }}
           aria-label="Scroll to next section"
-          className="group absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] tracking-[0.2em] text-bone-white/70 uppercase transition-colors hover:text-bone-white sm:bottom-10 sm:text-xs"
+          // Just the moving line, no label. The padding gives the 1px line a
+          // comfortable click/tap area without changing how it looks.
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 sm:bottom-10"
         >
-          Scroll
-          <span className="relative block h-10 w-px overflow-hidden bg-bone-white/25 sm:h-12">
+          <span className="relative block h-6 w-px overflow-hidden bg-bone-white/25 sm:h-8">
             <span className="absolute inset-x-0 top-0 h-1/2 animate-scroll-cue bg-bone-white" />
           </span>
         </a>
