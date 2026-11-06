@@ -162,7 +162,7 @@ export function Header() {
             <Image
               src={logo}
               alt={siteConfig.name}
-              className={`h-8 w-auto transition-[filter] duration-200 sm:h-14 lg:h-24 ${light ? "invert" : ""}`}
+              className={`h-4 w-auto transition-[filter] duration-200 sm:h-5 lg:h-6 ${light ? "invert" : ""}`}
               priority
             />
           </Link>

@@ -80,7 +80,7 @@ export async function Footer() {
             <Image
               src={logo}
               alt={siteConfig.name}
-              className="h-10 w-auto invert sm:h-24"
+              className="h-4 w-auto invert sm:h-6"
             />
             <BackToTop className="inline-flex sm:hidden" />
           </div>

@@ -39,7 +39,7 @@ export function GET() {
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={logoSrc} width={402} height={141} alt="" />
+        <img src={logoSrc} width={360} height={38} alt="" />
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
           <div
             style={{

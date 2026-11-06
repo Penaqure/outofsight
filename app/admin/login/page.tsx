@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
         <Image
           src={logo}
           alt="OUTOFSIGHT"
-          className="mx-auto mb-6 h-35 w-95 invert"
+          className="mx-auto mb-6 h-auto w-70 invert"
           priority
         />
         <div className="flex flex-col gap-3">

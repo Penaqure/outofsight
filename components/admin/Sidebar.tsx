@@ -55,7 +55,7 @@ export function Sidebar() {
   return (
     <>
       <div className="flex items-center justify-between bg-obsidian p-4 lg:hidden">
-        <Image src={logo} alt="OUTOFSIGHT" className="h-8 w-auto invert" priority />
+        <Image src={logo} alt="OUTOFSIGHT" className="h-4 w-auto invert" priority />
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -92,7 +92,7 @@ export function Sidebar() {
           <Image
             src={logo}
             alt="OUTOFSIGHT"
-            className="h-auto w-55 invert"
+            className="h-auto w-40 invert"
             priority
           />
           <button

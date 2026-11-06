@@ -26,7 +26,8 @@ function Logo({ src }: { src: string }) {
 }
 
 // "Trusted International Clients" block on Home (Figma v2):
-// heading + short blurb on the left, a 7×2 logo grid on the right half.
+// heading + short blurb on the left, a 7×2 logo grid on the right half
+// (3 logos per row on phones).
 // `id` makes it a scroll target (the Home hero's "Scroll" cue).
 export function TrustedBy({
   id,
@@ -61,7 +62,7 @@ export function TrustedBy({
               </RevealItem>
             )}
           </div>
-          <ul className="grid grid-cols-4 opacity-50 sm:grid-cols-7">
+          <ul className="grid grid-cols-3 opacity-50 sm:grid-cols-7">
             {logos.map((logo, index) => (
               <RevealItem
                 key={index}
