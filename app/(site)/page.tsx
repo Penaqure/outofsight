@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getHomeContent } from "@/lib/data/content";
 import { videoPosterUrl } from "@/lib/media";
-import { siteConfig } from "@/lib/config";
+import { HOME_CLIENT_LOGO_SLOTS, siteConfig } from "@/lib/config";
 import { pageMetadata } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { TrustedBy } from "@/components/site/TrustedBy";
@@ -41,7 +41,7 @@ export default async function HomePage() {
             id="home-next"
             heading={content.clientsHeading}
             description={content.clientsDescription}
-            logos={content.clientsLogos}
+            logos={content.clientsLogos.slice(0, HOME_CLIENT_LOGO_SLOTS)}
           />
           <Footer />
         </>

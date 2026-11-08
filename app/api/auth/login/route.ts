@@ -6,7 +6,7 @@ import {
   SESSION_COOKIE_NAME,
   SESSION_MAX_AGE_SECONDS,
 } from "@/lib/auth";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, resetRateLimit } from "@/lib/rate-limit";
 import { clientIp, isSameOrigin, readJson } from "@/lib/request-security";
 
 const LOGIN_ATTEMPT_LIMIT = 5;
@@ -93,6 +93,9 @@ export async function POST(request: Request) {
   const isHttps =
     request.headers.get("x-forwarded-proto") === "https" ||
     new URL(request.url).protocol === "https:";
+
+  // Only failed guesses should count towards this address's limit.
+  resetRateLimit(`login:${ip}`);
 
   const token = await createSessionToken(email);
   const response = NextResponse.json({ ok: true });

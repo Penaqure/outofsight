@@ -1,6 +1,12 @@
 import { Container } from "@/components/ui/Container";
+import { CLIENT_LOGO_CLASS } from "@/lib/config";
 import { Reveal } from "@/components/ui/Reveal";
-import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText";
+import {
+  RevealItem,
+  RevealWords,
+  afterWords,
+  twoLineHeading,
+} from "@/components/ui/RevealText";
 
 // Home's clients section is edited in the admin Home editor; the About strip's
 // logos in the admin About editor — see lib/data/content.ts.
@@ -8,10 +14,10 @@ import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText"
 // both play the shared Contact-style entrance (components/ui/RevealText)
 // when scrolled into view: heading word by word, then the rest fades up.
 
-// Plain <img>: client logos have no fixed aspect ratio and render tiny, so
+// Plain <img>: client logos have no fixed aspect ratio and render small, so
 // next/image's required width/height and optimizer round-trip would cost
-// more than they save. The seeded SVGs carry their own Figma width/height,
-// so they render at design size; the max-* caps only rein in large uploads.
+// more than they save. Sized by CLIENT_LOGO_CLASS, the same rule as the admin
+// tiles, so a logo looks the same size in both.
 function Logo({ src }: { src: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -20,14 +26,15 @@ function Logo({ src }: { src: string }) {
       alt=""
       loading="lazy"
       decoding="async"
-      className="max-h-8 w-auto max-w-16 object-contain grayscale sm:max-h-10 sm:max-w-24"
+      className={`${CLIENT_LOGO_CLASS} grayscale`}
     />
   );
 }
 
 // "Trusted International Clients" block on Home (Figma v2):
-// heading + short blurb on the left, a 7×2 logo grid on the right half
-// (3 logos per row on phones).
+// heading + short blurb on the left, a 6×2 logo grid on the right half
+// (stacked on narrower screens, where side by side would leave the logos too
+// little width to keep their size; 3 per row on phones).
 // `id` makes it a scroll target (the Home hero's "Scroll" cue).
 export function TrustedBy({
   id,
@@ -47,10 +54,10 @@ export function TrustedBy({
   return (
     <Reveal id={id}>
       <Container>
-        <div className="grid grid-cols-1 items-center gap-10 py-16 sm:grid-cols-2 sm:py-[126px]">
+        <div className="grid grid-cols-1 items-center gap-10 py-16 sm:py-[126px] min-[1400px]:grid-cols-2">
           <div>
             <h2 className="max-w-[467px] font-heading text-2xl tracking-tight text-obsidian">
-              <RevealWords text={heading} />
+              <RevealWords text={twoLineHeading(heading)} />
             </h2>
             {description && (
               <RevealItem
@@ -62,14 +69,14 @@ export function TrustedBy({
               </RevealItem>
             )}
           </div>
-          <ul className="grid grid-cols-3 opacity-50 sm:grid-cols-7">
+          <ul className="grid grid-cols-3 opacity-50 sm:grid-cols-6">
             {logos.map((logo, index) => (
               <RevealItem
                 key={index}
                 as="li"
                 startMs={itemsStart}
                 index={index + 1}
-                className="flex h-20 items-center justify-center sm:h-32"
+                className="flex h-20 items-center justify-center px-0.5 sm:h-32"
               >
                 <Logo src={logo} />
               </RevealItem>
@@ -103,7 +110,7 @@ export function TrustedByMarquee({ logos }: { logos: string[] }) {
               {logos.map((logo, index) => (
                 <li
                   key={index}
-                  className="flex h-20 w-28 items-center justify-center sm:h-32 sm:w-[180px]"
+                  className="flex h-20 w-28 items-center justify-center px-1 sm:h-32 sm:w-[180px]"
                 >
                   <Logo src={logo} />
                 </li>

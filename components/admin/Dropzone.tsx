@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { SORT_MIME } from "./useDragAndDrop";
 
 export type FilePreview = {
   label: string;
@@ -112,6 +113,8 @@ export function Dropzone({
       )}
       <div
         onDragOver={(e) => {
+          // A card being reordered passes over this; it isn't an upload.
+          if (e.dataTransfer.types.includes(SORT_MIME)) return;
           e.preventDefault();
           if (!isUploading) setIsDragging(true);
         }}

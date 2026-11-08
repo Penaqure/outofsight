@@ -33,3 +33,9 @@ export function checkRateLimit(
   bucket.count += 1;
   return { allowed: true, retryAfterSeconds: 0 };
 }
+
+// Clears a key's count — e.g. after a successful login, so normal use never
+// eats into the allowance meant for failed guesses.
+export function resetRateLimit(key: string): void {
+  buckets.delete(key);
+}

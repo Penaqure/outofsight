@@ -21,8 +21,14 @@ export const siteConfig = {
   ],
 };
 
-// Logo slots in the Home clients section: the design's 7×2 grid.
-export const HOME_CLIENT_LOGO_SLOTS = 14;
+// Logo slots in the Home clients section: 6×2 on desktop, 3×4 on phones.
+export const HOME_CLIENT_LOGO_SLOTS = 12;
+
+// How a client logo is sized, shared by the site and the admin tiles so a
+// logo always appears the same size in both: its file's natural size, capped
+// to one box for large uploads (and to its slot on narrow screens).
+export const CLIENT_LOGO_CLASS =
+  "max-h-14 max-w-[min(6rem,100%)] object-contain";
 
 // Placeholder until real auth/session data is wired up.
 export const currentAdminUser = {

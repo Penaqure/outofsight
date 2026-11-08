@@ -8,6 +8,7 @@ import {
   formatFileSize,
   DEFAULT_FOCAL_POINT,
 } from "@/components/admin/Dropzone";
+import { useImageFileDrop, useSortable } from "@/components/admin/useDragAndDrop";
 import { captureVideoFrame } from "@/lib/files";
 import { uploadFile } from "@/lib/blob-upload";
 
@@ -97,7 +98,13 @@ export function WorkFormModal({
     setDirty(true);
   }
 
-  async function handlePhotosSelect(fileList: FileList | null) {
+  const photoSort = useSortable(photos, (next) => {
+    setPhotos(next);
+    setDirty(true);
+  });
+  const photoDrop = useImageFileDrop(handlePhotosSelect);
+
+  async function handlePhotosSelect(fileList: FileList | File[] | null) {
     if (!fileList || fileList.length === 0) return;
     setPhotosUploading(true);
     try {
@@ -299,17 +306,26 @@ export function WorkFormModal({
       <div className="mt-6">
         <p className="text-base text-obsidian">Upload Photos</p>
         <p className="mt-0.5 text-xs text-obsidian/40">
-          The first 4 show in a row under the video on the project page.
+          The first 4 show in a row under the video on the project page. Drag
+          a photo to change its position, or drop image files here to add
+          them.
         </p>
-        <div className="mt-2 flex flex-wrap gap-3">
+        <div
+          {...photoDrop.dropProps}
+          className={`mt-2 flex flex-wrap gap-3 ${
+            photoDrop.isFileOver ? "outline-2 outline-offset-4 outline-primary" : ""
+          }`}
+        >
           {photos.map((photo, index) => (
             <div
               key={index}
-              className={`group relative h-28 w-28 overflow-hidden border ${
+              {...photoSort.itemProps(index)}
+              {...photoSort.handleProps(index)}
+              className={`group relative h-28 w-28 cursor-grab overflow-hidden border active:cursor-grabbing ${
                 index < 4 ? "border-obsidian/10" : "border-obsidian/10 opacity-50"
-              }`}
+              } ${photoSort.itemClass(index)}`}
             >
-              <img src={photo} alt="" className="h-full w-full object-cover" />
+              <img src={photo} alt="" draggable={false} className="h-full w-full object-cover" />
               <button
                 type="button"
                 onClick={() => removePhoto(index)}

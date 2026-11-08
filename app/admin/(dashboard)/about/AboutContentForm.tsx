@@ -9,6 +9,8 @@ import {
 } from "@/components/admin/Dropzone";
 import { uploadFile } from "@/lib/blob-upload";
 import { SaveBar, useSave } from "@/components/admin/SaveBar";
+import { CLIENT_LOGO_CLASS } from "@/lib/config";
+import { useImageFileDrop, useSortable } from "@/components/admin/useDragAndDrop";
 
 const fieldClass =
   "mt-2 w-full bg-obsidian/10 px-4 py-3.5 text-sm text-obsidian placeholder:text-obsidian/40 outline-none focus:ring-1 focus:ring-primary";
@@ -73,6 +75,7 @@ export function AboutContentForm({
   const [dirty, setDirty] = useState(false);
   const { saving, status, save, clearStatus } = useSave("/api/content/about");
   const logosInputRef = useRef<HTMLInputElement>(null);
+  const [membersUploading, setMembersUploading] = useState(false);
 
   // Shared "Image Library" — upload once here, then drag a thumbnail onto
   // whichever section Dropzone it belongs to (or use the "Assign to"
@@ -164,7 +167,31 @@ export function AboutContentForm({
     clearStatus();
   }
 
-  async function handleLogosSelect(fileList: FileList | null) {
+  const memberSort = useSortable(teamMembers, (next) => {
+    setTeamMembers(next);
+    setDirty(true);
+    clearStatus();
+  });
+  const logoSort = useSortable(trustedByLogos, (next) => {
+    setTrustedByLogos(next);
+    setDirty(true);
+    clearStatus();
+  });
+  const logoDrop = useImageFileDrop(handleLogosSelect);
+  // Each image dropped on the "+" tile becomes a new team member.
+  const memberDrop = useImageFileDrop(async (files) => {
+    setMembersUploading(true);
+    try {
+      const urls = await Promise.all(files.map((file) => uploadFile(file)));
+      setTeamMembers((prev) => [...prev, ...urls.map(newTeamMember)]);
+      setDirty(true);
+      clearStatus();
+    } finally {
+      setMembersUploading(false);
+    }
+  });
+
+  async function handleLogosSelect(fileList: FileList | File[] | null) {
     if (!fileList || fileList.length === 0) return;
     const urls = await Promise.all(
       Array.from(fileList).map((file) => uploadFile(file))
@@ -426,7 +453,8 @@ export function AboutContentForm({
         <p className="mt-1 text-xs text-obsidian/40">
           Shown as a row of round black &amp; white portraits (colour on
           hover) with name and position underneath. Leave a link empty to
-          hide it.
+          hide it. Drag a card by its bar to reorder, or drop photos on the
+          + tile to add members.
         </p>
         <div className="mt-6">
           <p className="text-base text-obsidian">Team Intro</p>
@@ -440,7 +468,17 @@ export function AboutContentForm({
         </div>
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {teamMembers.map((member, index) => (
-            <div key={index} className="flex flex-col gap-3">
+            <div
+              key={index}
+              {...memberSort.itemProps(index)}
+              className={`flex flex-col gap-3 ${memberSort.itemClass(index)}`}
+            >
+              <div
+                {...memberSort.handleProps(index)}
+                className="cursor-grab bg-obsidian/10 py-1 text-center text-xs text-obsidian/50 select-none active:cursor-grabbing"
+              >
+                ⠿ Drag to reorder
+              </div>
               <Dropzone
                 label={`Member ${index + 1}`}
                 accept="image/*"
@@ -505,9 +543,17 @@ export function AboutContentForm({
           <button
             type="button"
             onClick={addMember}
-            className="flex min-h-40 items-center justify-center bg-obsidian/10 text-2xl text-obsidian/40 hover:bg-obsidian/[.15]"
+            {...memberDrop.dropProps}
+            disabled={membersUploading}
+            className={`flex min-h-40 items-center justify-center bg-obsidian/10 text-2xl text-obsidian/40 hover:bg-obsidian/[.15] ${
+              memberDrop.isFileOver ? "ring-2 ring-primary" : ""
+            }`}
           >
-            +
+            {membersUploading ? (
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-obsidian/20 border-t-primary" />
+            ) : (
+              "+"
+            )}
           </button>
         </div>
       </div>
@@ -543,15 +589,23 @@ export function AboutContentForm({
         <p className="text-2xl text-obsidian">Trusted Brands</p>
         <p className="mt-1 text-xs text-obsidian/40">
           Shown on the About page. The Home page has its own list in the Home
-          editor.
+          editor. Drag a logo to change its position, or drop image files here
+          to add them.
         </p>
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div
+          {...logoDrop.dropProps}
+          className={`mt-6 flex flex-wrap gap-3 ${
+            logoDrop.isFileOver ? "outline-2 outline-offset-4 outline-primary" : ""
+          }`}
+        >
           {trustedByLogos.map((logo, index) => (
             <div
               key={index}
-              className="group relative flex size-[126px] items-center justify-center overflow-hidden bg-obsidian/10"
+              {...logoSort.itemProps(index)}
+              {...logoSort.handleProps(index)}
+              className={`group relative flex size-[126px] cursor-grab items-center justify-center bg-obsidian/10 before:absolute before:-inset-1.5 active:cursor-grabbing ${logoSort.itemClass(index)}`}
             >
-              <img src={logo} alt="" className="max-h-full max-w-full object-contain p-2" />
+              <img src={logo} alt="" draggable={false} className={CLIENT_LOGO_CLASS} />
               <button
                 type="button"
                 onClick={() => removeLogo(index)}
@@ -619,7 +673,7 @@ export function AboutContentForm({
       <SaveBar
         status={status}
         saving={saving}
-        disabled={!dirty || saving || poolUploading}
+        disabled={!dirty || saving || poolUploading || membersUploading}
         onSave={handleSave}
       />
     </div>

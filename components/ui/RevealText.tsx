@@ -28,6 +28,15 @@ export function afterWords(text: string, startMs = 0) {
   return startMs + wordCount(text) * WORD_STAGGER_MS + AFTER_WORDS_MS;
 }
 
+// The design's two-line section heading: "For Moments / That Stay". Breaks
+// after the second word, so it keeps working when the text is edited in the
+// admin. Shorter headings stay on one line.
+export function twoLineHeading(text: string) {
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length < 3) return text;
+  return `${words.slice(0, 2).join(" ")}\n${words.slice(2).join(" ")}`;
+}
+
 // Word-by-word reveal of a short string (a heading). Line breaks in the
 // text are kept. Render it inside the heading element, e.g.
 // <h1><RevealWords text={title} /></h1>.

@@ -3,9 +3,10 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import type { HomeContent } from "@/types/content";
-import { HOME_CLIENT_LOGO_SLOTS } from "@/lib/config";
+import { CLIENT_LOGO_CLASS, HOME_CLIENT_LOGO_SLOTS } from "@/lib/config";
 import { uploadFile } from "@/lib/blob-upload";
 import { SaveBar, useSave } from "@/components/admin/SaveBar";
+import { useImageFileDrop, useSortable } from "@/components/admin/useDragAndDrop";
 import logoOnly from "@/public/logo/logo_only.png";
 
 const fieldClass =
@@ -51,7 +52,7 @@ export function HomeContentForm({
     clearStatus();
   }
 
-  async function handleLogosSelect(fileList: FileList | null) {
+  async function handleLogosSelect(fileList: FileList | File[] | null) {
     if (!fileList || fileList.length === 0) return;
     // Only fill the slots that are free; anything extra is reported, not saved.
     const selected = Array.from(fileList);
@@ -70,6 +71,13 @@ export function HomeContentForm({
       setLogosUploading(false);
     }
   }
+
+  const logoSort = useSortable(clientsLogos, (next) => {
+    setClientsLogos(next);
+    markDirty();
+  });
+  const logoDrop = useImageFileDrop(handleLogosSelect);
+  const logosOverLimit = clientsLogos.length - HOME_CLIENT_LOGO_SLOTS;
 
   function removeLogo(index: number) {
     setClientsLogos((prev) => prev.filter((_, i) => i !== index));
@@ -325,17 +333,29 @@ export function HomeContentForm({
             {clientsLogos.length} of {HOME_CLIENT_LOGO_SLOTS} used
           </p>
         </div>
-        <div className="mt-2 grid grid-cols-3 gap-3 sm:grid-cols-5 lg:grid-cols-7">
+        <p className="mt-0.5 text-xs text-obsidian/40">
+          Drag a logo to change its position, or drop image files here to add
+          them.
+        </p>
+        <div
+          {...logoDrop.dropProps}
+          className={`mt-2 grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6 ${
+            logoDrop.isFileOver ? "outline-2 outline-offset-4 outline-primary" : ""
+          }`}
+        >
           {clientsLogos.map((logo, index) => (
             <div
               key={`${logo}-${index}`}
-              className="group relative flex aspect-square items-center justify-center overflow-hidden bg-obsidian/10"
+              {...logoSort.itemProps(index)}
+              {...logoSort.handleProps(index)}
+              className={`group relative flex aspect-square cursor-grab items-center justify-center bg-obsidian/10 before:absolute before:-inset-1.5 active:cursor-grabbing ${logoSort.itemClass(index)}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={logo}
                 alt=""
-                className="max-h-full max-w-full object-contain p-2"
+                draggable={false}
+                className={CLIENT_LOGO_CLASS}
               />
               <button
                 type="button"
@@ -378,6 +398,13 @@ export function HomeContentForm({
             }}
           />
         </div>
+        {logosOverLimit > 0 && (
+          <p className="mt-2 text-xs text-red-600">
+            Only {HOME_CLIENT_LOGO_SLOTS} logos can show. Remove {logosOverLimit}{" "}
+            before saving; until then the home page shows the first{" "}
+            {HOME_CLIENT_LOGO_SLOTS}.
+          </p>
+        )}
         {logosSkipped > 0 && (
           <p className="mt-2 text-xs text-red-600">
             Only {HOME_CLIENT_LOGO_SLOTS} logos fit, so {logosSkipped} of the
@@ -395,7 +422,7 @@ export function HomeContentForm({
         <SaveBar
           status={status}
           saving={saving}
-          disabled={!dirty || saving || uploading || logosUploading}
+          disabled={!dirty || saving || uploading || logosUploading || logosOverLimit > 0}
           onSave={handleSave}
         />
       </div>

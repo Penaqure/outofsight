@@ -84,12 +84,15 @@ CREATE TABLE IF NOT EXISTS projects (
   video_preview_image_position TEXT NOT NULL,
   photos TEXT[] NOT NULL DEFAULT '{}',
   tags TEXT[] NOT NULL DEFAULT '{}',
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  sort_order INTEGER
 );
 
 -- Migrations for databases created before a column existed. Each is
 -- idempotent, so `npm run db:setup` is safe to re-run.
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS video_url TEXT;
+-- Admin drag-and-drop order. NULL until the grid is first reordered.
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS sort_order INTEGER;
 ALTER TABLE works_content ADD COLUMN IF NOT EXISTS trusted_by_heading TEXT NOT NULL DEFAULT 'Trusted International Clients';
 ALTER TABLE works_content ADD COLUMN IF NOT EXISTS trusted_by_description TEXT NOT NULL DEFAULT 'From global brands to local visionaries, we partner with teams who believe in the power of a well-told story.';
 ALTER TABLE about_content ADD COLUMN IF NOT EXISTS team_members JSONB NOT NULL DEFAULT '[]';

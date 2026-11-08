@@ -7,7 +7,12 @@ import { Footer } from "@/components/site/Footer";
 import { ProjectTile } from "@/components/site/ProjectTile";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { RevealItem, RevealWords, afterWords } from "@/components/ui/RevealText";
+import {
+  RevealItem,
+  RevealWords,
+  afterWords,
+  twoLineHeading,
+} from "@/components/ui/RevealText";
 
 // Reads the mutable in-memory store directly, so force dynamic rendering —
 // otherwise admin edits wouldn't show up here without a rebuild.
@@ -55,7 +60,7 @@ export default async function WorksPage() {
         <Container>
           <div className="grid grid-cols-1 gap-6 pt-16 pb-16 sm:grid-cols-2 sm:gap-10 sm:pt-[126px]">
             <h1 className="font-heading text-2xl tracking-tight text-obsidian">
-              <RevealWords text={content.heroHeading} />
+              <RevealWords text={twoLineHeading(content.heroHeading)} />
             </h1>
             <RevealItem
               as="p"

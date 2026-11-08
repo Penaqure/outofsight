@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Project } from "@/types/portfolio";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { useSortable } from "@/components/admin/useDragAndDrop";
 import { WorkFormModal } from "./WorkFormModal";
 
 export function WorksGrid({ projects }: { projects: Project[] }) {
@@ -11,6 +12,34 @@ export function WorksGrid({ projects }: { projects: Project[] }) {
   const [editing, setEditing] = useState<Project | "new" | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  // Local copy so a drag shows instantly; refreshed whenever the server's
+  // list changes (save, delete, reorder).
+  const [ordered, setOrdered] = useState(projects);
+  const [serverProjects, setServerProjects] = useState(projects);
+  const [orderFailed, setOrderFailed] = useState(false);
+  if (serverProjects !== projects) {
+    setServerProjects(projects);
+    setOrdered(projects);
+  }
+
+  // No Save button on this grid, so a new order is stored straight away.
+  const sort = useSortable(ordered, async (next) => {
+    const previous = ordered;
+    setOrdered(next);
+    setOrderFailed(false);
+    try {
+      const res = await fetch("/api/works/order", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: next.map((project) => project.id) }),
+      });
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      router.refresh();
+    } catch {
+      setOrdered(previous);
+      setOrderFailed(true);
+    }
+  });
 
   function refreshAndClose() {
     setEditing(null);
@@ -32,17 +61,38 @@ export function WorksGrid({ projects }: { projects: Project[] }) {
 
   return (
     <>
-      <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
-        {projects.map((project) => (
-          <button
+      <p className="mt-8 text-xs text-obsidian/40">
+        Drag a project to change its position on the Work page. Click one to
+        edit it.
+      </p>
+      {orderFailed && (
+        <p className="mt-1 text-xs text-red-600">
+          Couldn&apos;t save the new order. Please try again.
+        </p>
+      )}
+      <div className="mt-2 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
+        {ordered.map((project, index) => (
+          // A div rather than a <button>: Firefox won't start a drag on a button.
+          <div
             key={project.id}
+            role="button"
+            tabIndex={0}
             onClick={() => setEditing(project)}
-            className="aspect-square overflow-hidden border border-obsidian/10 bg-obsidian/[.05] transition-opacity hover:opacity-90"
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setEditing(project);
+              }
+            }}
+            {...sort.itemProps(index)}
+            {...sort.handleProps(index)}
+            className={`aspect-square cursor-grab overflow-hidden border border-obsidian/10 bg-obsidian/[.05] transition-opacity hover:opacity-90 active:cursor-grabbing ${sort.itemClass(index)}`}
           >
             {project.thumbnailImage ? (
               <img
                 src={project.thumbnailImage}
                 alt={project.title}
+                draggable={false}
                 className="h-full w-full object-cover"
               />
             ) : (
@@ -50,7 +100,7 @@ export function WorksGrid({ projects }: { projects: Project[] }) {
                 {project.title}
               </span>
             )}
-          </button>
+          </div>
         ))}
         <button
           onClick={() => setEditing("new")}

@@ -29,6 +29,8 @@ export default function AdminLoginPage() {
       }
       router.push("/admin");
       router.refresh();
+    } catch {
+      setError("Could not reach the server. Check your connection and try again.");
     } finally {
       setSubmitting(false);
     }
@@ -36,7 +38,10 @@ export default function AdminLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-secondary p-6">
+      {/* method="post": if this page's JavaScript hasn't loaded, a native
+          submit must not put the email and password in the URL. */}
       <form
+        method="post"
         onSubmit={handleSubmit}
         className="w-full max-w-3xl bg-obsidian px-14 py-8"
       >

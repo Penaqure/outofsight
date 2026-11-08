@@ -126,7 +126,9 @@ async function ensureSeeded(): Promise<void> {
 export async function getProjects(): Promise<Project[]> {
   await ensureSeeded();
   const { rows } = await pool.query<ProjectRow>(
-    "SELECT * FROM projects ORDER BY created_at DESC"
+    // sort_order is set by the admin's drag-and-drop. NULLS FIRST keeps a
+    // newly added project at the front, where it has always appeared.
+    "SELECT * FROM projects ORDER BY sort_order ASC NULLS FIRST, created_at DESC"
   );
   return rows.map(toProject);
 }
@@ -235,6 +237,15 @@ export async function updateProject(
     ]
   );
   return rows[0] ? toProject(rows[0]) : undefined;
+}
+
+export async function reorderProjects(ids: string[]): Promise<void> {
+  await pool.query(
+    `UPDATE projects SET sort_order = position.ord
+     FROM unnest($1::text[]) WITH ORDINALITY AS position(id, ord)
+     WHERE projects.id = position.id`,
+    [ids]
+  );
 }
 
 export async function deleteProject(id: string): Promise<boolean> {
