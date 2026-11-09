@@ -76,7 +76,7 @@ export function TrustedBy({
                 as="li"
                 startMs={itemsStart}
                 index={index + 1}
-                className="flex h-20 items-center justify-center px-0.5 sm:h-32"
+                className="flex h-20 items-center justify-center px-0.5 sm:h-24"
               >
                 <Logo src={logo} />
               </RevealItem>
