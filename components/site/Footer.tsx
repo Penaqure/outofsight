@@ -2,15 +2,9 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/lib/config";
-import { getContactsContent } from "@/lib/data/content";
+import { getContactsContent, getFooterContent } from "@/lib/data/content";
 import { Container } from "@/components/ui/Container";
 import logo from "@/public/logo/outofsight-logo.png";
-
-const mediaLinks = [
-  { label: "LinkedIn", href: "#" },
-  { label: "Behance", href: "#" },
-  { label: "Dribbble", href: "#" },
-];
 
 // Label + link-list block. Stacks (label above list) on mobile to match the
 // two-column Figma mobile footer; on sm+ the label sits inline to the left
@@ -58,9 +52,14 @@ function BackToTop({ className = "" }: { className?: string }) {
 
 // Navigation reuses siteConfig.nav; Phone/Email/WhatsApp reuse the same
 // admin-managed contact details shown on /contact — see lib/data/content.ts.
-// Media links have no admin-managed source yet, so they're static for now.
+// Media links are managed on the admin Footer page; ones without a URL
+// yet are hidden, and the column disappears if none are left.
 export async function Footer() {
-  const contact = await getContactsContent();
+  const [contact, footer] = await Promise.all([
+    getContactsContent(),
+    getFooterContent(),
+  ]);
+  const mediaLinks = footer.mediaLinks.filter((link) => link.url);
   const phone =
     contact.countryCode && contact.phoneNumber
       ? `${contact.countryCode} ${contact.phoneNumber}`
@@ -104,20 +103,24 @@ export async function Footer() {
               </ul>
             </FooterColumn>
 
-            <FooterColumn label="Media">
-              <ul className="space-y-2 text-left">
-                {mediaLinks.map((item) => (
-                  <li key={item.label}>
-                    <a
-                      href={item.href}
-                      className="text-bone-white/80 hover:text-bone-white"
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </FooterColumn>
+            {mediaLinks.length > 0 && (
+              <FooterColumn label="Media">
+                <ul className="space-y-2 text-left">
+                  {mediaLinks.map((item, index) => (
+                    <li key={index}>
+                      <a
+                        href={item.url}
+                        target={item.url.startsWith("mailto:") ? undefined : "_blank"}
+                        rel="noopener noreferrer"
+                        className="text-bone-white/80 hover:text-bone-white"
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </FooterColumn>
+            )}
 
             {contact.location && (
               <FooterColumn label="Address">

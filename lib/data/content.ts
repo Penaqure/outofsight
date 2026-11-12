@@ -1,6 +1,8 @@
 import type {
   AboutContent,
   ContactsContent,
+  FooterContent,
+  FooterLink,
   HomeContent,
   ProcessCard,
   TeamMember,
@@ -178,6 +180,72 @@ export async function updateContactsContent(
     ]
   );
   return toContactsContent(rows[0]);
+}
+
+const footerDefaults: FooterContent = {
+  mediaLinks: [
+    { label: "LinkedIn", url: "" },
+    { label: "Behance", url: "" },
+    { label: "Dribbble", url: "" },
+  ],
+};
+
+// Only web and mail links make it into the footer — anything else (e.g. a
+// javascript: URL) is dropped on save rather than rendered as an href.
+// Bare domains like "behance.net/x" get https:// added.
+function cleanFooterUrl(raw: unknown): string {
+  const url = typeof raw === "string" ? raw.trim() : "";
+  if (!url) return "";
+  if (/^mailto:/i.test(url)) return url;
+  const withScheme = /^[a-z][a-z\d+.-]*:/i.test(url) ? url : `https://${url}`;
+  try {
+    const parsed = new URL(withScheme);
+    return parsed.protocol === "https:" || parsed.protocol === "http:"
+      ? parsed.toString()
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+function toFooterLinks(raw: unknown): FooterLink[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((link: Partial<FooterLink> | null) => ({
+      label: typeof link?.label === "string" ? link.label.trim() : "",
+      url: cleanFooterUrl(link?.url),
+    }))
+    .filter((link) => link.label)
+    .slice(0, 20);
+}
+
+type FooterRow = { media_links: FooterLink[] };
+
+export async function getFooterContent(): Promise<FooterContent> {
+  const { rows } = await pool.query<FooterRow>(
+    "SELECT * FROM footer_content WHERE id = 1"
+  );
+  if (rows[0]) return { mediaLinks: toFooterLinks(rows[0].media_links) };
+
+  const { rows: created } = await pool.query<FooterRow>(
+    `INSERT INTO footer_content (id, media_links)
+     VALUES (1, $1)
+     ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
+     RETURNING *`,
+    [JSON.stringify(footerDefaults.mediaLinks)]
+  );
+  return { mediaLinks: toFooterLinks(created[0].media_links) };
+}
+
+export async function updateFooterContent(
+  input: Partial<FooterContent>
+): Promise<FooterContent> {
+  const merged = { ...(await getFooterContent()), ...input };
+  const { rows } = await pool.query<FooterRow>(
+    `UPDATE footer_content SET media_links = $1 WHERE id = 1 RETURNING *`,
+    [JSON.stringify(toFooterLinks(merged.mediaLinks))]
+  );
+  return { mediaLinks: toFooterLinks(rows[0].media_links) };
 }
 
 const worksDefaults: WorksContent = {

@@ -123,7 +123,7 @@ export function TeamMembers({
 
       <ul
         ref={rowRef}
-        className="-mx-6 flex snap-x gap-6 overflow-x-auto px-6 [scrollbar-width:none] sm:-mx-10 sm:gap-16 sm:px-10 lg:mx-0 lg:px-0"
+        className="-mx-6 flex snap-x scroll-px-6 gap-6 overflow-x-auto px-6 [scrollbar-width:none] sm:-mx-10 sm:scroll-px-10 sm:gap-16 sm:px-10 lg:mx-0 lg:scroll-px-0 lg:px-0"
       >
         {members.map((member, index) => {
           return (

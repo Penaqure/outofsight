@@ -31,6 +31,11 @@ CREATE TABLE IF NOT EXISTS contacts_content (
   location TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS footer_content (
+  id INTEGER PRIMARY KEY DEFAULT 1,
+  media_links JSONB NOT NULL DEFAULT '[]'
+);
+
 CREATE TABLE IF NOT EXISTS works_content (
   id INTEGER PRIMARY KEY DEFAULT 1,
   hero_image TEXT,

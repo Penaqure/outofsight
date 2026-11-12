@@ -11,6 +11,7 @@ const navItems = [
   { label: "Work", href: "/admin/works" },
   { label: "About Us", href: "/admin/about" },
   { label: "Contacts", href: "/admin/contacts" },
+  { label: "Footer", href: "/admin/footer" },
 ];
 
 // Below lg, the 300px sidebar doesn't fit alongside real content — it

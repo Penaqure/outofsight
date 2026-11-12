@@ -20,6 +20,17 @@ export type ContactsContent = {
   location: string;
 };
 
+export type FooterLink = {
+  label: string;
+  url: string;
+};
+
+export type FooterContent = {
+  // The footer's "Media" column (LinkedIn, Behance, ...). Address and the
+  // Phone/Email/WhatsApp links come from ContactsContent instead.
+  mediaLinks: FooterLink[];
+};
+
 export type ProcessCard = {
   title: string;
   description: string;
