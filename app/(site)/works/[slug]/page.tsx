@@ -198,8 +198,8 @@ export default async function ProjectPage(
       <Reveal>
         <Container>
           <div className="grid grid-cols-1 gap-6 pb-16 sm:grid-cols-[1fr_2fr] sm:gap-10">
-            <h2 className="font-heading text-2xl tracking-tight text-obsidian">
-              <RevealWords text={"Similar\nVideos"} />
+            <h2 className="font-heading text-2xl tracking-tight whitespace-nowrap text-obsidian">
+              <RevealWords text="Similar Videos" />
             </h2>
             <RevealItem
               as="p"
