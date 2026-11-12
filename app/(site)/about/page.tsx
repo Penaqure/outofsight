@@ -86,7 +86,8 @@ export default async function AboutPage() {
         // is NOT wrapped in <Container>, unlike the rest of the page.
         // Same 544/1376 column split as the Founder's Message below, so this
         // image's bottom-left corner meets the founder portrait's top-right
-        // corner exactly (Figma: 64 padding + 444 text + 36 gap = 544). The
+        // corner exactly (64 padding + 416 text + 64 gap = 544 — the gap
+        // before the image matches the left page padding). The
         // minmax(0, …) stops content from nudging the split. Side by side
         // only from lg: any narrower and the text outgrows the image's
         // height, pushing the portrait down and breaking the corner touch.
@@ -95,7 +96,7 @@ export default async function AboutPage() {
           as="section"
           className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,544fr)_minmax(0,1376fr)] lg:items-start lg:gap-0"
         >
-          <div className="order-2 px-6 sm:px-10 lg:order-none lg:mr-9 lg:pr-0 lg:pl-16">
+          <div className="order-2 px-6 sm:px-10 lg:order-none lg:mr-16 lg:pr-0 lg:pl-16">
             <h2 className="font-heading text-base leading-none font-semibold tracking-tight text-obsidian sm:text-2xl">
               <RevealWords text="Our Story" />
             </h2>
@@ -180,10 +181,12 @@ export default async function AboutPage() {
       )}
 
       {/* Cards start 200ms apart; each title rises word by word, then its
-          description fades up. */}
+          description fades up. The bottom padding is measured from the
+          tallest card (items-start keeps shorter ones from stretching), so
+          the space before "Trusted By" follows the longest paragraph. */}
       <Reveal>
-        <Container className="pb-10 sm:py-24">
-          <div className="grid gap-8 sm:grid-cols-3 sm:gap-16">
+        <Container className="pb-4 sm:pt-24 sm:pb-12">
+          <div className="grid items-start gap-8 sm:grid-cols-3 sm:gap-16">
             {content.processCards.map((card, index) => (
               <div key={card.title}>
                 <p className="font-heading text-base leading-none font-semibold tracking-tight text-obsidian sm:text-2xl">

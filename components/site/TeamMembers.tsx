@@ -82,7 +82,9 @@ export function TeamMembers({
         <RevealItem
           startMs={itemsStart}
           index={1}
-          className="relative hidden self-start sm:block"
+          className={`relative hidden self-start ${
+            canPrev || canNext ? "sm:block" : ""
+          }`}
         >
           {/* ← → arrow from the Figma design, drawn inline so the page has
               no static image file to depend on. */}

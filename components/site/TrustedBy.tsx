@@ -98,7 +98,7 @@ export function TrustedByMarquee({ logos }: { logos: string[] }) {
   return (
     <Reveal
       as="section"
-      className="flex flex-col items-center gap-9 overflow-hidden py-16 sm:py-24"
+      className="flex flex-col items-center gap-9 overflow-hidden pt-16 pb-9 sm:pt-24 sm:pb-9"
     >
       <h2 className="font-heading text-base font-semibold tracking-tight text-obsidian sm:text-2xl">
         <RevealWords text="Trusted By" />

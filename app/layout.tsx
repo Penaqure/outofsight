@@ -140,13 +140,14 @@ export const metadata: Metadata = {
   // (`prefers-color-scheme`, whether via the `media` attribute on <link>
   // or embedded in an SVG's own stylesheet) isn't reliably applied to
   // favicons across browsers — Chrome in particular just renders the
-  // default state regardless of theme. The icon itself carries a light
-  // halo behind its dark linework (see public/logo/favicon.png) so it
-  // stays legible on both light and dark tab bars without needing any
-  // theme detection to work.
+  // default state regardless of theme. The icon is the dark mark on a
+  // solid white circle (see public/logo/favicon.png) so it stays legible
+  // on both light and dark tab bars without any theme detection. The
+  // Apple icon is the same on a full white square: iOS fills transparent
+  // corners with black.
   icons: {
     icon: "/logo/favicon.png",
-    apple: "/logo/favicon.png",
+    apple: "/logo/apple-icon.png",
   },
   // Google Search Console ownership check — set GOOGLE_SITE_VERIFICATION to
   // the token from the "HTML tag" method (only the content="…" value).
