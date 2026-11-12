@@ -36,6 +36,18 @@ CREATE TABLE IF NOT EXISTS footer_content (
   media_links JSONB NOT NULL DEFAULT '[]'
 );
 
+-- The rest of the footer's fields. NULL means "never saved": the footer
+-- then falls back to the site menu / Contacts page values (see
+-- getFooterContent in lib/data/content.ts).
+ALTER TABLE footer_content
+  ADD COLUMN IF NOT EXISTS navigation_label TEXT,
+  ADD COLUMN IF NOT EXISTS navigation_links JSONB,
+  ADD COLUMN IF NOT EXISTS media_label TEXT,
+  ADD COLUMN IF NOT EXISTS address_label TEXT,
+  ADD COLUMN IF NOT EXISTS address TEXT,
+  ADD COLUMN IF NOT EXISTS contacts_label TEXT,
+  ADD COLUMN IF NOT EXISTS contact_links JSONB;
+
 CREATE TABLE IF NOT EXISTS works_content (
   id INTEGER PRIMARY KEY DEFAULT 1,
   hero_image TEXT,

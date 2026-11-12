@@ -26,9 +26,17 @@ export type FooterLink = {
 };
 
 export type FooterContent = {
-  // The footer's "Media" column (LinkedIn, Behance, ...). Address and the
-  // Phone/Email/WhatsApp links come from ContactsContent instead.
+  // Column headings and their contents, left to right. Every field is
+  // edited on the admin Footer page; until it's first saved, Navigation
+  // mirrors the site menu and Address / Contacts mirror the Contacts page.
+  navigationLabel: string;
+  navigationLinks: FooterLink[];
+  mediaLabel: string;
   mediaLinks: FooterLink[];
+  addressLabel: string;
+  address: string;
+  contactsLabel: string;
+  contactLinks: FooterLink[];
 };
 
 export type ProcessCard = {

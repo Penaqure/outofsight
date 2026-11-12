@@ -8,7 +8,7 @@ import type {
   TeamMember,
   WorksContent,
 } from "@/types/content";
-import { HOME_CLIENT_LOGO_SLOTS } from "@/lib/config";
+import { HOME_CLIENT_LOGO_SLOTS, siteConfig } from "@/lib/config";
 import { pool } from "@/lib/db";
 
 // Postgres-backed via raw SQL (see db/schema.sql). Each *_content table is a
@@ -182,21 +182,25 @@ export async function updateContactsContent(
   return toContactsContent(rows[0]);
 }
 
-const footerDefaults: FooterContent = {
-  mediaLinks: [
-    { label: "LinkedIn", url: "" },
-    { label: "Behance", url: "" },
-    { label: "Dribbble", url: "" },
-  ],
-};
+const defaultMediaLinks: FooterLink[] = [
+  { label: "LinkedIn", url: "" },
+  { label: "Behance", url: "" },
+  { label: "Dribbble", url: "" },
+];
 
-// Only web and mail links make it into the footer — anything else (e.g. a
-// javascript: URL) is dropped on save rather than rendered as an href.
-// Bare domains like "behance.net/x" get https:// added.
+const MAX_FOOTER_LINKS = 20;
+
+// Allowed footer hrefs: site paths ("/works"), page anchors ("#top"),
+// mailto:, tel: and http(s). Anything else (e.g. a javascript: URL) is
+// dropped on save rather than rendered. Bare domains ("behance.net/x")
+// get https:// added.
 function cleanFooterUrl(raw: unknown): string {
   const url = typeof raw === "string" ? raw.trim() : "";
   if (!url) return "";
+  if (/^#/.test(url)) return url;
+  if (/^\/(?!\/)/.test(url)) return url;
   if (/^mailto:/i.test(url)) return url;
+  if (/^tel:/i.test(url)) return url.replace(/\s+/g, "");
   const withScheme = /^[a-z][a-z\d+.-]*:/i.test(url) ? url : `https://${url}`;
   try {
     const parsed = new URL(withScheme);
@@ -216,25 +220,79 @@ function toFooterLinks(raw: unknown): FooterLink[] {
       url: cleanFooterUrl(link?.url),
     }))
     .filter((link) => link.label)
-    .slice(0, 20);
+    .slice(0, MAX_FOOTER_LINKS);
 }
 
-type FooterRow = { media_links: FooterLink[] };
+function toText(raw: unknown, max = 500): string {
+  return typeof raw === "string" ? raw.trim().slice(0, max) : "";
+}
+
+// What the footer showed before it had its own fields: the site menu and
+// the Contacts page details.
+function contactFooterLinks(contact: ContactsContent): FooterLink[] {
+  const phone =
+    contact.countryCode && contact.phoneNumber
+      ? `${contact.countryCode}${contact.phoneNumber}`.replace(/[^\d+]/g, "")
+      : "";
+  const links: FooterLink[] = [];
+  if (phone) links.push({ label: "Phone", url: `tel:${phone}` });
+  if (contact.email) links.push({ label: "Email", url: `mailto:${contact.email}` });
+  if (phone)
+    links.push({ label: "WhatsApp", url: `https://wa.me/${phone.replace(/\D/g, "")}` });
+  return links;
+}
+
+type FooterRow = {
+  navigation_label: string | null;
+  navigation_links: FooterLink[] | null;
+  media_label: string | null;
+  media_links: FooterLink[];
+  address_label: string | null;
+  address: string | null;
+  contacts_label: string | null;
+  contact_links: FooterLink[] | null;
+};
+
+async function toFooterContent(row: FooterRow): Promise<FooterContent> {
+  // Only hit the Contacts table when a field still needs its fallback.
+  const contact =
+    row.address === null || row.contact_links === null
+      ? await getContactsContent()
+      : null;
+  return {
+    navigationLabel: row.navigation_label ?? "Navigation",
+    navigationLinks:
+      row.navigation_links === null
+        ? siteConfig.nav.map((item) => ({ label: item.label, url: item.href }))
+        : toFooterLinks(row.navigation_links),
+    mediaLabel: row.media_label ?? "Media",
+    mediaLinks: toFooterLinks(row.media_links),
+    addressLabel: row.address_label ?? "Address",
+    address: row.address ?? contact?.location ?? "",
+    contactsLabel: row.contacts_label ?? "Contacts",
+    contactLinks:
+      row.contact_links === null
+        ? contactFooterLinks(contact!)
+        : toFooterLinks(row.contact_links),
+  };
+}
 
 export async function getFooterContent(): Promise<FooterContent> {
   const { rows } = await pool.query<FooterRow>(
     "SELECT * FROM footer_content WHERE id = 1"
   );
-  if (rows[0]) return { mediaLinks: toFooterLinks(rows[0].media_links) };
+  if (rows[0]) return toFooterContent(rows[0]);
 
+  // Only the media links are seeded; the other columns stay NULL so they
+  // keep following the menu / Contacts page until the admin saves.
   const { rows: created } = await pool.query<FooterRow>(
     `INSERT INTO footer_content (id, media_links)
      VALUES (1, $1)
      ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
      RETURNING *`,
-    [JSON.stringify(footerDefaults.mediaLinks)]
+    [JSON.stringify(defaultMediaLinks)]
   );
-  return { mediaLinks: toFooterLinks(created[0].media_links) };
+  return toFooterContent(created[0]);
 }
 
 export async function updateFooterContent(
@@ -242,10 +300,25 @@ export async function updateFooterContent(
 ): Promise<FooterContent> {
   const merged = { ...(await getFooterContent()), ...input };
   const { rows } = await pool.query<FooterRow>(
-    `UPDATE footer_content SET media_links = $1 WHERE id = 1 RETURNING *`,
-    [JSON.stringify(toFooterLinks(merged.mediaLinks))]
+    `UPDATE footer_content SET
+       navigation_label = $1, navigation_links = $2,
+       media_label = $3, media_links = $4,
+       address_label = $5, address = $6,
+       contacts_label = $7, contact_links = $8
+     WHERE id = 1
+     RETURNING *`,
+    [
+      toText(merged.navigationLabel, 60),
+      JSON.stringify(toFooterLinks(merged.navigationLinks)),
+      toText(merged.mediaLabel, 60),
+      JSON.stringify(toFooterLinks(merged.mediaLinks)),
+      toText(merged.addressLabel, 60),
+      toText(merged.address),
+      toText(merged.contactsLabel, 60),
+      JSON.stringify(toFooterLinks(merged.contactLinks)),
+    ]
   );
-  return { mediaLinks: toFooterLinks(rows[0].media_links) };
+  return toFooterContent(rows[0]);
 }
 
 const worksDefaults: WorksContent = {

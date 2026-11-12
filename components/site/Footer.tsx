@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/lib/config";
-import { getContactsContent, getFooterContent } from "@/lib/data/content";
+import { getFooterContent } from "@/lib/data/content";
+import type { FooterLink } from "@/types/content";
 import { Container } from "@/components/ui/Container";
 import logo from "@/public/logo/outofsight-logo.png";
 
@@ -50,21 +51,49 @@ function BackToTop({ className = "" }: { className?: string }) {
   );
 }
 
-// Navigation reuses siteConfig.nav; Phone/Email/WhatsApp reuse the same
-// admin-managed contact details shown on /contact — see lib/data/content.ts.
-// Media links are managed on the admin Footer page; ones without a URL
-// yet are hidden, and the column disappears if none are left.
+function FooterLinks({ links }: { links: FooterLink[] }) {
+  return (
+    <ul className="space-y-2 text-left">
+      {links.map((item, index) => {
+        const className = "text-bone-white/80 hover:text-bone-white";
+        // Site paths go through <Link> for client-side navigation; web
+        // links open in a new tab; mailto:/tel:/# stay as plain anchors.
+        if (item.url.startsWith("/")) {
+          return (
+            <li key={index}>
+              <Link href={item.url} className={className}>
+                {item.label}
+              </Link>
+            </li>
+          );
+        }
+        const external = /^https?:/i.test(item.url);
+        return (
+          <li key={index}>
+            <a
+              href={item.url}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noopener noreferrer" : undefined}
+              className={className}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+// Every heading, link and the address are edited on the admin Footer page
+// (lib/data/content.ts → getFooterContent). Links without a URL are hidden,
+// and a column with nothing left to show is dropped.
 export async function Footer() {
-  const [contact, footer] = await Promise.all([
-    getContactsContent(),
-    getFooterContent(),
-  ]);
-  const mediaLinks = footer.mediaLinks.filter((link) => link.url);
-  const phone =
-    contact.countryCode && contact.phoneNumber
-      ? `${contact.countryCode} ${contact.phoneNumber}`
-      : null;
-  const whatsappNumber = phone?.replace(/[^\d]/g, "");
+  const footer = await getFooterContent();
+  const visible = (links: FooterLink[]) => links.filter((link) => link.url);
+  const navigationLinks = visible(footer.navigationLinks);
+  const mediaLinks = visible(footer.mediaLinks);
+  const contactLinks = visible(footer.contactLinks);
 
   return (
     <footer
@@ -88,82 +117,31 @@ export async function Footer() {
           </div>
 
           <div className="grid grid-cols-2 gap-x-8 gap-y-10 text-xs sm:flex sm:flex-wrap sm:items-start sm:gap-x-12 sm:gap-y-10 xl:flex-nowrap xl:gap-x-16 2xl:gap-x-24">
-            <FooterColumn label="Navigation">
-              <ul className="space-y-2 text-left">
-                {siteConfig.nav.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="text-bone-white/80 hover:text-bone-white"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </FooterColumn>
-
-            {mediaLinks.length > 0 && (
-              <FooterColumn label="Media">
-                <ul className="space-y-2 text-left">
-                  {mediaLinks.map((item, index) => (
-                    <li key={index}>
-                      <a
-                        href={item.url}
-                        target={item.url.startsWith("mailto:") ? undefined : "_blank"}
-                        rel="noopener noreferrer"
-                        className="text-bone-white/80 hover:text-bone-white"
-                      >
-                        {item.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+            {navigationLinks.length > 0 && (
+              <FooterColumn label={footer.navigationLabel}>
+                <FooterLinks links={navigationLinks} />
               </FooterColumn>
             )}
 
-            {contact.location && (
-              <FooterColumn label="Address">
+            {mediaLinks.length > 0 && (
+              <FooterColumn label={footer.mediaLabel}>
+                <FooterLinks links={mediaLinks} />
+              </FooterColumn>
+            )}
+
+            {footer.address && (
+              <FooterColumn label={footer.addressLabel}>
                 <p className="max-w-[220px] text-left whitespace-pre-line text-bone-white/80">
-                  {contact.location}
+                  {footer.address}
                 </p>
               </FooterColumn>
             )}
 
-            <FooterColumn label="Contacts">
-              <ul className="space-y-2 text-left">
-                {phone && (
-                  <li>
-                    <a
-                      href={`tel:${phone}`}
-                      className="text-bone-white/80 hover:text-bone-white"
-                    >
-                      Phone
-                    </a>
-                  </li>
-                )}
-                {contact.email && (
-                  <li>
-                    <a
-                      href={`mailto:${contact.email}`}
-                      className="text-bone-white/80 hover:text-bone-white"
-                    >
-                      Email
-                    </a>
-                  </li>
-                )}
-                {whatsappNumber && (
-                  <li>
-                    <a
-                      href={`https://wa.me/${whatsappNumber}`}
-                      className="text-bone-white/80 hover:text-bone-white"
-                    >
-                      WhatsApp
-                    </a>
-                  </li>
-                )}
-              </ul>
-            </FooterColumn>
+            {contactLinks.length > 0 && (
+              <FooterColumn label={footer.contactsLabel}>
+                <FooterLinks links={contactLinks} />
+              </FooterColumn>
+            )}
 
             <BackToTop className="hidden sm:inline-flex" />
           </div>
